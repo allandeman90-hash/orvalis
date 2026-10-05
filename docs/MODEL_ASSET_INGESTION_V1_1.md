@@ -2,6 +2,8 @@
 
 Updated: 2026-10-05
 
+Status: **VALIDATED**
+
 ## Status
 
 V1.1 introduces the first real external model ingestion path for Orvalis.
@@ -159,6 +161,22 @@ Expected render result for the canary:
 
 A second test feeds malformed external data and requires the AssetManager entry to become `failed` rather than producing a partial resource.
 
+## Validation result
+
+V1.1 is closed by the combined V1.2 validation gate, GitHub Actions run **#16** (`37376655789`) on commit `f3872014a9feb0f0076b0a86af1761336df390a8`.
+
+That run proved the V1.1 surface together with its character consumer:
+
+- engine typecheck: green;
+- targeted lint: green;
+- `tests/assets/modelAsset.integration.test.ts`: 2/2 green;
+- complete targeted V0.1/V1.1/V1.2 group: 4 files, 20/20 tests green;
+- production build: green;
+- browser model fixture: WebGL2 green;
+- browser model fixture: WebGPU green using the CI SwiftShader adapter.
+
+The temporary `.github/workflows/v1-1-validation.yml` was removed after this combined superset gate passed. `.github/workflows/v1-2-validation.yml` remains the regression guard for the external-model → production-character boundary.
+
 ## Why JSON first
 
 V1.1 optimizes for a stable semantic boundary, not file-size perfection.
@@ -172,20 +190,11 @@ This keeps authoring/export tooling easy to inspect while the first real bodies 
 - It does not import M2/WMO/Blizzard assets.
 - It does not convert the mannequin into a production character.
 - It does not define the final eight character bodies; that belongs to V1.2/V3.
-- It does not implement the character appearance adapter from V0.1 yet.
-- It does not split shared texture/animation libraries into separate files yet.
 - It does not add modern PBR material stacks.
 - It does not start P9 gameplay/static-data work.
 
-## Smallest next step
+## Closure
 
-After V1.1 validation, V1.2 should use this external model boundary for the production character asset contract:
-
-1. external body package(s) authored outside source code;
-2. `CharacterBodyContract.modelAsset` resolved through `AssetManager`;
-3. rig id and semantic sockets checked against the loaded skeleton;
-4. authored customization/composite source assets resolved externally;
-5. adapter into the existing P5 composite/geoset/attachment runtime;
-6. first original male/female base-body manifests only after the adapter is stable.
+V1.2 now consumes this external model boundary for production character bodies, semantic sockets, external composite sections, geosets and attached equipment. V1.1 therefore has no remaining implementation gate.
 
 P8.7 remains separately open before P9.
