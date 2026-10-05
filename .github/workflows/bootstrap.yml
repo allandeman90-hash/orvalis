@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'orvalis-github-ready.zip'
+      - 'orvalis-github-ready*.zip'
   workflow_dispatch:
 
 permissions:
@@ -17,27 +17,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate archive
+      - name: Locate and validate archive
+        shell: bash
         run: |
-          test -f orvalis-github-ready.zip
-          unzip -t orvalis-github-ready.zip
+          set -euo pipefail
+          ZIP="$(find . -maxdepth 1 -type f -name 'orvalis-github-ready*.zip' -print -quit)"
+          test -n "$ZIP"
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
+          unzip -t "$ZIP"
 
       - name: Extract Orvalis
+        shell: bash
         run: |
+          set -euo pipefail
           rm -rf /tmp/orvalis-import
           mkdir -p /tmp/orvalis-import
-          unzip -q orvalis-github-ready.zip -d /tmp/orvalis-import
+          unzip -q "$ZIP" -d /tmp/orvalis-import
           test -f /tmp/orvalis-import/orvalis/package.json
           test -f /tmp/orvalis-import/orvalis/engine/package.json
           test -f /tmp/orvalis-import/orvalis/PROJECT_STATUS.md
 
       - name: Import project into repository
+        shell: bash
         run: |
+          set -euo pipefail
           rsync -a --exclude='.git/' /tmp/orvalis-import/orvalis/ ./
-          rm -f orvalis-github-ready.zip
+          rm -f "$ZIP"
 
       - name: Commit imported project
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
