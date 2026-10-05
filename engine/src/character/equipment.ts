@@ -34,8 +34,10 @@ export const MANNEQUIN_ATTACHMENTS: readonly Attachment[] = [
 export const CHARACTER_ATTACHMENTS: readonly Attachment[] = [
   ...MANNEQUIN_ATTACHMENTS,
   { id: CHARACTER_SOCKET.head, name: 'head', bone: MANNEQUIN_BONE.head, position: [0, 0.012, 1.69] },
-  { id: CHARACTER_SOCKET.leftShoulder, name: 'leftShoulder', bone: MANNEQUIN_BONE.leftUpperArm, position: [-0.205, 0, 1.44] },
-  { id: CHARACTER_SOCKET.rightShoulder, name: 'rightShoulder', bone: MANNEQUIN_BONE.rightUpperArm, position: [0.205, 0, 1.44] },
+  // The exaggerated Vanguard pauldrons need to sit OUTSIDE the torso silhouette instead of intersecting it.
+  // These are mannequin-only fixture sockets; real character archetypes will author their own per-body sockets.
+  { id: CHARACTER_SOCKET.leftShoulder, name: 'leftShoulder', bone: MANNEQUIN_BONE.leftUpperArm, position: [-0.315, -0.005, 1.49] },
+  { id: CHARACTER_SOCKET.rightShoulder, name: 'rightShoulder', bone: MANNEQUIN_BONE.rightUpperArm, position: [0.315, -0.005, 1.49] },
   { id: CHARACTER_SOCKET.back, name: 'back', bone: MANNEQUIN_BONE.chest, position: [0, -0.105, 1.43] },
 ];
 
@@ -214,13 +216,17 @@ export function buildAttachedModel(key: AttachedModelKey): ModelMesh {
     return b.build('item-shield', 1);
   }
   if (key === 'vanguardHelm') {
-    add({ name: 'helm shell', sides: 12, rings: [loftRing(0, 0, -0.11, 0.128, 0.14, ...ROOT), loftRing(0, 0, 0.01, 0.148, 0.155, ...ROOT), loftRing(0, -0.002, 0.13, 0.112, 0.12, ...ROOT), loftRing(0, -0.01, 0.2, 0.035, 0.04, ...ROOT)] }, 'darkSteel');
+    // Open-faced prototype: the old shell reached below the eye line and hid the mannequin's whole face.
+    // Keep the crown/crest exaggerated but leave the eyes and lower face readable.
+    add({ name: 'helm crown', sides: 12, rings: [loftRing(0, 0, 0.045, 0.15, 0.152, ...ROOT), loftRing(0, -0.002, 0.095, 0.145, 0.148, ...ROOT), loftRing(0, -0.006, 0.165, 0.105, 0.112, ...ROOT), loftRing(0, -0.012, 0.225, 0.035, 0.04, ...ROOT)] }, 'darkSteel');
+    add({ name: 'helm brow', sides: 12, rings: [loftRing(0, -0.004, 0.04, 0.153, 0.155, ...ROOT), loftRing(0, -0.006, 0.062, 0.148, 0.15, ...ROOT)] }, 'gold');
     add({ name: 'helm crest', sides: 6, rings: [loftRing(0, -0.015, 0.12, 0.026, 0.075, ...ROOT), loftRing(0, -0.02, 0.27, 0.018, 0.055, ...ROOT), loftRing(0, -0.025, 0.34, 0.005, 0.015, ...ROOT)] }, 'crimson');
     return b.build('item-vanguard-helm', 1);
   }
   if (key === 'vanguardPauldron') {
-    add({ name: 'pauldron', sides: 10, rings: [loftRing(0, 0, -0.06, 0.115, 0.095, ...ROOT), loftRing(0, 0, 0.035, 0.18, 0.135, ...ROOT), loftRing(0, -0.01, 0.13, 0.13, 0.095, ...ROOT), loftRing(0, -0.025, 0.205, 0.035, 0.035, ...ROOT)] }, 'darkSteel');
-    add({ name: 'pauldron rim', sides: 10, rings: [loftRing(0, 0, 0.02, 0.184, 0.139, ...ROOT), loftRing(0, 0, 0.045, 0.16, 0.118, ...ROOT)] }, 'gold');
+    add({ name: 'pauldron', sides: 10, rings: [loftRing(0, 0, -0.045, 0.105, 0.085, ...ROOT), loftRing(0, 0, 0.035, 0.165, 0.12, ...ROOT), loftRing(0, -0.01, 0.125, 0.12, 0.088, ...ROOT), loftRing(0, -0.025, 0.195, 0.032, 0.032, ...ROOT)] }, 'darkSteel');
+    add({ name: 'pauldron rim', sides: 10, rings: [loftRing(0, 0, 0.02, 0.169, 0.124, ...ROOT), loftRing(0, 0, 0.045, 0.148, 0.107, ...ROOT)] }, 'gold');
+    add({ name: 'pauldron crest', sides: 8, rings: [loftRing(0, -0.008, 0.105, 0.072, 0.052, ...ROOT), loftRing(0, -0.014, 0.155, 0.025, 0.023, ...ROOT)] }, 'crimson');
     return b.build('item-vanguard-pauldron', 1);
   }
   if (key === 'vanguardCape') {
@@ -246,9 +252,22 @@ export function buildAttachedModel(key: AttachedModelKey): ModelMesh {
   throw new Error(`equipment: no attached model "${String(key)}"`);
 }
 
-/** 16 × 16 texture atlas for attached gear: eight flat 2-texel columns. */
+/**
+ * 16 × 16 procedural hand-painted-style atlas for attached prototype gear.
+ * Each 2-texel material column gets a light/dark side, a vertical value gradient and sparse wear marks so the
+ * temporary models stop reading as one flat uniform colour. Final art will replace this atlas entirely.
+ */
 export function itemTexture(): ModelTexture {
   const data = new Uint8Array(ITEM_TEXTURE_SIZE * ITEM_TEXTURE_SIZE * 4);
-  for (let y = 0; y < ITEM_TEXTURE_SIZE; y++) for (let x = 0; x < ITEM_TEXTURE_SIZE; x++) data.set([...ITEM_COLOURS[ITEM_TEXTURE_COLUMNS[x >> 1]!], 255], (y * ITEM_TEXTURE_SIZE + x) * 4);
+  const clamp = (v: number): number => Math.max(0, Math.min(255, Math.round(v)));
+  for (let y = 0; y < ITEM_TEXTURE_SIZE; y++) for (let x = 0; x < ITEM_TEXTURE_SIZE; x++) {
+    const base = ITEM_COLOURS[ITEM_TEXTURE_COLUMNS[x >> 1]!] as readonly number[];
+    const localX = x & 1;
+    const side = localX === 0 ? 1.1 : 0.84;
+    const vertical = 0.88 + 0.18 * (1 - y / (ITEM_TEXTURE_SIZE - 1));
+    const brush = ((x * 17 + y * 13) % 7 === 0 ? 1.08 : (x * 11 + y * 5) % 9 === 0 ? 0.9 : 1);
+    const shade = side * vertical * brush;
+    data.set([clamp(base[0]! * shade), clamp(base[1]! * shade), clamp(base[2]! * shade), 255], (y * ITEM_TEXTURE_SIZE + x) * 4);
+  }
   return { name: 'items', width: ITEM_TEXTURE_SIZE, height: ITEM_TEXTURE_SIZE, data };
 }
