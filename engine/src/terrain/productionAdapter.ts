@@ -16,7 +16,7 @@ export type TerrainAlphaAssetRegistry = ReadonlyMap<string, ExternalTerrainAlpha
 /** Renderer-ready material set for one authored material tile. */
 export interface DecodedTerrainTileMaterials {
   readonly tileId: string;
-  /** Stable tile-local palette shared by every chunk; entries are external original diffuse assets. */
+  /** Stable shared palette; its indices are valid for every tile decoded from the same texture library. */
   readonly palette: readonly ExternalTerrainTextureAsset[];
   /** Exactly 256 renderer-ready chunk materials in y-major order. */
   readonly chunks: readonly ChunkMaterial[];
@@ -42,6 +42,10 @@ function requireAlpha(sourceUrl: string, assets: TerrainAlphaAssetRegistry): Ext
 /**
  * Converts one V0.2 production material tile into the existing P1 decoded renderer boundary.
  *
+ * The current TerrainRenderer owns one shared palette at construction time, so every tile decoded from a given
+ * world/zone library must use the same deterministic id→index mapping. This still reuses small tiling textures and
+ * never creates a giant unique texture for a tile.
+ *
  * V2.1 intentionally writes R=255 (fully lit): authored baked shadow and MCCV stay untouched for V2.2.
  * G/B/A are the normalized 8-bit alpha maps of overlay layers 1/2/3.
  */
@@ -53,11 +57,9 @@ export function decodeProductionTerrainTileMaterials(
 ): DecodedTerrainTileMaterials {
   validateTerrainTileMaterialContract(tile, library);
 
-  // The world library can be much larger than one tile. Only textures referenced by this tile become resident in
-  // its palette. Sort stable ids so renderer indices are deterministic regardless of manifest/object order.
-  const usedIds = new Set<string>();
-  for (const chunk of tile.chunks) for (const id of chunk.textureIds) usedIds.add(id);
-  const textureIds = [...usedIds].sort();
+  // The authored library is a set, not a palette order. Sort stable ids so chunk indices are deterministic across
+  // manifest/object construction order and, critically, identical between streamed tiles using the same library.
+  const textureIds = Object.keys(library).sort();
   const palette = textureIds.map((id) => requireTexture(library[id]!.diffuseAsset, textures));
   const paletteIndex = new Map(textureIds.map((id, index) => [id, index] as const));
   const chunks: ChunkMaterial[] = new Array(CHUNKS_PER_TILE * CHUNKS_PER_TILE);
