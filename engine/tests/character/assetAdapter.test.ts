@@ -83,12 +83,19 @@ describe('V1.2 production character asset binding', () => {
   it('requires the exact model asset and rig declared by the body contract', () => {
     expect(() => bindCharacterBodyAsset({ ...body, modelAsset: 'assets/characters/other.orvmodel.json' }, asset)).toThrow(/expects model/);
     expect(() => bindCharacterBodyAsset({ ...body, rigId: 'another-rig' }, asset)).toThrow(/requires rig/);
-    const { rigId: _rigId, ...withoutRig } = asset;
+    const withoutRig: ExternalModelAsset = {
+      format: asset.format,
+      sourceUrl: asset.sourceUrl,
+      mesh: asset.mesh,
+      skeleton: asset.skeleton,
+      animation: asset.animation,
+      texture: asset.texture,
+    };
     expect(() => bindCharacterBodyAsset(body, withoutRig)).toThrow(/has no rigId/);
   });
 
   it('rejects missing or ambiguous skeleton bone names before rendering', () => {
-    const missing = { ...body, sockets: { ...body.sockets, mainHand: { bone: 'missing.hand', position: [0, 0, 0] as const } } };
+    const missing: CharacterBodyContract = { ...body, sockets: { ...body.sockets, mainHand: { bone: 'missing.hand', position: [0, 0, 0] } } };
     expect(() => bindCharacterBodyAsset(missing, asset)).toThrow(/missing bone/);
 
     const duplicate: ExternalModelAsset = {
