@@ -47,9 +47,10 @@ describe('production character body contract', () => {
     expect(() => validateCharacterRoster(bodies.slice(0, 7))).toThrow(/expected 8 base bodies/);
     expect(() => validateCharacterRoster([...bodies.slice(0, 7), bodies[0]!])).toThrow(/duplicate body id/);
 
-    const incomplete = body('incomplete') as CharacterBodyContract & { sockets: Record<string, unknown> };
-    delete incomplete.sockets.back;
-    expect(() => validateCharacterBodyContract(incomplete as CharacterBodyContract)).toThrow(/missing required socket back/);
+    const complete = body('incomplete');
+    const socketsWithoutBack = Object.fromEntries(Object.entries(complete.sockets).filter(([name]) => name !== 'back')) as CharacterBodyContract['sockets'];
+    const incomplete = { ...complete, sockets: socketsWithoutBack };
+    expect(() => validateCharacterBodyContract(incomplete)).toThrow(/missing required socket back/);
   });
 
   it('maps one shared appearance to body-specific geoset groups and sockets', () => {
