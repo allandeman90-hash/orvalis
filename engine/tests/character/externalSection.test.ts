@@ -10,7 +10,7 @@ import {
 
 function encoded(value: unknown): ArrayBuffer {
   const bytes = new TextEncoder().encode(JSON.stringify(value));
-  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
 }
 
 function sectionJson(overrides: Record<string, unknown> = {}): Record<string, unknown> {
