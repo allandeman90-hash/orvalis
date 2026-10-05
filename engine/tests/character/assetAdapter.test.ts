@@ -2,13 +2,17 @@ import { describe, expect, it } from 'vitest';
 import {
   applyResolvedAppearanceTextures,
   bindCharacterBodyAsset,
+  bindResolvedCharacterAttachment,
+  characterAttachmentMatrix,
   CharacterComposite,
   ORVALIS_CHARACTER_SECTION_FORMAT,
   resolvedAppearanceGeosetSelection,
   type CharacterBodyContract,
   type ExternalCharacterSectionAsset,
+  type ResolvedCharacterAttachment,
   type ResolvedItemAppearance,
 } from '../../src/character';
+import { mat4 } from '../../src/math';
 import { ORVALIS_MODEL_FORMAT, type ExternalModelAsset, type ModelMesh } from '../../src/model';
 
 const positions = new Float32Array([
@@ -93,6 +97,27 @@ const shirtAppearance: ResolvedItemAppearance = {
   hide: {},
 };
 
+const swordSource = 'assets/items/test-sword.orvmodel.json';
+const swordAsset: ExternalModelAsset = { ...asset, sourceUrl: swordSource, rigId: undefined };
+const swordAttachment: ResolvedCharacterAttachment = {
+  socket: 'mainHand',
+  bodySocket: body.sockets.mainHand,
+  modelAsset: swordSource,
+  position: [0, 0, 1],
+  rotation: [0, 0, 0, 1],
+  scale: [2, 2, 2],
+};
+
+function twoBonePalette(): Float32Array {
+  const palette = new Float32Array(32);
+  for (let bone = 0; bone < 2; bone++) {
+    const at = bone * 16;
+    palette[at] = palette[at + 5] = palette[at + 10] = palette[at + 15] = 1;
+  }
+  palette[28] = 10; // translation x of bone 1
+  return palette;
+}
+
 describe('V1.2 production character asset binding', () => {
   it('binds the authored rig, semantic sockets and geoset groups to the loaded external model', () => {
     const bound = bindCharacterBodyAsset(body, asset);
@@ -161,5 +186,31 @@ describe('V1.2 production character asset binding', () => {
     expect(resolvedAppearanceGeosetSelection(bound, [{ ...hair, id: 'baseline', geosets: [{ name: 'hair', group: 0, variant: 1 }] }], { 0: 2 })).toEqual({ 0: 2 });
     expect(() => resolvedAppearanceGeosetSelection(bound, [{ ...hair, geosets: [{ name: 'hair', group: 0, variant: 3 }] }])).toThrow(/no hair variant 3/);
     expect(() => resolvedAppearanceGeosetSelection(bound, [{ ...hair, bodyId: 'other-body' }])).toThrow(/not "test-body"/);
+  });
+
+  it('binds an external child model and follows the animated body bone plus socket/item offsets', () => {
+    const boundBody = bindCharacterBodyAsset(body, asset);
+    const boundAttachment = bindResolvedCharacterAttachment(boundBody, swordAttachment, swordAsset);
+    const matrix = characterAttachmentMatrix(mat4.create(), boundAttachment, twoBonePalette());
+    expect(matrix[0]).toBeCloseTo(2);
+    expect(matrix[5]).toBeCloseTo(2);
+    expect(matrix[10]).toBeCloseTo(2);
+    expect(matrix[12]).toBeCloseTo(10.1);
+    expect(matrix[13]).toBeCloseTo(0);
+    expect(matrix[14]).toBeCloseTo(1);
+  });
+
+  it('refuses mismatched attachment assets, unsupported non-uniform scale and invalid palettes', () => {
+    const boundBody = bindCharacterBodyAsset(body, asset);
+    expect(() => bindResolvedCharacterAttachment(boundBody, swordAttachment, { ...swordAsset, sourceUrl: 'other.orvmodel.json' })).toThrow(/expects model/);
+
+    const nonUniform = bindResolvedCharacterAttachment(boundBody, { ...swordAttachment, scale: [2, 1, 2] }, swordAsset);
+    expect(() => characterAttachmentMatrix(mat4.create(), nonUniform, twoBonePalette())).toThrow(/scale must be uniform/);
+
+    const zeroRotation = bindResolvedCharacterAttachment(boundBody, { ...swordAttachment, rotation: [0, 0, 0, 0] }, swordAsset);
+    expect(() => characterAttachmentMatrix(mat4.create(), zeroRotation, twoBonePalette())).toThrow(/non-zero quaternion/);
+
+    const bound = bindResolvedCharacterAttachment(boundBody, swordAttachment, swordAsset);
+    expect(() => characterAttachmentMatrix(mat4.create(), bound, new Float32Array(16))).toThrow(/outside the palette/);
   });
 });
