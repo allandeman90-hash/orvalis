@@ -66,3 +66,16 @@ export type {
   TerrainTextureLibrary,
   TerrainTileMaterialContract,
 } from './productionContract';
+export {
+  decodeExternalTerrainAlpha,
+  decodeExternalTerrainTexture,
+  externalTerrainAlphaLoader,
+  externalTerrainTextureLoader,
+  ORVALIS_TERRAIN_ALPHA_ASSET_TYPE,
+  ORVALIS_TERRAIN_ALPHA_FORMAT,
+  ORVALIS_TERRAIN_TEXTURE_ASSET_TYPE,
+  ORVALIS_TERRAIN_TEXTURE_FORMAT,
+} from './productionAssets';
+export type { ExternalTerrainAlphaAsset, ExternalTerrainTextureAsset } from './productionAssets';
+export { applyDecodedTerrainMaterials, decodeProductionTerrainTileMaterials } from './productionAdapter';
+export type { DecodedTerrainTileMaterials, TerrainAlphaAssetRegistry, TerrainTextureAssetRegistry } from './productionAdapter';
