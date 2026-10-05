@@ -22,6 +22,7 @@ import type { TerrainConfig } from './config';
  */
 export const MASK_SIZE = 64;
 export const MAX_TERRAIN_LAYERS = 4;
+export const CHUNK_MASK_BYTES = MASK_SIZE * MASK_SIZE * 4;
 /** R value meaning « no baked shadow ». */
 export const MASK_LIT = 255;
 
@@ -52,6 +53,19 @@ export interface ChunkMaterial {
   readonly mask: Uint8Array;
 }
 
+/** A decoded production loader may hand ChunkMaterial directly to a tile. Validate it at that boundary. */
+export function validateChunkMaterial(material: ChunkMaterial, label = 'chunk material'): void {
+  if (!Array.isArray(material.layers) || material.layers.length !== MAX_TERRAIN_LAYERS) {
+    throw new Error(`terrain: ${label} needs exactly ${MAX_TERRAIN_LAYERS} renderer layer indices`);
+  }
+  for (const [index, layer] of material.layers.entries()) {
+    if (!Number.isInteger(layer) || layer < 0) throw new Error(`terrain: ${label} layer ${index} must be an integer >= 0 (got ${layer})`);
+  }
+  if (!(material.mask instanceof Uint8Array) || material.mask.length !== CHUNK_MASK_BYTES) {
+    throw new Error(`terrain: ${label} mask must contain exactly ${CHUNK_MASK_BYTES} bytes (got ${material.mask?.length ?? 'non-Uint8Array'})`);
+  }
+}
+
 const toByte = (alpha: number): number => Math.round(Math.min(1, Math.max(0, alpha)) * 255);
 
 /**
@@ -60,7 +74,7 @@ const toByte = (alpha: number): number => Math.round(Math.min(1, Math.max(0, alp
  * the same exact expression as for the vertices.
  */
 export function buildChunkMask(paint: TerrainPaint, xAt: (t: number) => number, yAt: (t: number) => number, heightAt: (x: number, y: number) => number): Uint8Array {
-  const mask = new Uint8Array(MASK_SIZE * MASK_SIZE * 4);
+  const mask = new Uint8Array(CHUNK_MASK_BYTES);
   const last = MASK_SIZE - 1;
   const needsHeight = paint.usesHeight ?? true;
   // The x of a column is the same on every row: computed once.
