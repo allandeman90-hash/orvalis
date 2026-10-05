@@ -59,7 +59,7 @@ jobs:
         run: npm run build
 
       - name: Install Chromium for model/character smokes
-        run: npx playwright install --with-deps chromium
+        run: node node_modules/playwright-core/cli.js install --with-deps chromium
 
       - name: Model smokes — WebGL2 + WebGPU
         run: npm run smoke:model -- --no-build
