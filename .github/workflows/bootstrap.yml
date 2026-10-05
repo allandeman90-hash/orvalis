@@ -1,0 +1,49 @@
+name: Bootstrap Orvalis Repository
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'orvalis-github-ready.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate archive
+        run: |
+          test -f orvalis-github-ready.zip
+          unzip -t orvalis-github-ready.zip
+
+      - name: Extract Orvalis
+        run: |
+          rm -rf /tmp/orvalis-import
+          mkdir -p /tmp/orvalis-import
+          unzip -q orvalis-github-ready.zip -d /tmp/orvalis-import
+          test -f /tmp/orvalis-import/orvalis/package.json
+          test -f /tmp/orvalis-import/orvalis/engine/package.json
+          test -f /tmp/orvalis-import/orvalis/PROJECT_STATUS.md
+
+      - name: Import project into repository
+        run: |
+          rsync -a --exclude='.git/' /tmp/orvalis-import/orvalis/ ./
+          rm -f orvalis-github-ready.zip
+
+      - name: Commit imported project
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'Nothing to import.'
+            exit 0
+          fi
+          git commit -m 'Import Orvalis project'
+          git push
