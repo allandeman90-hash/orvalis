@@ -11,8 +11,8 @@
  */
 export type EngineMode = 'legacy' | 'new';
 
-/** The playable game stays the default until the new engine can replace it. */
-export const DEFAULT_ENGINE_MODE: EngineMode = 'legacy';
+/** The new engine is now the default preview; legacy remains explicitly accessible. */
+export const DEFAULT_ENGINE_MODE: EngineMode = 'new';
 
 /** URL parameter choosing the mode: ?engine=legacy | ?engine=new */
 export const ENGINE_PARAM = 'engine';
