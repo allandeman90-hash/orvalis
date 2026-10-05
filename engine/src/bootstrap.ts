@@ -8,7 +8,7 @@ import { legacyPageUrl, parseEngineMode } from './bootstrap/engineMode';
 async function bootstrap(): Promise<void> {
   const request = parseEngineMode(window.location.search);
   if (request.ignoredValue !== undefined) {
-    console.warn(`[bootstrap] unknown value engine=${JSON.stringify(request.ignoredValue)} ignored, starting the legacy game`);
+    console.warn(`[bootstrap] unknown value engine=${JSON.stringify(request.ignoredValue)} ignored, starting the default engine (${request.mode})`);
   }
   document.documentElement.dataset.engineMode = request.mode;
 
