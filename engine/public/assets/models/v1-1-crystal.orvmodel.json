@@ -1,5 +1,6 @@
 {
   "format": "orvalis-model-1",
+  "rigId": "orvalis-crystal-rig-v1",
   "mesh": {
     "name": "v1-1-orvalis-crystal",
     "positions": [
