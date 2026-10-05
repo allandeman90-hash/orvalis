@@ -1,0 +1,98 @@
+{
+  "format": "orvalis-model-1",
+  "mesh": {
+    "name": "v1-1-orvalis-crystal",
+    "positions": [
+      1, 0, 0,
+      -1, 0, 0,
+      0, 1, 0,
+      0, -1, 0,
+      0, 0, 1.6,
+      0, 0, -1
+    ],
+    "normals": [
+      1, 0, 0,
+      -1, 0, 0,
+      0, 1, 0,
+      0, -1, 0,
+      0, 0, 1,
+      0, 0, -1
+    ],
+    "uvs": [
+      1, 0.5,
+      0, 0.5,
+      0.5, 0,
+      0.5, 1,
+      0.5, 0.15,
+      0.5, 0.85
+    ],
+    "boneWeights": [
+      255, 0, 0, 0,
+      255, 0, 0, 0,
+      255, 0, 0, 0,
+      255, 0, 0, 0,
+      255, 0, 0, 0,
+      255, 0, 0, 0
+    ],
+    "boneIndices": [
+      0, 0, 0, 0,
+      0, 0, 0, 0,
+      0, 0, 0, 0,
+      0, 0, 0, 0,
+      0, 0, 0, 0,
+      0, 0, 0, 0
+    ],
+    "indices": [
+      0, 2, 4,
+      2, 1, 4,
+      1, 3, 4,
+      3, 0, 4,
+      2, 0, 5,
+      1, 2, 5,
+      3, 1, 5,
+      0, 3, 5
+    ],
+    "boneCount": 1,
+    "materials": [
+      { "renderFlags": 0, "blendMode": 0 }
+    ],
+    "submeshes": [
+      { "geosetId": 0, "indexStart": 0, "indexCount": 24, "material": 0 }
+    ]
+  },
+  "skeleton": {
+    "bones": [
+      { "name": "root", "parent": -1, "pivot": [0, 0, 0] }
+    ]
+  },
+  "animation": {
+    "sequences": [
+      { "name": "idle", "id": 0, "start": 0, "end": 2000, "loop": true, "blendTime": 120 }
+    ],
+    "boneTracks": [
+      {
+        "rotation": {
+          "interpolation": "linear",
+          "timestamps": [0, 1000, 2000],
+          "values": [
+            0, 0, 0, 1,
+            0, 0, 0.130526, 0.991445,
+            0, 0, 0, 1
+          ]
+        }
+      }
+    ],
+    "globalSequences": []
+  },
+  "texture": {
+    "name": "v1-1-crystal-painted-diffuse",
+    "width": 2,
+    "height": 2,
+    "data": [
+      78, 142, 184, 255,
+      112, 178, 205, 255,
+      46, 91, 135, 255,
+      144, 205, 218, 255
+    ]
+  }
+}
