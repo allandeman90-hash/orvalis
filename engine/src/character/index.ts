@@ -23,8 +23,10 @@ export type {
   CharacterTextureAppearancePart, CharacterVisibilityRules, EquippedItemAppearanceRef, ItemAppearanceDefinition, ItemAppearancePayload,
   ItemAppearanceRegistry, Quat, ResolvedCharacterAttachment, ResolvedCharacterGeoset, ResolvedItemAppearance, Vec3,
 } from './productionContract';
-export { bindCharacterBodyAsset } from './assetAdapter';
+export { bindCharacterBodyAsset, bindCharacterTextureAppearancePart } from './assetAdapter';
 export type { BoundCharacterBodyAsset, BoundCharacterSocket } from './assetAdapter';
+export { decodeExternalCharacterSection, externalCharacterSectionLoader, ORVALIS_CHARACTER_SECTION_ASSET_TYPE, ORVALIS_CHARACTER_SECTION_FORMAT } from './externalSection';
+export type { ExternalCharacterSectionAsset } from './externalSection';
 export { ANIMATION_ID, CharacterAnimator } from './animator';
 export type { CharacterAnimationState, Locomotion } from './animator';
 export { MANNEQUIN_SEQUENCES, mannequinAnimation } from './mannequinAnimation';
