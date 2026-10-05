@@ -1,4 +1,5 @@
 import { legacyPageUrl, parseEngineMode } from './bootstrap/engineMode';
+import { startEngine } from './main';
 
 /** Keeps the developer statistics accessible without covering the game view. */
 function bindDebugToggle(): { close: () => void } {
@@ -34,7 +35,8 @@ function bindDebugToggle(): { close: () => void } {
 /**
  * Single entry point of Orvalis. Chooses the engine, then gets out of the way:
  * - legacy: hands the document over to the current game page;
- * - new: loads the new engine (a separate chunk, so the legacy path never downloads it).
+ * - new: starts the new engine from the same bundle so GitHub Pages cannot mix an old entry chunk with a
+ *   newly-deployed dynamic main chunk during CDN/cache propagation.
  */
 async function bootstrap(): Promise<void> {
   const request = parseEngineMode(window.location.search);
@@ -49,7 +51,6 @@ async function bootstrap(): Promise<void> {
   }
 
   const debugToggle = bindDebugToggle();
-  const { startEngine } = await import('./main');
   await startEngine();
   // startEngine historically opens the overlay once booted; the player-facing preview now starts clean instead.
   debugToggle.close();
