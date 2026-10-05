@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rsync -a --exclude='.git/' /tmp/orvalis-import/orvalis/ ./
+          rsync -a --exclude='.git/' --exclude='.github/workflows/' /tmp/orvalis-import/orvalis/ ./
           rm -f "$ZIP"
 
       - name: Commit imported project
