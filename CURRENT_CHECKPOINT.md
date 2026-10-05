@@ -21,6 +21,56 @@ Orvalis is the only target product: a web MMORPG with an original world/assets/c
 - Debug statistics: F3 and visible Show/Hide Stats button; panel starts closed.
 - Pages bootstrap was changed to statically import `main.ts` to avoid stale dynamic chunk failures after deploys.
 
+## Visual-convergence V0 status
+The OpenWow/reference audit phase has now been IMPLEMENTED in three checkpoints. Final CI is still waiting for a GitHub-hosted runner; do not mark the phase validated until the latest workflow is green.
+
+### V0.1 — Character pipeline audit — IMPLEMENTED, CI FINAL PENDING
+Files:
+- `engine/src/character/productionContract.ts`
+- `engine/tests/character/productionContract.test.ts`
+- `docs/CHARACTER_PIPELINE_V0_1.md`
+
+Result:
+- existing 256×256 composite/geoset/attachment runtime retained;
+- production body contract for 8 base archetypes;
+- semantic sockets + body-specific fitting;
+- shared ItemAppearance with exceptional per-body overrides;
+- gameplay item stats separated from visual appearance/transmog override;
+- fixture mannequin/Vanguard remains fixture-only.
+
+### V0.2 — Terrain/material pipeline audit — IMPLEMENTED, CI FINAL PENDING
+Files:
+- `engine/src/terrain/productionContract.ts`
+- `engine/tests/terrain/productionContract.test.ts`
+- `docs/TERRAIN_PIPELINE_V0_2.md`
+
+Result:
+- existing 145-vertex chunk / 16×16 tile / 64×64 mask renderer retained;
+- production texture library + 256 independent chunk-material records per tile;
+- 1–4 terrain layers with exactly N−1 authored alpha sources;
+- baked shadow and optional future MCCV source kept as distinct production concepts;
+- decoded `ChunkMaterial` boundary validated;
+- synthetic `TerrainPaint` / procedural palette remain fixtures.
+
+### V0.3 — WMO/doodad/material pipeline audit — IMPLEMENTED, CI FINAL PENDING
+Files:
+- `engine/src/building/productionContract.ts`
+- `engine/tests/building/productionContract.test.ts`
+- `docs/ENVIRONMENT_PIPELINE_V0_3.md`
+
+Result:
+- existing root/group/portal/collision/fog/liquid/doodad runtime retained;
+- production external texture/material/group/doodad/portal/fog/light contract added;
+- groups remain independently streamable/cullable;
+- material references use stable ids before runtime index resolution;
+- sampler clamp, second texture, SIDN/night-window behavior are preserved in data but remain V2.4 renderer work;
+- procedural Cottage/Basin/props remain fixtures.
+
+## CI note
+A previous workflow failure was traced to the V0.1 test itself attempting `delete` on a readonly socket property (`TS2704`), not to production code. That test was corrected without weakening the readonly contract.
+
+The latest workflow for the V0.1–V0.3 tree is queued on GitHub Actions. No runner is currently in progress; this is an external runner wait. The local container cannot resolve github.com, so GitHub Actions remains the authoritative full-tree validation.
+
 ## Important visual finding
 The current P7/P8 camera scene and the current `model=character` mannequin are ENGINE TEST FIXTURES, not final art. The user explicitly rejects the mannequin as a visual target.
 
@@ -65,17 +115,20 @@ These are visual references only. Do not copy meshes/textures/assets.
 - fixture armor can demonstrate sockets/transmog, but should not become production art.
 
 ## Next exact checkpoint
-### V0.1 — OpenWow × Orvalis Character Pipeline Audit
-Before creating real final characters:
-1. inspect the relevant OpenWow character/M2/equipment/compositing/attachment implementation;
-2. compare with the master 1.12.1 spec;
-3. map what Orvalis already supports vs what is missing;
-4. define a production-ready character asset contract for 8 base archetypes;
-5. define how one appearance fits different body types;
-6. keep Item stats separate from ItemAppearance / transmog override;
-7. produce the smallest implementation delta required before importing/authoring real character assets.
+### Gate V0 → V1
+1. Read the latest GitHub Actions run.
+2. If red: fix every V0.1/V0.2/V0.3 typecheck/build regression first.
+3. If green: mark V0.1–V0.3 validated and begin **V1.1 — real model asset ingestion**.
+4. Do not start P9.
+5. P8.7 remains a separate technical closure item before P9.
 
-Then proceed to V1/V3 character visual prototypes: first original male + female base bodies, then simple/mid/endgame outfits.
+### V1.1 target once the gate is green
+Build the smallest real external model ingestion path through the existing `AssetManager`:
+- original Orvalis model asset only;
+- decode → runtime `ModelMesh`/skeleton/animations/material refs;
+- no proprietary WoW assets;
+- preserve the existing procedural fixtures for deterministic tests;
+- prove one externally loaded original model can render through the current model renderer.
 
 ## Validation policy
 Use the permanent validation strategy in `PROJECT_STATUS.md`:
