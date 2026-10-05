@@ -3,7 +3,7 @@
 Updated: 2026-10-05
 
 ## Product
-Orvalis is the only target product: a web MMORPG with an original world/assets/content, using WoW Vanilla 1.12.1 technical principles as reference.
+Orvalis is the only target product: a web MMORPG with original world/assets/content, using WoW Vanilla 1.12.1 technical principles as reference.
 
 ## Reference priority
 1. `docs/WoW_Vanilla_1.12.1_RE_Master.md` = primary technical truth.
@@ -20,60 +20,19 @@ Orvalis is the only target product: a web MMORPG with an original world/assets/c
 - Root starts the new engine by default; legacy remains available with `?engine=legacy` / bundled legacy page.
 - Debug statistics: F3 and visible Show/Hide Stats button; panel starts closed.
 
-## V0 visual-convergence audit
-V0.1–V0.3 are implemented.
+## V0 — reference/pipeline audit
+V0.1–V0.3 are implemented:
+- V0.1 character production contract: `engine/src/character/productionContract.ts`, tests and `docs/CHARACTER_PIPELINE_V0_1.md`;
+- V0.2 terrain/material production contract: `engine/src/terrain/productionContract.ts`, tests and `docs/TERRAIN_PIPELINE_V0_2.md`;
+- V0.3 WMO/doodad/material production contract: `engine/src/building/productionContract.ts`, tests and `docs/ENVIRONMENT_PIPELINE_V0_3.md`.
 
-### V0.1 — Character pipeline
-- `engine/src/character/productionContract.ts`
-- `engine/tests/character/productionContract.test.ts`
-- `docs/CHARACTER_PIPELINE_V0_1.md`
+Permanent conclusions:
+- keep the existing composite/geoset/attachment runtime rather than replacing it;
+- keep gameplay Item stats separate from ItemAppearance/transmog;
+- terrain and environment production data must reference external assets rather than procedural fixture pixels;
+- mannequin/Vanguard, generated terrain palettes and Cottage/Basin remain deterministic technical fixtures only.
 
-Result:
-- 256×256 composite/geoset/attachment runtime retained;
-- production body contract for 8 base archetypes;
-- semantic sockets and body-specific fit;
-- shared `ItemAppearance` with exceptional body overrides;
-- gameplay item stats kept separate from appearance/transmog;
-- mannequin/Vanguard remain fixtures only.
-
-### V0.2 — Terrain/material pipeline
-- `engine/src/terrain/productionContract.ts`
-- `engine/tests/terrain/productionContract.test.ts`
-- `docs/TERRAIN_PIPELINE_V0_2.md`
-
-Result:
-- existing 145-vertex chunk / 16×16 tile / 64×64 mask runtime retained;
-- production texture library plus 256 independent chunk-material records per tile;
-- 1–4 texture layers with N−1 alpha sources;
-- baked shadow and optional MCCV preserved as production data concepts;
-- synthetic `TerrainPaint` and generated palettes remain fixtures.
-
-### V0.3 — WMO/doodad/material pipeline
-- `engine/src/building/productionContract.ts`
-- `engine/tests/building/productionContract.test.ts`
-- `docs/ENVIRONMENT_PIPELINE_V0_3.md`
-
-Result:
-- root/group/portal/collision/fog/liquid/doodad runtime retained;
-- production external texture/material/group/doodad/portal/fog/light contract;
-- independently streamable/cullable groups;
-- stable ids before runtime index resolution;
-- sampler clamp, second texture and SIDN/window behavior preserved for V2.4;
-- procedural Cottage/Basin/props remain fixtures.
-
-## V0 gate result
-A previous typecheck failure was only a V0.1 test attempting `delete` on a readonly socket (`TS2704`). It was corrected without weakening the readonly contract.
-
-The later Pages build job for the V0 tree completed successfully through:
-- legacy install/build;
-- engine install;
-- engine typecheck;
-- engine build;
-- Pages artifact upload.
-
-The workflow-level `failure`/`cancelled` state came from the deploy job being cancelled. `pages.yml` uses `concurrency: { group: pages, cancel-in-progress: true }`, so newer pushes cancel older deployments. Treat build/typecheck as green; do not interpret that deployment cancellation as an engine regression.
-
-## V1.1 — External model asset ingestion — IMPLEMENTED, TARGETED VALIDATION QUEUED
+## V1.1 — External model asset ingestion — IMPLEMENTED
 Files:
 - `engine/src/model/externalAsset.ts`
 - `engine/src/model/index.ts`
@@ -81,84 +40,106 @@ Files:
 - `engine/tests/assets/modelAsset.integration.test.ts`
 - `docs/MODEL_ASSET_INGESTION_V1_1.md`
 
-### What V1.1 adds
-- Orvalis-owned external model package format: `orvalis-model-1`;
-- JSON on disk, typed arrays after decode;
-- mesh → existing `ModelMesh`;
-- skeleton → existing `Skeleton`;
-- animation → existing `ModelAnimation`;
-- one diffuse texture for the self-contained V1.1 proof;
-- `externalModelAssetLoader()` for the existing `AssetManager`;
-- strict failure on malformed external data;
-- no alternate renderer: decoded assets go to the existing `ModelRenderer`.
+Result:
+- Orvalis-owned `orvalis-model-1` external package;
+- JSON on disk → typed runtime arrays;
+- mesh → `ModelMesh`;
+- skeleton → `Skeleton`;
+- animation → `ModelAnimation`;
+- self-contained diffuse for the ingestion proof;
+- loader runs through the existing `AssetManager`;
+- decoded assets render through the existing `ModelRenderer`;
+- malformed external data fails explicitly;
+- `ExternalModelAsset.rigId` is optional for generic props and required by the production character adapter.
 
-The decoder reuses existing validators:
-- `validateModelMesh()`;
-- `validateSkinning()`;
-- `validateModelAnimation()`.
+The proof crystal is only an ingestion canary, not production art.
 
-### External proof asset
-`engine/public/assets/models/v1-1-crystal.orvmodel.json` is a tiny original Orvalis ingestion canary, not production art:
-- 6 vertices;
-- 8 triangles;
-- one root bone;
-- one looping idle rotation;
-- one material/submesh;
-- tiny original diffuse texture.
+### V1.1 validation evidence
+The Pages workflow for commit `b2ff120a73bdf010d4bb2ab374a3ecf822da2100` completed successfully, including engine typecheck and build.
 
-It is unrelated to the rejected character mannequin.
+The original V1.1 targeted workflow was affected by the 2026-10-05 GitHub Actions incident that delayed assignment of GitHub-hosted runners. V1.2's targeted workflow includes the V1.1 integration test and therefore acts as the superseding targeted gate once it runs.
 
-### End-to-end targeted test
-`engine/tests/assets/modelAsset.integration.test.ts` starts the real Vite HTTP server and proves:
+## V1.2 — Production character asset adapter — IMPLEMENTED, TARGETED VALIDATION PENDING
+Documentation:
+- `docs/CHARACTER_ASSET_ADAPTER_V1_2.md`
+
+Runtime:
+- `engine/src/character/assetAdapter.ts`
+- `engine/src/character/externalSection.ts`
+- `engine/src/character/index.ts`
+- V1.1 `engine/src/model/externalAsset.ts` extended with optional `rigId`.
+
+Tests:
+- `engine/tests/character/assetAdapter.test.ts`
+- `engine/tests/character/externalSection.test.ts`
+- existing `engine/tests/character/productionContract.test.ts`
+- existing V1.1 `engine/tests/assets/modelAsset.integration.test.ts`.
+
+### What V1.2 now connects
+`CharacterBodyContract` can be bound against a genuinely loaded `ExternalModelAsset`:
+- exact external model URL required;
+- exact character `rigId` required;
+- named skeleton bones must be unique;
+- every semantic character socket is resolved to a real bone index;
+- always-visible body geoset `0` is required;
+- semantic geoset groups are checked against variants actually present in the loaded mesh.
+
+Character composite sources now have an external format:
+- `orvalis-character-section-1`;
+- strict composite region;
+- exact region dimensions;
+- exact RGBA byte count;
+- alpha mode `opaque | key | blend4`;
+- loaded through the existing `AssetManager`.
+
+Resolved production appearances reuse the existing P5 runtime instead of creating parallel systems:
+- appearance texture sections → `CharacterComposite` using the existing equipment-layer order;
+- unequipping clears stale equipment layers;
+- appearance geosets → existing highest-variant selection rule;
+- requested variants above baseline must exist in the loaded body mesh;
+- attached appearance models → body-specific semantic sockets.
+
+Attachment placement is:
 
 ```text
-public asset file
-→ real HTTP fetch
-→ AssetManager
-→ external decoder
-→ ModelMesh / Skeleton / ModelAnimation
-→ AnimationPlayer
-→ computeBoneMatrices
-→ ModelRenderer
-→ NullBackend draw
+animated body bone × body socket TRS × item-local TRS
 ```
 
-Expected proof result:
-- 1 instance;
-- 1 draw call;
-- 8 triangles;
-- 2 GPU buffers;
-- 1 GPU texture;
-- resources freed on renderer disposal.
+Current renderer limitation is explicit: attachment scale must be uniform because `ModelRenderer` currently assumes translation + rotation + uniform scale. Non-uniform scale fails instead of silently producing incorrect normals.
 
-Malformed external data must put the AssetManager entry into `failed` instead of producing a partial resource.
+### Item/transmog separation
+V1.2 consumes `ResolvedItemAppearance`; gameplay stats never enter the renderer adapter. The effective visual remains:
 
-## V1.1 validation gate
-Because the regular Pages workflow only typechecks/builds and does not execute tests, a temporary targeted checkpoint workflow was added:
+```text
+appearanceOverride ?? item.appearanceId
+```
 
-- `.github/workflows/v1-1-validation.yml`
+so transmog remains first-class and independent from item power.
 
-It runs once for this V1.1 surface:
-1. `npm ci`;
-2. engine typecheck;
-3. lint of the V1.1 loader/test;
-4. `vitest` for `tests/assets/modelAsset.integration.test.ts`;
-5. engine build;
-6. install Chromium;
-7. model smoke suites on WebGL2 + WebGPU.
+### V1.2 validation gate
+Targeted workflow:
+- `.github/workflows/v1-2-validation.yml`
 
-Current GitHub state at this checkpoint update:
-- Pages run for the latest code is queued;
-- V1.1 targeted validation run is queued;
-- both are waiting for GitHub-hosted runners;
-- no V1.1 validation failure has been observed yet.
+It validates:
+1. engine typecheck;
+2. lint of V1.1/V1.2 files;
+3. V1.1 external-model HTTP ingestion test;
+4. V0.1 production-contract test;
+5. V1.2 body/texture/geoset/attachment tests;
+6. engine build.
 
-Do NOT mark V1.1 validated and do NOT start V1.2 until the targeted validation run completes green (or any failure is fixed).
+Current state:
+- HEAD after implementation: `b2ff120a73bdf010d4bb2ab374a3ecf822da2100` plus documentation commit `e038bf12522a429c90640e912b30d3c0ddf4e0a8`;
+- Pages on `b2ff120...` is green for typecheck + build;
+- targeted V1.2 run #10 (`37374671941`) is still `queued` waiting for a GitHub-hosted runner;
+- no V1.2 test/lint failure has been observed yet.
+
+Do NOT mark V1.2 validated until that targeted workflow (or an equivalent superseding run) is green. After it is green, run the relevant model/character browser smoke on WebGL2 and WebGPU before closing V1.2.
 
 ## Important visual finding
 The current P7/P8 camera character and `model=character` mannequin are ENGINE TEST FIXTURES, not final art. Do not spend serious time polishing them.
 
-The temporary Vanguard fixture proves support for:
+The temporary Vanguard fixture only proves runtime support for:
 - head item;
 - separate left/right shoulders;
 - cape/back attachment;
@@ -181,21 +162,14 @@ WoW Vanilla/Classic-like FEEL while remaining original:
 - transmog as a first-class separation of stats and appearance.
 
 ## Next exact checkpoint
-### Gate V1.1 → V1.2
-1. Inspect GitHub Actions run `V1.1 External Model Validation`.
-2. If any step fails, fix only the demonstrated regression and rerun the targeted gate.
-3. Once green, remove the temporary validation workflow if it is no longer useful and mark V1.1 validated.
-4. Begin **V1.2 — production character asset adapter**.
-5. Do not start P9; P8.7 remains separately open before P9.
-
-### V1.2 target after the gate is green
-Connect the V0.1 character production contract to the V1.1 external asset boundary:
-- resolve `CharacterBodyContract.modelAsset` through `AssetManager`;
-- validate rig/skeleton compatibility and semantic sockets against the loaded body;
-- resolve original external customization/composite source assets;
-- adapt `CharacterBodyContract` + resolved `ItemAppearanceDefinition` into the existing P5 composite/geoset/attachment runtime;
-- preserve Item vs ItemAppearance/transmog separation;
-- only then author/import the first original male and female production body manifests.
+### Gate V1.2 → first real body assets
+1. Inspect `V1.2 Character Asset Validation`, prioritizing run #10 (`37374671941`) or any newer superseding run.
+2. If red, fix only the demonstrated lint/test/build regression and rerun the targeted gate.
+3. Once green, run the relevant model/character browser smoke on WebGL2 + WebGPU.
+4. Mark V1.1/V1.2 validated.
+5. Then begin the first original production base-body asset/manifests (male first, then female) through the V1.1/V1.2 path.
+6. Do not return to polishing the mannequin.
+7. Do not start P9; P8.7 remains separately open before P9.
 
 ## Validation policy
 - micro change → targeted tests + affected typecheck/lint + relevant smoke only;
