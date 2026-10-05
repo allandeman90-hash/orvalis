@@ -1,0 +1,52 @@
+name: Apply Vanguard Visual Prototype
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/vanguard-bootstrap.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: engine/package-lock.json
+
+      - name: Install engine dependencies
+        working-directory: engine
+        run: npm ci
+
+      - name: Apply Vanguard patch
+        run: node tools/apply-vanguard.mjs
+
+      - name: Targeted Vanguard tests
+        working-directory: engine
+        run: npx vitest run tests/character/vanguard.test.ts tests/character/equipment.test.ts
+
+      - name: Typecheck
+        working-directory: engine
+        run: npm run typecheck
+
+      - name: Commit only after green validation
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add engine/src/scenes/modelScene.ts engine/src/scenes/select.ts engine/tests/character/vanguard.test.ts
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit.'
+            exit 0
+          fi
+          git commit -m 'Add Vanguard endgame appearance showcase'
+          git push
