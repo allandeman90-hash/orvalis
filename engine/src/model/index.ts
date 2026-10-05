@@ -20,3 +20,5 @@ export { DEFAULT_UNITS_PER_YARD, MODEL_FADE_BUCKETS, modelDistanceFade, modelFad
 export type { ModelFadeBucket } from './distanceFade';
 export { addLoft, loftRing, loftTriangleCount } from './loft';
 export type { LoftRing, LoftShape, LoftTextureRect } from './loft';
+export { decodeExternalModelAsset, externalModelAssetLoader, ORVALIS_MODEL_ASSET_TYPE, ORVALIS_MODEL_FORMAT } from './externalAsset';
+export type { ExternalModelAsset } from './externalAsset';
