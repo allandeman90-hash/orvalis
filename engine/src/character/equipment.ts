@@ -18,20 +18,29 @@ import { CHARACTER_REGION_NAMES, CHARACTER_REGIONS, type CharacterRegionName } f
  * the higher one wins; an attached model is authored in the frame of its bone at rest (a socket has no rotation
  * of its own).
  */
-export const EQUIPMENT_SLOTS = ['shirt', 'legs', 'chest', 'feet', 'hands', 'belt', 'mainHand', 'offHand'] as const;
+export const EQUIPMENT_SLOTS = ['shirt', 'legs', 'chest', 'feet', 'hands', 'belt', 'head', 'shoulders', 'back', 'mainHand', 'offHand'] as const;
 export type EquipmentSlot = (typeof EQUIPMENT_SLOTS)[number];
 
 /** Texture layer painted by each slot that paints: 0 is painted first. Weapons paint nothing. */
 export const EQUIPMENT_LAYER_OF_SLOT: Readonly<Partial<Record<EquipmentSlot, number>>> = { shirt: 0, legs: 1, chest: 2, feet: 3, hands: 4, belt: 5 };
 
 /** Our own socket ids on the mannequin. */
-export const CHARACTER_SOCKET = { rightHand: 10, leftForearm: 11 } as const;
+export const CHARACTER_SOCKET = { rightHand: 10, leftForearm: 11, head: 12, leftShoulder: 13, rightShoulder: 14, back: 15 } as const;
 export const MANNEQUIN_ATTACHMENTS: readonly Attachment[] = [
   { id: CHARACTER_SOCKET.rightHand, name: 'rightHand', bone: MANNEQUIN_BONE.rightHand, position: [0.262, 0.02, 0.84] },
   { id: CHARACTER_SOCKET.leftForearm, name: 'leftForearm', bone: MANNEQUIN_BONE.leftForearm, position: [-0.3, 0, 1.05] },
 ];
+/** Full equipment socket table. Kept separate so the original P5 fixture assertions remain stable. */
+export const CHARACTER_ATTACHMENTS: readonly Attachment[] = [
+  ...MANNEQUIN_ATTACHMENTS,
+  { id: CHARACTER_SOCKET.head, name: 'head', bone: MANNEQUIN_BONE.head, position: [0, 0.012, 1.69] },
+  { id: CHARACTER_SOCKET.leftShoulder, name: 'leftShoulder', bone: MANNEQUIN_BONE.leftUpperArm, position: [-0.205, 0, 1.44] },
+  { id: CHARACTER_SOCKET.rightShoulder, name: 'rightShoulder', bone: MANNEQUIN_BONE.rightUpperArm, position: [0.205, 0, 1.44] },
+  { id: CHARACTER_SOCKET.back, name: 'back', bone: MANNEQUIN_BONE.chest, position: [0, -0.105, 1.43] },
+];
 
-export type AttachedModelKey = 'sword' | 'shield';
+export type AttachedModelKey = 'sword' | 'shield' | 'vanguardHelm' | 'vanguardPauldron' | 'vanguardCape' | 'runeblade' | 'towerShield';
+export interface AttachedEquipmentModel { readonly socket: number; readonly model: AttachedModelKey; }
 
 export interface EquipmentItem {
   readonly id: string;
@@ -41,8 +50,10 @@ export interface EquipmentItem {
   readonly textures?: readonly CharacterSection[];
   /** B: geoset variants this item needs. */
   readonly geosets?: Partial<CharacterGeometryEquipment>;
-  /** C: a model fastened to a socket. */
-  readonly attached?: { readonly socket: number; readonly model: AttachedModelKey };
+  /** Appearance rule for headgear that fully covers the hair. */
+  readonly hideHair?: boolean;
+  /** C: one or more models fastened to sockets. A shoulder item, for example, owns both pauldrons. */
+  readonly attached?: AttachedEquipmentModel | readonly AttachedEquipmentModel[];
 }
 
 /** What a character wears: at most one item per slot. */
@@ -95,7 +106,9 @@ export function equipmentAttachments(equipment: CharacterEquipment): Array<{ slo
   const out: Array<{ slot: EquipmentSlot; socket: number; model: AttachedModelKey }> = [];
   for (const slot of EQUIPMENT_SLOTS) {
     const attached = equipment[slot]?.attached;
-    if (attached) out.push({ slot, ...attached });
+    if (!attached) continue;
+    const parts: readonly AttachedEquipmentModel[] = Array.isArray(attached) ? attached : [attached as AttachedEquipmentModel];
+    for (const part of parts) out.push({ slot, ...part });
   }
   return out;
 }
@@ -104,7 +117,7 @@ export function equipmentAttachments(equipment: CharacterEquipment): Array<{ slo
 // ORIGINAL items, painted and modelled in code: fixtures that exercise the three categories, not final art.
 // ---------------------------------------------------------------------------------------------------------------
 
-export const ITEM_COLOURS = { linen: [120, 150, 190], cloth: [70, 100, 60], leather: [96, 62, 36], belt: [40, 30, 24], buckle: [200, 180, 90], steel: [170, 175, 185], grip: [70, 45, 30], wood: [130, 92, 52], iron: [90, 90, 95] } as const;
+export const ITEM_COLOURS = { linen: [120, 150, 190], cloth: [70, 100, 60], leather: [96, 62, 36], belt: [40, 30, 24], buckle: [200, 180, 90], steel: [170, 175, 185], grip: [70, 45, 30], wood: [130, 92, 52], iron: [90, 90, 95], gold: [210, 166, 54], crimson: [128, 28, 42], darkSteel: [52, 61, 78] } as const;
 
 /**
  * A section painted where `covers(s, t)` says so: s goes round the part from 0 to 1 (0.25 = the front), t goes up
@@ -146,6 +159,11 @@ export const ITEMS = {
   leatherBoots: { id: 'leather-boots', name: 'Leather boots', slot: 'feet', geosets: { boots: 2 } },
   ironSword: { id: 'iron-sword', name: 'Iron sword', slot: 'mainHand', attached: { socket: CHARACTER_SOCKET.rightHand, model: 'sword' } },
   roundShield: { id: 'round-shield', name: 'Round shield', slot: 'offHand', attached: { socket: CHARACTER_SOCKET.leftForearm, model: 'shield' } },
+  vanguardHelm: { id: 'vanguard-helm', name: 'Vanguard helm', slot: 'head', hideHair: true, attached: { socket: CHARACTER_SOCKET.head, model: 'vanguardHelm' } },
+  vanguardShoulders: { id: 'vanguard-shoulders', name: 'Vanguard pauldrons', slot: 'shoulders', attached: [{ socket: CHARACTER_SOCKET.leftShoulder, model: 'vanguardPauldron' }, { socket: CHARACTER_SOCKET.rightShoulder, model: 'vanguardPauldron' }] },
+  vanguardCape: { id: 'vanguard-cape', name: 'Crimson vanguard cape', slot: 'back', attached: { socket: CHARACTER_SOCKET.back, model: 'vanguardCape' } },
+  runeblade: { id: 'runeblade', name: 'Runeblade', slot: 'mainHand', attached: { socket: CHARACTER_SOCKET.rightHand, model: 'runeblade' } },
+  towerShield: { id: 'tower-shield', name: 'Vanguard tower shield', slot: 'offHand', attached: { socket: CHARACTER_SOCKET.leftForearm, model: 'towerShield' } },
 } as const satisfies Record<string, EquipmentItem>;
 export type ItemKey = keyof typeof ITEMS;
 
@@ -163,8 +181,12 @@ export function equipmentOf(...keys: ItemKey[]): CharacterEquipment {
 /** Ready-made outfits: 0 = nothing, 1 = clothes, 2 = clothes, leather and arms. */
 export const OUTFITS: ReadonlyArray<readonly ItemKey[]> = [[], ['linenShirt', 'clothTrousers', 'belt', 'leatherBoots'], ['linenShirt', 'clothTrousers', 'belt', 'leatherBoots', 'leatherVest', 'leatherGloves', 'ironSword', 'roundShield']];
 
-const ITEM_TEXTURE_COLUMNS = ['steel', 'grip', 'wood', 'iron'] as const;
-const column = (name: (typeof ITEM_TEXTURE_COLUMNS)[number]): { x: number; y: number; width: number; height: number; textureSize: number } => ({ x: ITEM_TEXTURE_COLUMNS.indexOf(name) * 2, y: 0, width: 2, height: 8, textureSize: 8 });
+/** First visual-convergence proof: a deliberately exaggerated endgame silhouette, kept separate from the P5 test outfits. */
+export const VANGUARD_OUTFIT: readonly ItemKey[] = ['linenShirt', 'clothTrousers', 'belt', 'leatherBoots', 'leatherVest', 'leatherGloves', 'vanguardHelm', 'vanguardShoulders', 'vanguardCape', 'runeblade', 'towerShield'];
+
+const ITEM_TEXTURE_COLUMNS = ['steel', 'grip', 'wood', 'iron', 'gold', 'crimson', 'darkSteel', 'cloth'] as const;
+const ITEM_TEXTURE_SIZE = 16;
+const column = (name: (typeof ITEM_TEXTURE_COLUMNS)[number]): { x: number; y: number; width: number; height: number; textureSize: number } => ({ x: ITEM_TEXTURE_COLUMNS.indexOf(name) * 2, y: 0, width: 2, height: ITEM_TEXTURE_SIZE, textureSize: ITEM_TEXTURE_SIZE });
 const ROOT = [[0, 255]] as const;
 /** Lofts along +y (a blade pointing forward): rings stand in the z–x plane. */
 const FORWARD = { u: [0, 0, 1], v: [1, 0, 0] } as const;
@@ -191,12 +213,42 @@ export function buildAttachedModel(key: AttachedModelKey): ModelMesh {
     add({ name: 'boss', sides: 8, ...LEFTWARD, rings: [loftRing(-0.045, 0, 0, 0.06, 0.06, ...ROOT), loftRing(-0.075, 0, 0, 0.03, 0.03, ...ROOT)] }, 'iron');
     return b.build('item-shield', 1);
   }
+  if (key === 'vanguardHelm') {
+    add({ name: 'helm shell', sides: 12, rings: [loftRing(0, 0, -0.11, 0.128, 0.14, ...ROOT), loftRing(0, 0, 0.01, 0.148, 0.155, ...ROOT), loftRing(0, -0.002, 0.13, 0.112, 0.12, ...ROOT), loftRing(0, -0.01, 0.2, 0.035, 0.04, ...ROOT)] }, 'darkSteel');
+    add({ name: 'helm crest', sides: 6, rings: [loftRing(0, -0.015, 0.12, 0.026, 0.075, ...ROOT), loftRing(0, -0.02, 0.27, 0.018, 0.055, ...ROOT), loftRing(0, -0.025, 0.34, 0.005, 0.015, ...ROOT)] }, 'crimson');
+    return b.build('item-vanguard-helm', 1);
+  }
+  if (key === 'vanguardPauldron') {
+    add({ name: 'pauldron', sides: 10, rings: [loftRing(0, 0, -0.06, 0.115, 0.095, ...ROOT), loftRing(0, 0, 0.035, 0.18, 0.135, ...ROOT), loftRing(0, -0.01, 0.13, 0.13, 0.095, ...ROOT), loftRing(0, -0.025, 0.205, 0.035, 0.035, ...ROOT)] }, 'darkSteel');
+    add({ name: 'pauldron rim', sides: 10, rings: [loftRing(0, 0, 0.02, 0.184, 0.139, ...ROOT), loftRing(0, 0, 0.045, 0.16, 0.118, ...ROOT)] }, 'gold');
+    return b.build('item-vanguard-pauldron', 1);
+  }
+  if (key === 'vanguardCape') {
+    const uv = column('crimson'), tex = (u: number, v: number): [number, number] => [(uv.x + 0.5 + u * (uv.width - 1)) / uv.textureSize, (uv.y + 0.5 + v * (uv.height - 1)) / uv.textureSize];
+    const v0 = b.vertex([-0.23, -0.02, 0.04], [0, -1, 0], tex(0, 0), ROOT);
+    const v1 = b.vertex([0.23, -0.02, 0.04], [0, -1, 0], tex(1, 0), ROOT);
+    const v2 = b.vertex([0.29, -0.07, -0.82], [0, -1, 0], tex(1, 1), ROOT);
+    const v3 = b.vertex([-0.29, -0.07, -0.82], [0, -1, 0], tex(0, 1), ROOT);
+    b.triangle(v0, v2, v1); b.triangle(v0, v3, v2);
+    return b.build('item-vanguard-cape', 1);
+  }
+  if (key === 'runeblade') {
+    add({ name: 'runeblade grip', sides: 8, ...FORWARD, rings: [loftRing(0, -0.12, 0, 0.025, 0.025, ...ROOT), loftRing(0, 0.09, 0, 0.021, 0.021, ...ROOT)] }, 'grip');
+    add({ name: 'runeblade guard', sides: 8, ...FORWARD, rings: [loftRing(0, 0.08, 0, 0.17, 0.022, ...ROOT), loftRing(0, 0.12, 0, 0.17, 0.022, ...ROOT)] }, 'gold');
+    add({ name: 'runeblade', sides: 6, ...FORWARD, rings: [loftRing(0, 0.12, 0, 0.055, 0.012, ...ROOT), loftRing(0, 1.15, 0, 0.04, 0.009, ...ROOT), loftRing(0, 1.34, 0, 0.004, 0.004, ...ROOT)] }, 'steel');
+    return b.build('item-runeblade', 1);
+  }
+  if (key === 'towerShield') {
+    add({ name: 'tower shield', sides: 14, ...LEFTWARD, rings: [loftRing(0, 0, 0, 0.43, 0.29, ...ROOT), loftRing(-0.035, 0, 0, 0.43, 0.29, ...ROOT), loftRing(-0.075, 0, 0, 0.37, 0.24, ...ROOT)] }, 'darkSteel');
+    add({ name: 'tower shield boss', sides: 10, ...LEFTWARD, rings: [loftRing(-0.075, 0, 0, 0.105, 0.105, ...ROOT), loftRing(-0.125, 0, 0, 0.045, 0.045, ...ROOT)] }, 'gold');
+    return b.build('item-tower-shield', 1);
+  }
   throw new Error(`equipment: no attached model "${String(key)}"`);
 }
 
-/** 8 × 8 texture of the attached models: four flat columns (steel, grip, wood, iron), 2 texels wide each. */
+/** 16 × 16 texture atlas for attached gear: eight flat 2-texel columns. */
 export function itemTexture(): ModelTexture {
-  const data = new Uint8Array(8 * 8 * 4);
-  for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) data.set([...ITEM_COLOURS[ITEM_TEXTURE_COLUMNS[x >> 1]!], 255], (y * 8 + x) * 4);
-  return { name: 'items', width: 8, height: 8, data };
+  const data = new Uint8Array(ITEM_TEXTURE_SIZE * ITEM_TEXTURE_SIZE * 4);
+  for (let y = 0; y < ITEM_TEXTURE_SIZE; y++) for (let x = 0; x < ITEM_TEXTURE_SIZE; x++) data.set([...ITEM_COLOURS[ITEM_TEXTURE_COLUMNS[x >> 1]!], 255], (y * ITEM_TEXTURE_SIZE + x) * 4);
+  return { name: 'items', width: ITEM_TEXTURE_SIZE, height: ITEM_TEXTURE_SIZE, data };
 }
