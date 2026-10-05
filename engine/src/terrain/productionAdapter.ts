@@ -16,7 +16,7 @@ export type TerrainAlphaAssetRegistry = ReadonlyMap<string, ExternalTerrainAlpha
 /** Renderer-ready material set for one authored material tile. */
 export interface DecodedTerrainTileMaterials {
   readonly tileId: string;
-  /** Stable palette shared by every chunk in the tile; entries are external original diffuse assets. */
+  /** Stable tile-local palette shared by every chunk; entries are external original diffuse assets. */
   readonly palette: readonly ExternalTerrainTextureAsset[];
   /** Exactly 256 renderer-ready chunk materials in y-major order. */
   readonly chunks: readonly ChunkMaterial[];
@@ -53,9 +53,11 @@ export function decodeProductionTerrainTileMaterials(
 ): DecodedTerrainTileMaterials {
   validateTerrainTileMaterialContract(tile, library);
 
-  // The authored library is a set, not a palette order. Sort stable ids so the renderer indices are deterministic
-  // across JSON/object construction order and across tiles built from the same library.
-  const textureIds = Object.keys(library).sort();
+  // The world library can be much larger than one tile. Only textures referenced by this tile become resident in
+  // its palette. Sort stable ids so renderer indices are deterministic regardless of manifest/object order.
+  const usedIds = new Set<string>();
+  for (const chunk of tile.chunks) for (const id of chunk.textureIds) usedIds.add(id);
+  const textureIds = [...usedIds].sort();
   const palette = textureIds.map((id) => requireTexture(library[id]!.diffuseAsset, textures));
   const paletteIndex = new Map(textureIds.map((id, index) => [id, index] as const));
   const chunks: ChunkMaterial[] = new Array(CHUNKS_PER_TILE * CHUNKS_PER_TILE);
