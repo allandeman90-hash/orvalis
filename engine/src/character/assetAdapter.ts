@@ -1,9 +1,12 @@
 import { modelSubmeshes, type ExternalModelAsset } from '../model';
+import type { CharacterSection } from './composite';
+import type { ExternalCharacterSectionAsset } from './externalSection';
 import { geosetVariantsOf } from './geosets';
 import {
   CHARACTER_SOCKET_NAMES,
   type CharacterBodyContract,
   type CharacterSocketName,
+  type CharacterTextureAppearancePart,
   type Quat,
   type Vec3,
   validateCharacterBodyContract,
@@ -82,4 +85,21 @@ export function bindCharacterBodyAsset(body: CharacterBodyContract, asset: Exter
   for (const [name, group] of Object.entries(body.geosetGroups)) geosetVariants[name] = geosetVariantsOf(asset.mesh, group);
 
   return { body, model: asset, sockets, geosetVariants };
+}
+
+/**
+ * Proves that one externally loaded RGBA section is exactly the source declared by an appearance part.
+ * The returned CharacterSection can be passed directly to CharacterComposite.setSection().
+ */
+export function bindCharacterTextureAppearancePart(part: CharacterTextureAppearancePart, asset: ExternalCharacterSectionAsset): CharacterSection {
+  if (asset.sourceUrl !== part.asset) {
+    throw new Error(`character asset: texture part for ${part.region} expects "${part.asset}", got "${asset.sourceUrl}"`);
+  }
+  if (asset.section.region !== part.region) {
+    throw new Error(`character asset: texture "${asset.sourceUrl}" is for region ${asset.section.region}, appearance requires ${part.region}`);
+  }
+  if (asset.section.alpha !== part.alpha) {
+    throw new Error(`character asset: texture "${asset.sourceUrl}" uses alpha ${asset.section.alpha}, appearance requires ${part.alpha}`);
+  }
+  return asset.section;
 }
