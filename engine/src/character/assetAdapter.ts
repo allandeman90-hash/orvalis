@@ -1,16 +1,19 @@
 import { modelSubmeshes, type ExternalModelAsset } from '../model';
-import type { CharacterSection } from './composite';
+import { type CharacterComposite, type CharacterLayer, type CharacterSection } from './composite';
+import { EQUIPMENT_LAYER_OF_SLOT, EQUIPMENT_SLOTS, type EquipmentSlot } from './equipment';
 import type { ExternalCharacterSectionAsset } from './externalSection';
-import { geosetVariantsOf } from './geosets';
+import { BASELINE_VARIANT, geosetVariantsOf, type GeosetSelection } from './geosets';
 import {
   CHARACTER_SOCKET_NAMES,
   type CharacterBodyContract,
   type CharacterSocketName,
   type CharacterTextureAppearancePart,
   type Quat,
+  type ResolvedItemAppearance,
   type Vec3,
   validateCharacterBodyContract,
 } from './productionContract';
+import { CHARACTER_REGION_NAMES, type CharacterRegionName } from './textureLayout';
 
 /** A production socket after its semantic bone name has been resolved against one loaded skeleton. */
 export interface BoundCharacterSocket {
@@ -30,6 +33,11 @@ export interface BoundCharacterBodyAsset {
   /** Semantic geoset name -> variants that actually exist in the loaded mesh. */
   readonly geosetVariants: Readonly<Record<string, readonly number[]>>;
 }
+
+/** Resolved visual appearances currently occupying equipment slots. Gameplay stats do not enter this map. */
+export type ProductionAppearanceEquipment = Readonly<Partial<Record<EquipmentSlot, ResolvedItemAppearance>>>;
+/** External composite sources already loaded through AssetManager, keyed by the authored asset URL. */
+export type CharacterSectionAssetRegistry = ReadonlyMap<string, ExternalCharacterSectionAsset>;
 
 function namedBones(asset: ExternalModelAsset): Map<string, number> {
   const byName = new Map<string, number>();
@@ -102,4 +110,56 @@ export function bindCharacterTextureAppearancePart(part: CharacterTextureAppeara
     throw new Error(`character asset: texture "${asset.sourceUrl}" uses alpha ${asset.section.alpha}, appearance requires ${part.alpha}`);
   }
   return asset.section;
+}
+
+function equipmentLayer(slot: EquipmentSlot): CharacterLayer | undefined {
+  const layer = EQUIPMENT_LAYER_OF_SLOT[slot];
+  return layer === undefined ? undefined : (`equipment${layer}` as CharacterLayer);
+}
+
+/**
+ * Applies production appearance textures to the existing P5 CharacterComposite.
+ * Calling it with a changed equipment map also clears stale regions from slots that were unequipped.
+ */
+export function applyResolvedAppearanceTextures(composite: CharacterComposite, equipment: ProductionAppearanceEquipment, assets: CharacterSectionAssetRegistry): void {
+  for (const slot of EQUIPMENT_SLOTS) {
+    const appearance = equipment[slot];
+    const layer = equipmentLayer(slot);
+    if (appearance && appearance.textures.length > 0 && layer === undefined) {
+      throw new Error(`character asset: slot ${slot} cannot paint composite textures`);
+    }
+    if (layer === undefined) continue;
+
+    const sections = new Map<CharacterRegionName, CharacterSection>();
+    for (const part of appearance?.textures ?? []) {
+      const asset = assets.get(part.asset);
+      if (!asset) throw new Error(`character asset: appearance "${appearance!.id}" needs unloaded texture "${part.asset}"`);
+      const section = bindCharacterTextureAppearancePart(part, asset);
+      if (sections.has(part.region)) throw new Error(`character asset: appearance "${appearance!.id}" paints region ${part.region} twice`);
+      sections.set(part.region, section);
+    }
+    for (const region of CHARACTER_REGION_NAMES) composite.setSection(layer, region, sections.get(region) ?? null);
+  }
+}
+
+/**
+ * Combines body-resolved geoset requests using the existing P5 rule: the highest requested variant wins.
+ * Variant 1 may legitimately be absent from the mesh ("show nothing" baseline); authored higher variants must exist.
+ */
+export function resolvedAppearanceGeosetSelection(body: BoundCharacterBodyAsset, appearances: readonly ResolvedItemAppearance[], initial: GeosetSelection = {}): GeosetSelection {
+  const selection: Record<number, number> = { ...initial };
+  for (const appearance of appearances) {
+    if (appearance.bodyId !== body.body.id) {
+      throw new Error(`character asset: appearance "${appearance.id}" was resolved for body "${appearance.bodyId}", not "${body.body.id}"`);
+    }
+    for (const geoset of appearance.geosets) {
+      const variants = body.geosetVariants[geoset.name];
+      if (variants === undefined) throw new Error(`character asset: body "${body.body.id}" has no semantic geoset "${geoset.name}"`);
+      if (geoset.variant !== BASELINE_VARIANT && !variants.includes(geoset.variant)) {
+        throw new Error(`character asset: body "${body.body.id}" has no ${geoset.name} variant ${geoset.variant}`);
+      }
+      selection[geoset.group] = Math.max(selection[geoset.group] ?? BASELINE_VARIANT, geoset.variant);
+    }
+  }
+  return selection;
 }
