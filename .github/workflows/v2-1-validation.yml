@@ -1,0 +1,54 @@
+name: V2.1 Terrain Material Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/v2-1-validation.yml'
+      - 'engine/src/terrain/productionAssets.ts'
+      - 'engine/src/terrain/productionAdapter.ts'
+      - 'engine/src/terrain/productionContract.ts'
+      - 'engine/src/terrain/index.ts'
+      - 'engine/tests/terrain/productionContract.test.ts'
+      - 'engine/tests/terrain/productionAdapter.test.ts'
+      - 'docs/TERRAIN_MATERIAL_V2_1.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v2-1-terrain-material-validation
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: engine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: engine/package-lock.json
+
+      - name: Install engine dependencies
+        run: npm ci
+
+      - name: Typecheck engine
+        run: npm run typecheck
+
+      - name: Lint V2.1 files
+        run: npx eslint src/terrain/productionAssets.ts src/terrain/productionAdapter.ts src/terrain/productionContract.ts src/terrain/index.ts tests/terrain/productionContract.test.ts tests/terrain/productionAdapter.test.ts
+
+      - name: Run terrain production material tests
+        run: npx vitest run tests/terrain/productionContract.test.ts tests/terrain/productionAdapter.test.ts
+
+      - name: Build engine
+        run: npm run build
