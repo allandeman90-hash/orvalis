@@ -1,3 +1,4 @@
+import { mat4, quat, vec3, type Mat4 } from '../math';
 import { modelSubmeshes, type ExternalModelAsset } from '../model';
 import { type CharacterComposite, type CharacterLayer, type CharacterSection } from './composite';
 import { EQUIPMENT_LAYER_OF_SLOT, EQUIPMENT_SLOTS, type EquipmentSlot } from './equipment';
@@ -9,6 +10,7 @@ import {
   type CharacterSocketName,
   type CharacterTextureAppearancePart,
   type Quat,
+  type ResolvedCharacterAttachment,
   type ResolvedItemAppearance,
   type Vec3,
   validateCharacterBodyContract,
@@ -32,6 +34,13 @@ export interface BoundCharacterBodyAsset {
   readonly sockets: Readonly<Record<CharacterSocketName, BoundCharacterSocket>>;
   /** Semantic geoset name -> variants that actually exist in the loaded mesh. */
   readonly geosetVariants: Readonly<Record<string, readonly number[]>>;
+}
+
+/** One resolved attached appearance after its external child model and body-specific socket have both been bound. */
+export interface BoundCharacterAttachment {
+  readonly appearance: ResolvedCharacterAttachment;
+  readonly model: ExternalModelAsset;
+  readonly socket: BoundCharacterSocket;
 }
 
 /** Resolved visual appearances currently occupying equipment slots. Gameplay stats do not enter this map. */
@@ -162,4 +171,56 @@ export function resolvedAppearanceGeosetSelection(body: BoundCharacterBodyAsset,
     }
   }
   return selection;
+}
+
+/** Binds the child model of an attached appearance to the body-specific semantic socket it uses. */
+export function bindResolvedCharacterAttachment(body: BoundCharacterBodyAsset, appearance: ResolvedCharacterAttachment, model: ExternalModelAsset): BoundCharacterAttachment {
+  if (model.sourceUrl !== appearance.modelAsset) {
+    throw new Error(`character asset: attachment on ${appearance.socket} expects model "${appearance.modelAsset}", got "${model.sourceUrl}"`);
+  }
+  return { appearance, model, socket: body.sockets[appearance.socket] };
+}
+
+const socketLocal = mat4.create();
+const itemLocal = mat4.create();
+const component = mat4.create();
+const scratchQuat = quat.create();
+const scratchVec = vec3.create();
+
+function composeTrs(out: Mat4, label: string, position?: Vec3, rotation?: Quat, scale?: Vec3): Mat4 {
+  mat4.identity(out);
+  if (position !== undefined) {
+    if (!position.every(Number.isFinite)) throw new Error(`character asset: ${label} position must be finite`);
+    mat4.multiply(out, out, mat4.fromTranslation(component, vec3.set(scratchVec, position[0], position[1], position[2])));
+  }
+  if (rotation !== undefined) {
+    if (!rotation.every(Number.isFinite) || !(Math.hypot(rotation[0], rotation[1], rotation[2], rotation[3]) > 0)) {
+      throw new Error(`character asset: ${label} rotation must be a finite non-zero quaternion`);
+    }
+    quat.normalize(scratchQuat, quat.set(scratchQuat, rotation[0], rotation[1], rotation[2], rotation[3]));
+    mat4.multiply(out, out, quat.toMat4(component, scratchQuat));
+  }
+  if (scale !== undefined) {
+    if (!scale.every(Number.isFinite) || scale.some((value) => value <= 0)) throw new Error(`character asset: ${label} scale must be finite and > 0`);
+    if (Math.abs(scale[0] - scale[1]) > 1e-6 || Math.abs(scale[0] - scale[2]) > 1e-6) {
+      throw new Error(`character asset: ${label} scale must be uniform for the current ModelRenderer`);
+    }
+    mat4.multiply(out, out, mat4.fromScaling(component, vec3.set(scratchVec, scale[0], scale[1], scale[2])));
+  }
+  return out;
+}
+
+/**
+ * Child-model -> body-model matrix for the current parent palette.
+ * Order: animated bone × body socket TRS × item-local TRS.
+ */
+export function characterAttachmentMatrix(out: Mat4, attachment: BoundCharacterAttachment, palette: Float32Array): Mat4 {
+  const at = attachment.socket.boneIndex * 16;
+  if (at + 16 > palette.length) {
+    throw new Error(`character asset: socket ${attachment.socket.name} bone ${attachment.socket.boneIndex} is outside the palette`);
+  }
+  composeTrs(socketLocal, `socket ${attachment.socket.name}`, attachment.socket.position, attachment.socket.rotation, attachment.socket.scale);
+  composeTrs(itemLocal, `attachment ${attachment.model.sourceUrl}`, attachment.appearance.position, attachment.appearance.rotation, attachment.appearance.scale);
+  mat4.multiply(out, palette.subarray(at, at + 16), socketLocal);
+  return mat4.multiply(out, out, itemLocal);
 }
