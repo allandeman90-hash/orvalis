@@ -22,6 +22,8 @@ export const ORVALIS_MODEL_ASSET_TYPE = 'orvalis-model';
 export interface ExternalModelAsset {
   readonly format: typeof ORVALIS_MODEL_FORMAT;
   readonly sourceUrl: string;
+  /** Stable authored rig identifier. Optional for generic props; required by the V1.2 character adapter. */
+  readonly rigId?: string;
   readonly mesh: ModelMesh;
   readonly skeleton: Skeleton;
   readonly animation: ModelAnimation;
@@ -209,11 +211,20 @@ export function decodeExternalModelAsset(bytes: ArrayBuffer, url = '<memory>'): 
   }
   const root = object(parsed, 'root');
   if (root.format !== ORVALIS_MODEL_FORMAT) throw new Error(`model asset: ${url} uses unsupported format "${String(root.format)}"`);
+  const rigId = root.rigId === undefined ? undefined : string(root.rigId, 'rigId');
   const mesh = decodeMesh(root);
   const skeleton = decodeSkeleton(root);
   validateSkinning(mesh, skeleton);
   const animation = decodeAnimation(root, skeleton.bones.length);
-  return { format: ORVALIS_MODEL_FORMAT, sourceUrl: url, mesh, skeleton, animation, texture: decodeTexture(root) };
+  return {
+    format: ORVALIS_MODEL_FORMAT,
+    sourceUrl: url,
+    ...(rigId === undefined ? {} : { rigId }),
+    mesh,
+    skeleton,
+    animation,
+    texture: decodeTexture(root),
+  };
 }
 
 /** AssetManager loader: decoding does the CPU validation; upload is identity in V1.1 because ModelRenderer owns GPU upload. */
