@@ -1,0 +1,55 @@
+name: V1.2 Character Asset Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/v1-2-validation.yml'
+      - 'engine/src/model/externalAsset.ts'
+      - 'engine/src/model/index.ts'
+      - 'engine/src/character/productionContract.ts'
+      - 'engine/src/character/assetAdapter.ts'
+      - 'engine/src/character/externalSection.ts'
+      - 'engine/src/character/index.ts'
+      - 'engine/tests/assets/modelAsset.integration.test.ts'
+      - 'engine/tests/character/assetAdapter.test.ts'
+      - 'engine/tests/character/externalSection.test.ts'
+      - 'engine/public/assets/models/v1-1-crystal.orvmodel.json'
+      - 'docs/MODEL_ASSET_INGESTION_V1_1.md'
+      - 'docs/CHARACTER_ASSET_ADAPTER_V1_2.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: engine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: engine/package-lock.json
+
+      - name: Install engine dependencies
+        run: npm ci
+
+      - name: Typecheck engine
+        run: npm run typecheck
+
+      - name: Lint V1.1/V1.2 files
+        run: npx eslint src/model/externalAsset.ts src/character/assetAdapter.ts src/character/externalSection.ts tests/assets/modelAsset.integration.test.ts tests/character/assetAdapter.test.ts tests/character/externalSection.test.ts
+
+      - name: Run external asset and character adapter tests
+        run: npx vitest run tests/assets/modelAsset.integration.test.ts tests/character/productionContract.test.ts tests/character/assetAdapter.test.ts tests/character/externalSection.test.ts
+
+      - name: Build engine
+        run: npm run build
