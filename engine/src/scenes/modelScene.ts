@@ -1,4 +1,4 @@
-import { type CharacterAnimationState, CharacterAnimator, type Locomotion, mannequinAnimation, EQUIPMENT_SLOTS, applyEquipmentTextures, type AttachedModelKey, buildAttachedModel, type CharacterEquipment, equipmentAttachments, equipmentGeometry, equipmentOf, type ItemKey, itemTexture, MANNEQUIN_ATTACHMENTS, OUTFITS, applyCharacterSkin, type CharacterDirtyGroup, CharacterComposite, type CharacterSkin, DEFAULT_SKIN, FACE_COUNT, HAIR_COLOURS, SKIN_TONES, buildMannequinModel, characterGeosetSelection, GEOSET_GROUP, type GeosetGroupName, geosetVariantsOf, hiddenGeosetsOf, MANNEQUIN_SKELETON } from '../character';
+import { type CharacterAnimationState, CharacterAnimator, type Locomotion, mannequinAnimation, EQUIPMENT_SLOTS, applyEquipmentTextures, type AttachedModelKey, buildAttachedModel, type CharacterEquipment, equipmentAttachments, equipmentGeometry, equipmentOf, type ItemKey, itemTexture, CHARACTER_ATTACHMENTS, OUTFITS, VANGUARD_OUTFIT, applyCharacterSkin, type CharacterDirtyGroup, CharacterComposite, type CharacterSkin, DEFAULT_SKIN, FACE_COUNT, HAIR_COLOURS, SKIN_TONES, buildMannequinModel, characterGeosetSelection, GEOSET_GROUP, type GeosetGroupName, geosetId, geosetVariantsOf, hiddenGeosetsOf, MANNEQUIN_SKELETON } from '../character';
 import { type LookAtCamera, viewProjectionMatrix, WORLD_UP } from '../camera';
 import { mat4, type Mat4, vec3 } from '../math';
 import { DEFAULT_UNITS_PER_YARD, RibbonTrail, ribbonTexture, TREE_RIBBON, validateRibbonEmitter, ParticleSystem, particleTexture, TREE_PARTICLE_EMITTERS, validateParticleEmitter, ATTACHMENT_ID, attachmentMatrix, billboardCameraIn, buildOrnamentModel, findAttachment, ORNAMENT, ORNAMENT_SKELETON, ornamentTexture, TREE_ATTACHMENTS, validateAttachments, AnimationPlayer, type BonePose, buildSwatchModel, buildTreeModel, type ModelAnimation, NO_PARENT, type Skeleton, swatchTexture, computeBoneMatrices, modelBounds, skeletonLines, TREE_POSES, TREE_SKELETON, treeAnimation, treeTexture, validateModelAnimation, validateSkinning } from '../model';
@@ -58,6 +58,8 @@ export interface ModelSceneOptions {
   readonly animation?: Locomotion | 'off' | undefined;
   /** Character only: one of the ready-made outfits (0 = nothing, 1 = clothes, 2 = clothes, leather and arms). Default 0. */
   readonly outfit?: number | undefined;
+  /** Character only: a visual-convergence preset. 'vanguard' is the first exaggerated endgame/transmog proof. */
+  readonly preset?: 'vanguard' | undefined;
   /** Character only: skin tone, face, hair colour, underwear — what its composite texture is made of. */
   readonly skin?: Partial<CharacterSkin> | undefined;
   /** Character only: false = no 5-6-5 reduction and dithering of the composite texture. Default true. */
@@ -227,9 +229,10 @@ export function createModelScene(backend: RendererBackend, options: ModelSceneOp
     // Variant 1 always exists as a choice, even when it shows nothing (« no beard »).
     return offered.includes(1) ? offered : [1, ...offered];
   };
-  let outfit = kind === 'character' ? (options.outfit ?? 0) : 0;
-  if (!OUTFITS[outfit]) throw new Error(`scene: no outfit ${outfit} (there are ${OUTFITS.length})`);
-  let equipment: CharacterEquipment = equipmentOf(...OUTFITS[outfit]!);
+  const preset = kind === 'character' ? options.preset : undefined;
+  let outfit = kind === 'character' && preset === undefined ? (options.outfit ?? 0) : -1;
+  if (kind === 'character' && preset === undefined && !OUTFITS[outfit]) throw new Error(`scene: no outfit ${outfit} (there are ${OUTFITS.length})`);
+  let equipment: CharacterEquipment = kind === 'character' && preset === 'vanguard' ? equipmentOf(...VANGUARD_OUTFIT) : equipmentOf(...OUTFITS[Math.max(0, outfit)]!);
   const refreshHidden = (): void => {
     hiddenGeosets.clear();
     for (const id of options.hiddenGeosets ?? []) hiddenGeosets.add(id);
@@ -238,6 +241,8 @@ export function createModelScene(backend: RendererBackend, options: ModelSceneOp
     const worn = equipmentGeometry(equipment);
     const selection = characterGeosetSelection({ hairStyle: look.hair, facialHair: look.facialHair }, { gloves: Math.max(look.gloves, worn.gloves), boots: Math.max(look.boots, worn.boots) });
     for (const id of hiddenGeosetsOf(mesh, selection)) hiddenGeosets.add(id);
+    // Full helmets can explicitly hide the currently selected hair geoset instead of relying on clipping.
+    if (equipment.head?.hideHair) hiddenGeosets.add(geosetId(GEOSET_GROUP.hair, look.hair));
   };
   if (kind === 'character') {
     for (const group of Object.keys(DEFAULT_CHARACTER_LOOK) as GeosetGroupName[]) {
@@ -289,9 +294,9 @@ export function createModelScene(backend: RendererBackend, options: ModelSceneOp
   const drawn: ModelInstance[] = [...instances];
   const socketMatrix = mat4.create();
   // Character gear: the attached models of its equipment (category C), one set per instance, each on its socket.
-  if (kind === 'character') validateAttachments(MANNEQUIN_ATTACHMENTS, skeleton.bones.length);
+  if (kind === 'character') validateAttachments(CHARACTER_ATTACHMENTS, skeleton.bones.length);
   const gearModels = new Map<AttachedModelKey, ModelId>();
-  let gear: Array<{ model: ModelId; matrix: Mat4; socket: (typeof MANNEQUIN_ATTACHMENTS)[number]; instance: number }> = [];
+  let gear: Array<{ model: ModelId; matrix: Mat4; socket: (typeof CHARACTER_ATTACHMENTS)[number]; instance: number }> = [];
   const refreshDrawn = (): void => {
     drawn.length = treeCount;
     if (attach) drawn.push(...ornaments);
@@ -306,7 +311,7 @@ export function createModelScene(backend: RendererBackend, options: ModelSceneOp
         model = renderer.addModel(buildAttachedModel(wanted.model), itemTexture());
         gearModels.set(wanted.model, model);
       }
-      for (let k = 0; k < treeCount; k++) gear.push({ model, matrix: mat4.create(), socket: findAttachment(MANNEQUIN_ATTACHMENTS, wanted.socket), instance: k });
+      for (let k = 0; k < treeCount; k++) gear.push({ model, matrix: mat4.create(), socket: findAttachment(CHARACTER_ATTACHMENTS, wanted.socket), instance: k });
     }
     refreshDrawn();
   };
@@ -423,7 +428,7 @@ export function createModelScene(backend: RendererBackend, options: ModelSceneOp
   // Likewise for particles asked for from the start: they travel up to about 2.2 above the tip (OUR framing margin).
   const particleReach = particles === 'off' ? 0 : Math.hypot(0, 0, TREE_PARTICLE_EMITTERS[particles].position[2] - bounds.center[2]) + 2.2;
   // The character's view always leaves room for what it may hold (a sword reaches 0.9 in front of the hand).
-  const reach = (instances.length > 1 ? 3.2 : 1.35) * Math.max(bounds.radius, attach ? ornamentReach : 0, particleReach, kind === 'character' ? 1.25 : 0);
+  const reach = (instances.length > 1 ? 3.2 : 1.35) * Math.max(bounds.radius, attach ? ornamentReach : 0, particleReach, kind === 'character' ? 1.7 : 0);
   const distance = (reach / Math.tan(Math.PI / 6)) / zoom;
   const p = (pitch * Math.PI) / 180, h = (heading * Math.PI) / 180;
   const target = layout === 'row' ? vec3.create(rowEye[0], rowEye[1] + 1, rowEye[2]) : vec3.create(bounds.center[0], bounds.center[1], bounds.center[2]);

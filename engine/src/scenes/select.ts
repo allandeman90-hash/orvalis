@@ -53,6 +53,7 @@ import type { TileChunkHoles } from './terrainTile';
  *   &anim=stand (default) | walk | run | off   character only: its animation state at the start; off = rest pose
  *                                              (key 9: stand → walk → run, Space: jump, X: attack)
  *   &outfit=0..2   character only: nothing, clothes, or clothes + leather + sword and shield (key 8: the next one)
+ *   &preset=vanguard   character only: first exaggerated endgame/transmog visual-convergence showcase
  *   &skin=0..2 &face=0..1 &hairColor=0..2 &underwear=on|off   character only: what its composite texture is made of
  *                                                             (keys 5, 6, 7: next skin tone, face, hair colour)
  *   &dither=on (default) | off   character only: 5-6-5 reduction with dithering of the composite texture
@@ -140,6 +141,7 @@ export type SceneRequest =
       readonly skin: { readonly skinColor: number; readonly faceType: number; readonly hairColor: number; readonly underwear: boolean };
       readonly dither: boolean;
       readonly outfit: number;
+      readonly preset: 'vanguard' | undefined;
       readonly animation: 'stand' | 'walk' | 'run' | 'off';
       readonly attach: boolean;
       readonly particles: ModelParticles;
@@ -349,6 +351,7 @@ export function parseSceneRequest(search: string): SceneRequest {
       skin: { skinColor: parseIntegerIn(params.get('skin'), 0, 2, 0), faceType: parseIntegerIn(params.get('face'), 0, 1, 0), hairColor: parseIntegerIn(params.get('hairColor'), 0, 2, 0), underwear: oneOf(params.get('underwear'), ['on', 'off'] as const, 'on') === 'on' },
       dither: oneOf(params.get('dither'), ['on', 'off'] as const, 'on') === 'on',
       outfit: parseIntegerIn(params.get('outfit'), 0, 2, 0),
+      preset: oneOf(params.get('preset'), ['vanguard', ''] as const, '') === 'vanguard' ? 'vanguard' : undefined,
       animation: oneOf(params.get('anim'), ['stand', 'walk', 'run', 'off'] as const, 'stand'),
       attach: oneOf(params.get('attach'), ['on', 'off'] as const, 'off') === 'on',
       particles: oneOf(params.get('particles'), ['off', 'sparkles', 'jet'] as const, 'off'),
