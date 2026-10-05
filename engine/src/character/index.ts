@@ -23,6 +23,8 @@ export type {
   CharacterTextureAppearancePart, CharacterVisibilityRules, EquippedItemAppearanceRef, ItemAppearanceDefinition, ItemAppearancePayload,
   ItemAppearanceRegistry, Quat, ResolvedCharacterAttachment, ResolvedCharacterGeoset, ResolvedItemAppearance, Vec3,
 } from './productionContract';
+export { bindCharacterBodyAsset } from './assetAdapter';
+export type { BoundCharacterBodyAsset, BoundCharacterSocket } from './assetAdapter';
 export { ANIMATION_ID, CharacterAnimator } from './animator';
 export type { CharacterAnimationState, Locomotion } from './animator';
 export { MANNEQUIN_SEQUENCES, mannequinAnimation } from './mannequinAnimation';
