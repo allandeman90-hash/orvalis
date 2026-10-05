@@ -77,7 +77,7 @@ describe('V1.1 external model asset over real HTTP', () => {
   });
 
   it('fails the asset instead of accepting malformed external model data', async () => {
-    const malformed = new TextEncoder().encode(JSON.stringify({ format: 'orvalis-model-1', mesh: {} })).buffer as ArrayBuffer;
+    const malformed = new TextEncoder().encode(JSON.stringify({ format: 'orvalis-model-1', mesh: {} })).buffer;
     const assets = new AssetManager(async () => malformed);
     const ModelAsset = assets.registerLoader<ExternalModelAsset, ExternalModelAsset>(ORVALIS_MODEL_ASSET_TYPE, externalModelAssetLoader());
     const handle = assets.request(ModelAsset, 'broken.orvmodel.json');
