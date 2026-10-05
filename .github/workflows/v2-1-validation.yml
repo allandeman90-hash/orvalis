@@ -11,6 +11,7 @@ on:
       - 'engine/src/terrain/index.ts'
       - 'engine/tests/terrain/productionContract.test.ts'
       - 'engine/tests/terrain/productionAdapter.test.ts'
+      - 'engine/tests/terrain/productionRenderer.integration.test.ts'
       - 'docs/TERRAIN_MATERIAL_V2_1.md'
   workflow_dispatch:
 
@@ -45,10 +46,10 @@ jobs:
         run: npm run typecheck
 
       - name: Lint V2.1 files
-        run: npx eslint src/terrain/productionAssets.ts src/terrain/productionAdapter.ts src/terrain/productionContract.ts src/terrain/index.ts tests/terrain/productionContract.test.ts tests/terrain/productionAdapter.test.ts
+        run: npx eslint src/terrain/productionAssets.ts src/terrain/productionAdapter.ts src/terrain/productionContract.ts src/terrain/index.ts tests/terrain/productionContract.test.ts tests/terrain/productionAdapter.test.ts tests/terrain/productionRenderer.integration.test.ts
 
       - name: Run terrain production material tests
-        run: npx vitest run tests/terrain/productionContract.test.ts tests/terrain/productionAdapter.test.ts
+        run: npx vitest run tests/terrain/productionContract.test.ts tests/terrain/productionAdapter.test.ts tests/terrain/productionRenderer.integration.test.ts
 
       - name: Build engine
         run: npm run build
