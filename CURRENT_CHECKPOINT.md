@@ -32,103 +32,87 @@ Permanent conclusions:
 - terrain and environment production data must reference external assets rather than procedural fixture pixels;
 - mannequin/Vanguard, generated terrain palettes and Cottage/Basin remain deterministic technical fixtures only.
 
-## V1.1 — External model asset ingestion — VALIDATED
-Files:
-- `engine/src/model/externalAsset.ts`
-- `engine/src/model/index.ts`
-- `engine/public/assets/models/v1-1-crystal.orvmodel.json`
-- `engine/tests/assets/modelAsset.integration.test.ts`
-- `docs/MODEL_ASSET_INGESTION_V1_1.md`
+## V1 — real asset pipeline — COMPLETE
+
+### V1.1 — External model asset ingestion — VALIDATED
+Documentation: `docs/MODEL_ASSET_INGESTION_V1_1.md`.
 
 Result:
 - Orvalis-owned `orvalis-model-1` external package;
 - JSON on disk → typed runtime arrays;
-- mesh → `ModelMesh`;
-- skeleton → `Skeleton`;
-- animation → `ModelAnimation`;
-- loader through the existing `AssetManager`;
-- render through the existing `ModelRenderer`;
+- mesh/skeleton/animation through existing P4 contracts;
+- loader through existing `AssetManager`;
+- renderer remains existing `ModelRenderer`;
 - strict malformed-data failure;
-- optional `ExternalModelAsset.rigId` for generic props, mandatory match when used as a production character body.
+- optional `ExternalModelAsset.rigId` for generic props, exact match required for production character bodies.
 
 The proof crystal is only an ingestion canary, not production art.
 
-The temporary `.github/workflows/v1-1-validation.yml` was removed after V1.2's combined validation gate superseded it.
-
-## V1.2 — Production character asset adapter — VALIDATED
-Documentation:
-- `docs/CHARACTER_ASSET_ADAPTER_V1_2.md`
+### V1.2 — Production character asset adapter — VALIDATED
+Documentation: `docs/CHARACTER_ASSET_ADAPTER_V1_2.md`.
 
 Runtime:
-- `engine/src/character/assetAdapter.ts`
-- `engine/src/character/externalSection.ts`
-- `engine/src/character/index.ts`
-- V1.1 `engine/src/model/externalAsset.ts` with optional `rigId`.
+- `engine/src/character/assetAdapter.ts`;
+- `engine/src/character/externalSection.ts`;
+- `engine/scripts/v1-2-character-assets-smoke.mjs`.
 
-Tests:
-- `engine/tests/character/assetAdapter.test.ts`
-- `engine/tests/character/externalSection.test.ts`
-- `engine/tests/character/productionContract.test.ts`
-- `engine/tests/assets/modelAsset.integration.test.ts`.
+Proven path:
+- `CharacterBodyContract` ↔ real external model + exact rig;
+- semantic sockets → real named bone indices;
+- semantic geosets → variants actually present in the mesh;
+- external `orvalis-character-section-1` RGBA composite sources;
+- resolved appearance textures/geosets/attachments → existing P5 runtime;
+- attachment placement = `animated body bone × body socket TRS × item-local TRS`;
+- uniform attachment scale enforced until `ModelRenderer` gains proper non-uniform normal handling.
 
-### Production path now proven
-`CharacterBodyContract` can be bound against a genuinely loaded `ExternalModelAsset`:
-- exact external model URL;
-- exact character `rigId`;
-- unique named skeleton bones;
-- every semantic socket resolved to a real bone index;
-- required always-visible body geoset `0`;
-- semantic geoset groups checked against variants actually present in the loaded mesh.
+Validation: **V1.2 Character Asset Validation #16**, run `37376655789`, commit `f3872014a9feb0f0076b0a86af1761336df390a8`:
+- typecheck green;
+- lint green;
+- 4 test files, **20/20 tests passed**;
+- production build green;
+- model + character targeted smoke green on WebGL2;
+- model + character targeted smoke green on WebGPU (`google/swiftshader`).
 
-Character composite sources use external `orvalis-character-section-1` assets with strict region, dimensions, RGBA byte count and alpha mode validation.
+The broad historical `smoke:model` has stale hidden-overlay assumptions; runtime intentionally does not rewrite the stats DOM while the panel is hidden. V1.2 uses a dedicated smoke following the actual UI contract (closed by default, F3 opens it). Do not weaken the runtime to satisfy the stale test.
 
-Resolved production appearances reuse the existing P5 runtime:
-- appearance texture sections → `CharacterComposite` using existing equipment-layer order;
-- unequipping clears stale layers;
-- appearance geosets → existing highest-variant rule;
-- attached models → body-specific semantic sockets;
-- attachment placement = `animated body bone × body socket TRS × item-local TRS`.
+### V1.3 — Equipment appearance / transmog contract — VALIDATED
+Documentation: `docs/EQUIPMENT_APPEARANCE_V1_3.md`.
 
-Current renderer limitation remains explicit: attachment scale must be uniform. Non-uniform scale fails instead of silently producing bad normals.
+Runtime:
+- `engine/src/character/appearanceCollection.ts`;
+- exports in `engine/src/character/index.ts`.
 
-### Item/transmog separation
-V1.2 consumes `ResolvedItemAppearance`; gameplay stats never enter the renderer adapter. Effective visual lookup remains:
+New production-facing contract:
+- `AppearanceCollectionSnapshot` = serializable list of unlocked appearance ids;
+- `EquippedAppearanceState` = visual-only equipment refs by slot;
+- `ResolvedAppearanceState` = visual-only resolved appearances by slot;
+- native item appearance is allowed whenever it exists in the live registry;
+- transmog override must be known **and unlocked**;
+- unknown saved collection ids are tolerated structurally so deprecated content does not corrupt a whole save;
+- newly unlocking an unknown appearance is rejected;
+- unlock operation is pure/idempotent;
+- body compatibility and body overrides still resolve through V0.1/V1.2 instead of being duplicated;
+- gameplay stats/inventory/durability/requirements never enter this renderer-facing state.
 
-```text
-appearanceOverride ?? item.appearanceId
-```
+Persistence handoff reserved for P9/P12:
+- persist stable `unlockedAppearanceIds`;
+- persist/select `appearanceOverrideId` alongside later gameplay equipment state;
+- authoritative inventory/account/character ownership and database/network schema are deliberately not implemented here.
 
-### Validation evidence
-Combined gate: **V1.2 Character Asset Validation #16**, run `37376655789`, commit `f3872014a9feb0f0076b0a86af1761336df390a8`.
+Validation: **V1.3 Equipment Appearance Validation #1**, run `37377477971`, commit `a5d061db6cc0af784dd99174527b35ff3dc8cabc`:
+- typecheck green;
+- targeted lint green;
+- `productionContract.test.ts` 6/6;
+- `appearanceCollection.test.ts` 6/6;
+- total **2 files, 12/12 tests passed**;
+- production build green.
 
-Green:
-- engine typecheck;
-- targeted lint;
-- V1.1 external-model HTTP integration test;
-- V0.1 production-contract tests;
-- V1.2 body/texture/geoset/attachment tests;
-- **4 test files, 20/20 tests passed**;
-- production Vite build;
-- locked Chromium install;
-- targeted model + character browser smoke on **WebGL2**;
-- targeted model + character browser smoke on **WebGPU**, adapter `google/swiftshader`.
-
-Browser smoke: `engine/scripts/v1-2-character-assets-smoke.mjs`.
-Regression workflow: `.github/workflows/v1-2-validation.yml` with latest-only concurrency.
-
-The broad historical `smoke:model` still contains stale assumptions that the hidden debug overlay is continuously populated. Runtime intentionally does not rewrite the hidden overlay; the V1.2 smoke uses the real UI contract (panel closed by default, F3 opens it). This maintenance issue is not a V1.2 blocker and the runtime was not weakened to satisfy the old test.
+No GPU/browser smoke was required for V1.3 because it only adds pure CPU data/policy resolution and changes no renderer/AssetManager/shader/browser path. V1.2 already validates the resolved appearance path on both GPU backends.
 
 ## Important visual finding
 The current P7/P8 camera character and `model=character` mannequin are ENGINE TEST FIXTURES, not final art. Do not spend serious time polishing them.
 
-The temporary Vanguard fixture only proves runtime support for:
-- head item;
-- separate left/right shoulders;
-- cape/back attachment;
-- main/off-hand models;
-- texture-composited clothing;
-- geosets;
-- appearance/transmog-style swapping.
+The Vanguard fixture only proves runtime support for head, shoulders, cape/back, main/off-hand models, texture-composited clothing, geosets and appearance/transmog-style swapping.
 
 ## Visual target
 WoW Vanilla/Classic-like FEEL while remaining original:
@@ -144,31 +128,25 @@ WoW Vanilla/Classic-like FEEL while remaining original:
 - transmog as a first-class separation of stats and appearance.
 
 ## Next exact checkpoint
-### V1.3 — Equipment appearance contract
-Do this before V2/V3 and before authoring the first production body as a declared checkpoint.
+### V2.1 — Terrain 4-layer blend + alpha maps
 
-Audit the V0.1/V1.2 appearance surface against the roadmap instead of rewriting what already exists.
+Follow the primary 1.12.1 terrain material model and the already-defined V0.2 production contract. Inspect OpenWow only as secondary implementation evidence.
 
-Already present and expected to be retained:
-- `ItemAppearanceDefinition` is visual-only;
-- gameplay item → `itemAppearanceId` bridge only;
-- `appearanceOverrideId` changes appearance without changing item power;
-- body compatibility and exceptional `bodyOverrides`;
-- shared textures/geosets/attachments/hide rules;
-- resolved appearance feeds the V1.2 adapter/P5 renderer path.
+Goal: replace the current simplified/synthetic terrain-material path with the smallest production-capable runtime delta for Vanilla-like terrain blending while retaining existing terrain topology/streaming.
 
-V1.3 must identify and implement only the missing production-facing pieces, especially:
-1. explicit unlocked-appearance / appearance-collection semantics suitable for later persistence without implementing P9/P12;
-2. validation that an override can only resolve to a known/unlocked appearance at the appropriate boundary;
-3. a small production-facing equipment/appearance state contract that does not import gameplay stats into the renderer;
-4. tests for normal appearance, override/transmog, locked/unknown appearance and body-specific resolution;
-5. documentation of the exact persistence handoff for later systems.
+Required work:
+1. inspect current terrain renderer/material/shader and V0.2 `TerrainMaterialContract`;
+2. map current support vs the 1.12.1/V0.2 requirement of 1–4 texture layers per chunk;
+3. implement layer 0 + up to 3 alpha-controlled overlays without creating unique giant textures per tile;
+4. preserve the 64×64 per-chunk mask concept and current chunk boundaries;
+5. keep baked shadow/MCCV for V2.2 — do not mix them into V2.1 unless an interface seam is required;
+6. keep fixture palettes for tests, but production data must be able to reference external/original textures and alpha assets;
+7. add targeted CPU/material tests and the smallest relevant WebGL2/WebGPU terrain smoke at checkpoint end;
+8. document any deliberate Orvalis deviations from exact Vanilla 4-bit storage while preserving the visual/data-flow behavior.
 
-Do not build inventory/combat/static-data tables here. Do not start P9.
-
-After V1.3 is green, follow `ROADMAP.md`: V2 material/rendering convergence precedes V3.1 first original male body unless the roadmap is explicitly changed.
-
-P8.7 remains separately open and must be green before P9.
+Do not begin V2.2 until V2.1 is green.
+Do not author the first production character body yet; roadmap places V3.1 after V2 convergence.
+Do not start P9; P8.7 remains separately open and must be green before P9.
 
 ## Validation policy
 - micro change → targeted tests + affected typecheck/lint + relevant smoke only;
