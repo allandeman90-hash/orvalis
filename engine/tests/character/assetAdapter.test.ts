@@ -98,7 +98,14 @@ const shirtAppearance: ResolvedItemAppearance = {
 };
 
 const swordSource = 'assets/items/test-sword.orvmodel.json';
-const swordAsset: ExternalModelAsset = { ...asset, sourceUrl: swordSource, rigId: undefined };
+const swordAsset: ExternalModelAsset = {
+  format: asset.format,
+  sourceUrl: swordSource,
+  mesh: asset.mesh,
+  skeleton: asset.skeleton,
+  animation: asset.animation,
+  texture: asset.texture,
+};
 const swordAttachment: ResolvedCharacterAttachment = {
   socket: 'mainHand',
   bodySocket: body.sockets.mainHand,
