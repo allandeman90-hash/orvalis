@@ -10,7 +10,7 @@ export type { CharacterDirtyGroup, CharacterLayer, CharacterSection, CharacterSe
 export { applyCharacterSkin, DEFAULT_SKIN, EYE_COLOURS, EYE_WHITE, FACE_COUNT, FACE_LAYOUT, faceSection, HAIR_COLOURS, hairSection, LEATHER_COLOUR, leatherSection, MOUTH_COLOUR, SKIN_TONES, skinSection, UNDERWEAR_COLOUR, underwearSection } from './sections';
 export type { CharacterSkin } from './sections';
 export {
-  applyEquipmentTextures, buildAttachedModel, CHARACTER_SOCKET, EQUIPMENT_LAYER_OF_SLOT, EQUIPMENT_SLOTS, equipmentAttachments, equipmentGeometry, equipmentOf, ITEM_COLOURS, ITEMS, itemTexture, MANNEQUIN_ATTACHMENTS, OUTFITS,
+  applyEquipmentTextures, buildAttachedModel, CHARACTER_ATTACHMENTS, CHARACTER_SOCKET, EQUIPMENT_LAYER_OF_SLOT, EQUIPMENT_SLOTS, equipmentAttachments, equipmentGeometry, equipmentOf, ITEM_COLOURS, ITEMS, itemTexture, MANNEQUIN_ATTACHMENTS, OUTFITS, VANGUARD_OUTFIT,
   validateEquipment,
 } from './equipment';
 export type { AttachedModelKey, CharacterEquipment, EquipmentItem, EquipmentSlot, ItemKey } from './equipment';
