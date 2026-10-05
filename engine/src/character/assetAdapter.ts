@@ -156,7 +156,7 @@ export function applyResolvedAppearanceTextures(composite: CharacterComposite, e
  * Variant 1 may legitimately be absent from the mesh ("show nothing" baseline); authored higher variants must exist.
  */
 export function resolvedAppearanceGeosetSelection(body: BoundCharacterBodyAsset, appearances: readonly ResolvedItemAppearance[], initial: GeosetSelection = {}): GeosetSelection {
-  const selection: Record<number, number> = { ...initial };
+  const selection: Partial<Record<number, number>> = { ...initial };
   for (const appearance of appearances) {
     if (appearance.bodyId !== body.body.id) {
       throw new Error(`character asset: appearance "${appearance.id}" was resolved for body "${appearance.bodyId}", not "${body.body.id}"`);
