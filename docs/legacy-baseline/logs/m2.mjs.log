@@ -1,0 +1,7 @@
+{"learned":[["mineur",true],["forgeron",true],["pecheur",true],["cuisinier",true],["joaillier",false]],"s0":{"armor":626,"speed":7,"crit":14.41},"s1":{"armor":677,"speed":6.51,"crit":12.41},"pmods":{"armorPct":0.08,"gemChance":0.12,"speedPct":-0.07,"dmgPhysPct":0.05,"dmgSpellPct":-0.05,"regenOutPct":0.5,"critAdd":-2,"hpPct":0.03,"foodPct":0.25,"foodDur":0.5},"nodes":2016,"byZone":{"cimeore":104,"cimeherb":120,"picsore":104,"picsherb":120,"desolationore":104,"desolationherb":120,"valore":104,"valherb":120,"coeurore":104,"coeurherb":120,"terresore":104,"terresherb":120,"boisore":104,"boisherb":120,"maraisore":104,"maraisherb":120,"canyonore":104,"canyonherb":120}}
+récolte {"r":true,"ore":1,"skill":2,"hint":"","until":184}
+shot m2_node
+fabrication {"made":1,"weapon":{"name":"Masse de fer","rarity":0,"q":47,"sockets":0,"crafted":"Testeur"},"skill":2,"jewel":0}
+shot m2_window
+pêche {"w":false,"r":false,"fish":4,"skill":1}
+consommables {"dish":true,"staGain":6,"strGain":12,"cook":2,"buffs":["bastion","wellfed","food","elixir"]}

@@ -1,0 +1,10 @@
+ok
+{"lvl":1,"xp":0,"hp":498,"maxHp":498,"mp":53,"pos":[-1632,82],"ents":58,"gold":20,"dead":false}
+shot p1
+{"lvl":1,"xp":0,"hp":498,"maxHp":498,"mp":53,"pos":[-1632,82],"ents":58,"gold":20,"dead":false}
+[ -1554.3546821906511, -437.5634256035965, 4 ]
+{"lvl":1,"xp":0,"hp":498,"maxHp":498,"mp":53,"pos":[-1546,-430],"ents":36,"gold":20,"dead":false}
+{"lvl":1,"xp":0,"hp":498,"maxHp":498,"mp":53,"pos":[-1546,-430],"ents":36,"target":"Loup des prés","gold":20,"dead":false}
+shot p2
+{"lvl":1,"xp":0,"hp":498,"maxHp":498,"mp":53,"pos":[-1546,-430],"ents":36,"target":"Loup des prés","gold":20,"dead":false}
+shot p3

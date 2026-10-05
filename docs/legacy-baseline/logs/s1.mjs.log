@@ -1,0 +1,14 @@
+départ {"pos":[-1117,29],"bind":"sanc_guerrier_0","sanct":"Fort de la Lame-Grise","distToSanct":9,"mentor":"Aubrecht","mentorDist":6,"mentorMark":"!","guide":"__story","gt":"Parler à Aubrecht","tracker":"Voie de l'Ordre 1/16 : Le serment de la Lame-Grise\nChapitre disponible : parlez à Aubrecht (Fort de la Lame-Grise)."}
+shot s1_start_guerrier0
+dialogue "Aubrecht\nMaître d'armes de la Lame-Grise\n« Bienvenue au Fort de la Lame-Grise. Une lame qui ne protège personne n'est qu'un morceau de fer. »\n!\nVOIE DE L'ORDRE 1 Le serment de la Lame-Grise (niv. 1)\n×\nAu revoir"
+shot s1_mentor_dlg
+ch1-3 [{"ch":1,"guide":true,"gt":"Rendre la quête à Liane","ready":true},{"insignia":"Insigne de la Lame-Grise","sockets":1,"runes":1,"guideAfter":"__story"},{"ch":2,"name":"L'épreuve de l'acier","lvl":1,"ready":true,"done":true,"plLvl":2,"xp":129},{"ch":3,"kills":7,"ready":true,"done":true,"lvl":3}]
+verrou {"ch":4,"lvl":3,"pl":3,"locked":false,"acceptedWhileLocked":true,"tracker":"Voie de l'Ordre 4/16 : Des lames à louer\nChapitre disponible : parlez à Aubrecht (Fort de la Lame-Grise).","sideHubs":["Havrebleu:5"]}
+ch4-5 {"r4":{"ch":4,"lvl":3,"plBefore":3,"ready":true,"done":true,"plAfter":4,"xp":197,"ch5lvl":5,"gapXp":1200},"ch5":"Brannoc le Renégat","traitor":{"name":"Brannoc le Renégat","lvl":6,"hp":805,"dmg":28,"distSanct":41},"pos":[-1080,16]}
+shot s1_traitor
+combat traître {"dead":false,"hpLeft":"728/728","traitorDead":true,"tHp":0,"ready":true,"pet":false}
+ch5-6 {"done5":true,"q6":"Le Porte-parole des Ordres","emissary":"Messagère Ondine @ havrebleu","done6":true,"next":"7 Au cœur de la Clairière voilée (niv 8)","lvl":6,"xp":403,"bagGear":["Insigne de la Lame-Grise r1","Chevalière de cuivre de l'Ours r1","Pendentif de cuivre de l'Ours r1","Bouclier rouillé r0","Hache usée de l'Ours r2"]}
+shot s1_chroniques
+chroniques "L'Ordre de la Lame-Grise\n« Une lame qui ne protège personne n'est qu'un morceau de fer. »\nLes gardiens de l'Acier. Ils enseignent que la force se mesure à ce qu'elle protège, et forment les boucliers de première ligne des deux factions. L'Ordre de la Lame-Grise garde le Sceau de l'Acier, forgé par Aldric Lame-Grise. Votre sanctuaire : Fort de la Lame-Grise.\nVoie de l'Ordre : 6 / 16 chapitres\nVOTRE HISTOIRE\n1. Le serment de la Lame-Grise (niv. 1)\nVoici ton insigne, initié. L'acier gris : ni azur,"
+rattrapage {"done":10,"next":11}
+rattrapage 2 {"tracker":"Voie de l'Ordre 11/16 : La Chapelle voilée\nChapitre disponible : parlez à Veilleur Mog (Bivouac des Crocs).","bag":["Étoile d'Astrelune"],"runes":1}

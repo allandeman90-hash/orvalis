@@ -1,0 +1,13 @@
+entrée {"key":"meche:1590443261:normal:0","rooms":"ettbttbttb","spawns":42,"total":39,"base":11,"party":"Testeur(guerrier sp_rempart 11), Vorane(templier sp_lumiere 10), ChocoPain56(mage sp_givre 11), Syloth(chaman sp_amelio 10), Kaelane(guerrier sp_armes 13)","mobs":"kobold_dynamiteur,d1_mineur,kobold,chauve_souris,golem_scories,b1_grattefer,b1_braisegueule,b1_colosse"}
+{"fl":0,"t":30,"room":2,"kills":9,"deaths":0,"hp":100,"done":false,"encs":"iii","log":["étage 0 (mine) affixes=","salle 2 (trash) t=20"],"lvl":11,"party":"100 100 100 99"}
+{"fl":0,"t":60,"room":3,"kills":16,"deaths":0,"hp":89,"done":false,"encs":"eii","log":["salle 3 (boss) t=39"],"lvl":11,"party":"100 78 89 100","boss":"Grattefer, 63% t=18"}
+{"fl":0,"t":90,"room":3,"kills":16,"deaths":0,"hp":81,"done":false,"encs":"dii","log":[],"lvl":11,"party":"100 99 97 97"}
+{"fl":0,"t":120,"room":5,"kills":25,"deaths":0,"hp":81,"done":false,"encs":"dii","log":["salle 4 (trash) t=90","salle 5 (trash) t=105"],"lvl":11,"party":"100 100 100 98"}
+{"fl":0,"t":150,"room":6,"kills":25,"deaths":0,"hp":83,"done":false,"encs":"dei","log":["salle 6 (boss) t=120"],"lvl":11,"party":"100 73 99 90","boss":"Braisegueule 60% t=27"}
+{"fl":0,"t":180,"room":6,"kills":25,"deaths":0,"hp":91,"done":false,"encs":"ddi","log":[],"lvl":11,"party":"95 86 90 89"}
+{"fl":0,"t":210,"room":8,"kills":34,"deaths":0,"hp":95,"done":false,"encs":"ddi","log":["salle 7 (trash) t=181","salle 8 (trash) t=202"],"lvl":11,"party":"100 100 93 100"}
+{"fl":0,"t":240,"room":9,"kills":39,"deaths":0,"hp":86,"done":false,"encs":"dde","log":["salle 9 (boss) t=219"],"lvl":11,"party":"100 100 90 96","boss":"Le 79% t=21"}
+{"fl":0,"t":270,"room":9,"kills":39,"deaths":0,"hp":81,"done":false,"encs":"dde","log":[],"lvl":11,"party":"99 91 83 95","boss":"Le 55% t=61"}
+{"fl":0,"t":300,"room":9,"kills":39,"deaths":0,"hp":84,"done":false,"encs":"dde","log":[],"lvl":11,"party":"100 100 100 96","boss":"Le 23% t=101"}
+{"fl":0,"t":320,"room":9,"kills":39,"deaths":0,"hp":100,"done":true,"encs":"ddd","log":[],"lvl":12,"party":"100 100 85 76"}
+FIN {"encs":"Grattefer: 54s, échecs 0 / Braisegueule: 67s, échecs 0 / Le Colosse de Scories: 127s, échecs 0","done":true,"t":427,"emblems":9,"gold":847,"level":12,"kills":39,"total":39,"deaths":0,"bag":["Potion de soin mineure x5","Potion de mana mineure x5","Pain de campagne x9","Potion de soin x3","Éclat runique x28","Cœur runique x3","Anneau d'argent","Bouclier de fer","Étoffe de laine x2","Solerets d'acier du Lièvre","Heaume de Mèchenoire","Emblème de bravoure x9","Chevalière d'argent de la Vipère","Chevalière d'or de la Vipère","Sacoche renforcée","Amulette d'or","Heaume d'acier de l'Ours","Épée de Mèchenoire"]}

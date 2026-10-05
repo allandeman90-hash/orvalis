@@ -1,0 +1,8 @@
+{"cls":"guerrier","spec":"sp_rempart","lvl":5,"tLvl":6,"tHp":805,"tDmg":28,"pHp":636,"win":true,"dead":false,"time":31,"minHp":"94%","pet":null}
+{"cls":"templier","spec":"sp_bastion","lvl":5,"tLvl":6,"tHp":805,"tDmg":28,"pHp":465,"win":true,"dead":false,"time":41,"minHp":"98%","pet":null}
+{"cls":"mage","spec":"sp_feu","lvl":5,"tLvl":6,"tHp":805,"tDmg":23,"pHp":340,"win":true,"dead":false,"time":19,"minHp":"78%","pet":null}
+{"cls":"necro","spec":"sp_fleau","lvl":5,"tLvl":6,"tHp":805,"tDmg":23,"pHp":278,"win":true,"dead":false,"time":14,"minHp":"63%","pet":null}
+{"cls":"archer","spec":"sp_precision","lvl":5,"tLvl":6,"tHp":805,"tDmg":23,"pHp":323,"win":true,"dead":false,"time":18,"minHp":"53%","pet":"Loup des prés"}
+{"cls":"assassin","spec":"sp_venin","lvl":5,"tLvl":6,"tHp":805,"tDmg":28,"pHp":356,"win":true,"dead":false,"time":21,"minHp":"35%","pet":null}
+{"cls":"druide","spec":"sp_dresto","lvl":5,"tLvl":6,"tHp":805,"tDmg":23,"pHp":510,"win":true,"dead":false,"time":63,"minHp":"96%","pet":null}
+{"cls":"chaman","spec":"sp_cresto","lvl":5,"tLvl":6,"tHp":805,"tDmg":23,"pHp":475,"win":true,"dead":false,"time":22,"minHp":"91%","pet":null}

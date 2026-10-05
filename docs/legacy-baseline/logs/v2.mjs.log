@@ -1,0 +1,12 @@
+création "Point de départ : Oasis des Anciens\nLe Cercle des Anciens — « Ce qui a des racines ne tombe pas. »"
+shot v2_create
+départ {"name":"Brunehaut","cls":"druide","pos":[1723,509],"bind":"sanc_druide_1","guide":"__story","pet":null,"tracker":"Voie de l'Ordre 1/16 : Le serment du Cercle\nChapitre disponible : parlez à Archidruidesse Nahla (Oasis des Anciens)."}
+shot v2_start_druide1
+shot v2_sanct_archer0
+shot v2_sanct_necro1
+shot v2_sanct_mage0
+shot v2_sanct_chaman1
+shot v2_sanct_assassin0
+shot v2_sanct_templier1
+shot v2_cultcamp
+shot v2_herald

@@ -1,0 +1,30 @@
+export default async ({ page, shot, wait, ev, key }) => {
+  await ev(() => window.__dbg.quick('mage', 0, 1));
+  await ev(() => window.__dbg.step(1));
+  const r = await ev(() => {
+    const d = window.__dbg, G = d.G, P = G.player;
+    const out = [];
+    const isaure = G.npcs.byId.get('isaure');
+    out.push('isaure rec ' + isaure.x.toFixed(0) + ',' + isaure.z.toFixed(0) + ' ent=' + !!isaure.ent + ' mark=' + isaure.mark);
+    d.tp(isaure.x, isaure.z + 3); d.step(1);
+    G.win.openNpc(isaure.ent);
+    out.push('win npc open=' + G.win.isOpen('npc'));
+    G.quests.accept('val1');
+    out.push('active=' + Object.keys(P.data.quests.active).join(','));
+    const gas = G.npcs.byId.get('gaspard');
+    d.tp(gas.x, gas.z + 3); d.step(1.5);
+    out.push('gaspard ent=' + !!gas.ent + ' mark=' + gas.mark);
+    out.push('ready val1=' + G.quests.isReady({ ...window.__q('val1') }));
+    out.push('complete=' + G.quests.complete('val1') + ' xp=' + P.data.xp + ' lvl=' + P.level);
+    out.push('avail gaspard=' + G.quests.availableFor('gaspard').map(q => q.id).join(','));
+    G.quests.accept('val2');
+    return out.join('\n');
+  });
+  console.log(r);
+  await ev(() => { const G = window.__dbg.G; G.win.open('quests'); G.win.open('bag'); G.win.open('char'); });
+  await wait(500);
+  await shot('w1');
+  await ev(() => { const G = window.__dbg.G; G.win.close('quests'); G.win.close('bag'); G.win.close('char'); G.win.open('skills'); G.win.open('map'); });
+  await wait(800);
+  await shot('w2');
+};

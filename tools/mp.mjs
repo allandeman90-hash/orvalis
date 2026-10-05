@@ -1,0 +1,58 @@
+// Playwright : `npm i -D playwright` (ou chemin via la variable PLAYWRIGHT)
+const { chromium } = await import(process.env.PLAYWRIGHT || 'playwright');
+import { mkdirSync } from 'node:fs';
+const SP = process.env.SHOTS || new URL('../shots/', import.meta.url).pathname;
+mkdirSync(SP, { recursive: true });
+const b = await chromium.launch({ args: ['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'] });
+const ctx = await b.newContext({ viewport: { width: 1100, height: 700 } });
+const errs = [];
+const mk = async (tag) => {
+  const p = await ctx.newPage();
+  p.on('pageerror', e => errs.push(tag + ' pageerror: ' + e.message + ' ' + (e.stack || '').split('\n')[1]));
+  p.on('console', m => { if (m.type() === 'error' && !m.text().includes('ERR_TUNNEL')) errs.push(tag + ' console: ' + m.text()); });
+  await p.goto('http://localhost:8765/test.html#mockroom');
+  await p.waitForFunction(() => window.__ready, null, { timeout: 90000 });
+  return p;
+};
+const A = await mk('A'), B = await mk('B');
+await A.evaluate(() => { window.__dbg.quick('guerrier', 0, 8); window.__dbg.G.player.name = 'Alpha'; window.__dbg.G.player.data.name = 'Alpha'; window.__dbg.tp(-250, 40); });
+await B.evaluate(() => { window.__dbg.quick('mage', 1, 8); window.__dbg.G.player.name = 'Beta'; window.__dbg.G.player.data.name = 'Beta'; window.__dbg.tp(-246, 44); });
+await A.waitForTimeout(3000);
+const sa = await A.evaluate(() => { const G = window.__dbg.G; return [...G.net.remotes.values()].map(r => `${r.name} f${r.faction} lvl${r.level} hp${r.hp}/${r.stats.maxHp} pos ${r.pos.x.toFixed(1)},${r.pos.z.toFixed(1)} inWorld=${r.inWorld}`).join(' | ') + ' me=' + G.net.me; });
+const sb = await B.evaluate(() => { const G = window.__dbg.G; return [...G.net.remotes.values()].map(r => `${r.name} f${r.faction} lvl${r.level} hp${r.hp}/${r.stats.maxHp} inWorld=${r.inWorld}`).join(' | '); });
+console.log('A sees:', sa); console.log('B sees:', sb);
+// A attaque B (JcJ) au corps à corps
+await B.bringToFront();
+await B.waitForTimeout(1500);
+console.log('B remotes inWorld:', await B.evaluate(() => [...window.__dbg.G.net.remotes.values()].map(r => r.inWorld).join(',')));
+await A.bringToFront();
+await A.evaluate(() => window.__dbg.tp(-246.5, 42.5));
+await A.waitForTimeout(1500);
+const hp0 = await B.evaluate(() => window.__dbg.G.player.hp);
+const atk = await A.evaluate(() => { const G = window.__dbg.G; const r = [...G.net.remotes.values()][0]; G.player.setTarget(r); G.player.engaged = r; const out = []; for (let i = 0; i < 4; i++) { G.player.gcd = 0; G.player.cds = {}; const res = G.player.useSkillById('g_frappe'); } return 'dist ' + Math.hypot(r.pos.x - G.player.pos.x, r.pos.z - G.player.pos.z).toFixed(2) + ' ev ' + JSON.stringify(G.net.events.slice(-4)); });
+console.log('A attack:', atk);
+await B.bringToFront();
+await B.waitForTimeout(2500);
+const hp1 = await B.evaluate(() => window.__dbg.G.player.hp);
+console.log('B hp', Math.round(hp0), '->', Math.round(hp1));
+// invitation de groupe : B passe dans la même faction
+await B.evaluate(() => { const G = window.__dbg.G; G.player.faction = 0; G.player.data.faction = 0; G.player.hp = G.player.stats.maxHp; });
+await B.waitForTimeout(1500);
+await A.bringToFront();
+await A.evaluate(() => { const G = window.__dbg.G; const r = [...G.net.remotes.values()][0]; G.net.sendPartyInvite(r); });
+await A.waitForTimeout(1500);
+await B.bringToFront();
+await B.waitForTimeout(1500);
+const promptTxt = await B.evaluate(() => document.getElementById('prompt').hidden ? 'no prompt' : document.querySelector('#prompt .t').textContent);
+console.log('B prompt:', promptTxt);
+if (promptTxt !== 'no prompt') await B.click('#pr-y');
+await B.waitForTimeout(1500);
+await A.bringToFront();
+await A.waitForTimeout(2000);
+console.log('A party:', await A.evaluate(() => window.__dbg.G.party.members.map(m => m.name).join(',')));
+console.log('B party:', await B.evaluate(() => window.__dbg.G.party.members.map(m => m.name).join(',')));
+await A.screenshot({ path: SP + '/mpA.png' });
+await B.bringToFront();
+await B.screenshot({ path: SP + '/mpB.png' });
+if (errs.length) console.log('ERRORS:\n' + [...new Set(errs)].slice(0, 20).join('\n'));
+await b.close();

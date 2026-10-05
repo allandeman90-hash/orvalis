@@ -1,0 +1,13 @@
+shot qa_cam_bastion
+town spots 32
+render info: {"capitale Braise":{"calls":182,"tris":64436,"geo":409,"tex":5},"capitale Azur":{"calls":248,"tris":105680,"geo":405,"tex":5},"Bois-Murmure":{"calls":200,"tris":84800,"geo":417,"tex":5},"Marais":{"calls":166,"tris":60766,"geo":420,"tex":5},"Cime":{"calls":245,"tris":73244,"geo":431,"tex":5},"Canyon":{"calls":169,"tris":50164,"geo":430,"tex":5}}
+shot qa_cam_town
+terres (L4, joueur 15): 11 kills
+canyon (L8, joueur 15): 5 kills
+marais (L13, joueur 15): 11 kills
+coeur (L18, joueur 18): 5 kills
+pics (L26, joueur 26): 5 kills
+desolation (L28, joueur 28): 8 kills
+windows opened 9, total kills 45, deaths 0, entities 18, level 28
+after sim render {"calls":163,"tris":62192,"geo":454,"tex":5} heap 117 MB
+shot qa_long

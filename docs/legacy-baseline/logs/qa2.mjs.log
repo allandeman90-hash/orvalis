@@ -1,0 +1,12 @@
+vendor stock: 12 first=Potion de soin price 72
+buy+sell gold 5000 -> 4442
+forge: weapon +4 after 5 tries, gold 3079
+mount: hasMount=true tier 1
+mounted=true speed=11.5
+travel destinations: 3
+after travel pos -1632,86 zone Val d'Azur
+party: Testeur(12 guerrier), Vorane(10 templier), Syloth(10 chaman), ChocoPain56(11 mage)
+group fight kills 3 xp 71 party alive 4
+bots following: 6m,5m,5m
+shot qa_party
+shot qa_group

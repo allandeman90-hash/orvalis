@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Orvalis</title>
+    <!-- No icon file yet: an explicit empty icon stops browsers from requesting /favicon.ico (which would be a 404). -->
+    <link rel="icon" href="data:," />
+    <style>
+      html, body { margin: 0; height: 100%; background: #0b0e14; overflow: hidden; }
+      #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+      #debug-overlay { position: fixed; left: 8px; top: 8px; padding: 6px 9px; font: 12px/1.45 monospace; color: #e6e9ee; background: rgba(8, 10, 15, 0.72); border: 1px solid #2b3240; white-space: pre; pointer-events: none; font-variant-numeric: tabular-nums; }
+      #boot-status { position: fixed; left: 8px; top: 8px; font: 12px/1.4 monospace; color: #cfd3da; white-space: pre-line; max-width: 70ch; }
+    </style>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <div id="boot-status">booting…</div>
+    <div id="debug-overlay" hidden></div>
+    <script type="module" src="/src/bootstrap.ts"></script>
+  </body>
+</html>

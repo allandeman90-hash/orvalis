@@ -1,0 +1,12 @@
+shot l1_dungeons
+shot l1_raids
+shot l1_abyss
+shot l1_shop
+achat [40,18,"Robe enchantée de l'Ours"]
+shot l1_ready
+groupe {"party":["Testeur:necro:16","Cygar:guerrier:16","Griric:chaman:18","Fenune:archer:15","Korlor:necro:18"],"prompt":true}
+shot l1_inside
+instance englouti:696517225:normal:0
+shot l1_map
+après {"active":false,"pos":[-408,18],"party":4,"temps":0}
+shot l1_back

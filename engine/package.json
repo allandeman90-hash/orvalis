@@ -1,0 +1,42 @@
+{
+  "name": "orvalis-engine",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "New Orvalis engine (custom WebGPU/WebGL2 renderer) built next to the legacy Three.js game. Spec: ../docs/WoW_Vanilla_1.12.1_RE_Master.md. Original assets only.",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "vite build",
+    "test": "vitest run",
+    "smoke": "node scripts/smoke.mjs",
+    "smoke:list": "node scripts/smoke.mjs --list",
+    "smoke:renderer": "node scripts/smoke.mjs --tag=renderer",
+    "smoke:terrain": "node scripts/smoke.mjs --tag=terrain",
+    "smoke:water": "node scripts/smoke.mjs --tag=water",
+    "smoke:lighting": "node scripts/smoke.mjs --tag=lighting",
+    "smoke:model": "node scripts/smoke.mjs --tag=model",
+    "smoke:character": "node scripts/smoke.mjs --tag=character",
+    "smoke:building": "node scripts/smoke.mjs --tag=building",
+    "smoke:camera": "node scripts/smoke.mjs --tag=camera",
+    "smoke:legacy": "node scripts/smoke.mjs --tag=legacy",
+    "smoke:all": "node scripts/smoke.mjs --suite=all --exhaustive --keep-going",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run legacy:check && npm run build",
+    "verify": "npm run check && npm run smoke:all",
+    "legacy:check": "node scripts/check-legacy.mjs",
+    "lint": "eslint .",
+    "zone:export": "vite-node scripts/exportTestZone.ts",
+    "legacy:scenarios": "node scripts/legacy/run-scenarios.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@webgpu/types": "^0.1.74",
+    "eslint": "^10.11.0",
+    "globals": "^17.13.0",
+    "playwright-core": "^1.56.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.71.0",
+    "vite": "^5.4.0",
+    "vitest": "^2.1.0"
+  }
+}

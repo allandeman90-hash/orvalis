@@ -1,0 +1,19 @@
+{
+  "name": "orvalis",
+  "version": "4.0.0",
+  "description": "Orvalis — RPG fantasy 3D, huit classes, neuf régions et monde de 4096 mètres de côté.",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "build:prod": "node tools/build.mjs --prod",
+    "test": "node tools/test-world.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.25.12",
+    "three": "^0.186.1"
+  },
+  "type": "module",
+  "private": true
+}

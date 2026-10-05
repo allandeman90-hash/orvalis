@@ -1,0 +1,438 @@
+{
+ "recorded": "2026-10-02",
+ "build": {
+  "version": "4.0.0",
+  "sourceHash": "caa115fa6b1a08581df15db9598cf715f9bdc02638b8f44722958a77d9027b99",
+  "page": "dist/test.html"
+ },
+ "environment": "Chromium headless shell (Playwright 1.56), software rendering (SwiftShader), cloud sandbox without GPU",
+ "passCriterion": "tools/play.mjs exits with code 0: no page error, no exception in the scenario. Most scenarios print values without asserting them.",
+ "method": "First pass 4 scenarios in parallel (18 PASS / 24 FAIL, all failures being 30 s harness timeouts under load), then the 24 failures rerun one at a time on an idle machine. \"result\" is the serial outcome when a serial run exists.",
+ "scenarios": [
+  {
+   "scenario": "b1.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 88,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 1
+  },
+  {
+   "scenario": "bal8.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 46,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "c1.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 171,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 3
+  },
+  {
+   "scenario": "c2.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 34,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "d1.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 114,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "f1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 128,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 7
+  },
+  {
+   "scenario": "f2.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 78,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 1
+  },
+  {
+   "scenario": "i1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 34,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "i2.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 109,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "i3.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 26,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 1
+  },
+  {
+   "scenario": "k1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 168,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 7
+  },
+  {
+   "scenario": "k2.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 172,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "k3.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 107,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 8
+  },
+  {
+   "scenario": "k4.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 160,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "k5.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 65,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 4
+  },
+  {
+   "scenario": "l1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 111,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 8
+  },
+  {
+   "scenario": "m1.mjs",
+   "result": "FAIL",
+   "parallelRun": "FAIL",
+   "serialRun": "FAIL",
+   "seconds": 53,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0,
+   "classification": "PRE-EXISTING FAILURE",
+   "cause": "page.goto timeout (30 s, hard-coded default) on the second multiplayer tab. Measured with the same three-page layout and a longer timeout: that tab loads in 27.7 s and is ready at 31.9 s (first tab: 3.2 s). Environment limit of software rendering, not a game error; not fixed."
+  },
+  {
+   "scenario": "m2.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 33,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "p1.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 117,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "qa1.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 28,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "qa2.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 36,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "qa3.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 85,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 4
+  },
+  {
+   "scenario": "qa4.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 75,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 3
+  },
+  {
+   "scenario": "qa5.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 78,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 5
+  },
+  {
+   "scenario": "r1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 48,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 3
+  },
+  {
+   "scenario": "refit-dungeon.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 93,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "s1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 61,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 4
+  },
+  {
+   "scenario": "s2.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 63,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "s3.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 74,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 1
+  },
+  {
+   "scenario": "t1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 69,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 3
+  },
+  {
+   "scenario": "t2.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 29,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 1
+  },
+  {
+   "scenario": "t3.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 36,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "t4.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 48,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "t5.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 67,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 3
+  },
+  {
+   "scenario": "t6.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 55,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "t7.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 100,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 2
+  },
+  {
+   "scenario": "t8.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 40,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 0
+  },
+  {
+   "scenario": "u1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 41,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 1
+  },
+  {
+   "scenario": "v1.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 247,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 23
+  },
+  {
+   "scenario": "v2.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 167,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 10
+  },
+  {
+   "scenario": "v3.mjs",
+   "result": "PASS",
+   "parallelRun": "FAIL",
+   "serialRun": "PASS",
+   "seconds": 94,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 6
+  },
+  {
+   "scenario": "w1.mjs",
+   "result": "PASS",
+   "parallelRun": "PASS",
+   "serialRun": null,
+   "seconds": 207,
+   "pageErrors": 0,
+   "consoleErrors": false,
+   "screenshots": 10
+  }
+ ],
+ "otherLegacyTests": {
+  "npm test (tools/test-world.mjs)": "PASS"
+ }
+}

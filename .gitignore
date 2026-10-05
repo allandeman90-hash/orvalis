@@ -1,0 +1,7 @@
+node_modules/
+engine/dist/
+validation/
+Claude outputs/
+*.tar.gz
+*.log
+!docs/legacy-baseline/logs/*.log

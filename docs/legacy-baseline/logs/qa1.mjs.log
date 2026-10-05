@@ -1,0 +1,9 @@
+val1 complete: true
+active: val2,val3,val4
+val2 progress 6 lvl 2 kills 9 xp 188
+val3 progress 5 lvl 3
+val2 done true, val3 done true lvl 3 gold 124
+bag: Potion de soin mineure×5, Potion de mana mineure×4, Pain de campagne×7, Anneau de cuivre, Pierre d'âme : Sanglier roux, Tunique usée, Éclat runique, Amulette de cuivre de la Vipère
+valm explore 0
+dead false death overlay hidden=true
+respawned at -418,358 hp 186

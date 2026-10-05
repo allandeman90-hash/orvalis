@@ -1,0 +1,8 @@
+départ {"cls":"archer","name":"x","recs":["Loup des prés niv 12 dps"],"active":true,"petHp":759,"petDmg":69,"bar":true,"skills":["a_revivre","a_soinfam","a_apprivoiser"]}
+shot p1_petbar
+rôles {"tank":{"hp":1266,"dmg":40,"armor":144,"threat":3.5},"heal":{"hp":844,"dmg":29,"armor":90,"threat":0.4},"dps":{"hp":759,"dmg":69,"armor":90,"threat":0.6}}
+combat {"onPet":1,"alive":2,"healed":-32,"petAlive":true}
+ordres {"stayDist":5,"followDist":15}
+apprivoisement {"none":true}
+résurrection {"alive":true,"hpK":0.79}
+shot p1_menagerie

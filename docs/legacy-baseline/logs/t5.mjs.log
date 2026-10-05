@@ -1,0 +1,5 @@
+shot title1
+shot create1
+{"lvl":30,"xp":0,"hp":2179,"maxHp":2179,"mp":271,"pos":[1103,429],"ents":37,"gold":50000,"dead":false}
+{"kinds":{"player":1,"npc":3,"pet":1,"mob":31,"bot":1},"bots":80,"online":64,"chat":33,"listings":47}
+shot game1

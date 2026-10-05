@@ -1,0 +1,17 @@
+fullscreenEnabled (login) = true
+bouton #tl-fs présent = true
+shot f1_login_before
+après clic #tl-fs : {"fsEl":true,"label":"Quitter le plein écran"}
+shot f1_login_after
+après 2e clic #tl-fs (retour fenêtré) : {"fsEl":false,"label":"Plein écran"}
+bouton #mb-fullscreen présent = true
+shot f1_hud_before
+shot f1_hud_tip
+après clic #mb-fullscreen : {"fsEl":true}
+shot f1_hud_after
+bouton #ts-fs présent (écran de sélection) = true
+shot f1_select
+après clic #ts-fs : {"fsEl":true,"label":"Quitter le plein écran"}
+shot f1_select_fs
+__dbg toujours accessible = dbg-ok
+fin de test OK

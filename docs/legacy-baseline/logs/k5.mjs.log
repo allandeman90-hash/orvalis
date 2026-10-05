@@ -1,0 +1,9 @@
+guidage via journal {"guide":"valm","label":"Observer le Cercle des Pierres Levées","visible":false}
+shot k5_questlog
+après bouton détail null
+options ouvertes 1
+shot k5_options
+réglages {"selfPlate":true,"bar2":true,"bar3":false,"bar4":true,"b2":true,"b4":true,"plate":true}
+shot k5_hud
+infobulle {"tipVisible":true,"onTop":false}
+shot k5_tip_over_bag

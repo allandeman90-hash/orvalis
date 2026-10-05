@@ -1,0 +1,56 @@
+{
+ "sockets": {
+  "weapon": 1,
+  "chest": 1,
+  "legs": 0,
+  "offhand": 1,
+  "head": 0,
+  "hands": 0,
+  "feet": 0,
+  "ring": 1,
+  "amulet": 0
+ },
+ "before": "str1x10 sta5x1 crit2x4 leech1x3 fortune3x1",
+ "afterOne": "str2x1 str1x7 sta5x1 crit2x4 leech1x3 fortune3x1",
+ "afterAll": "str3x1 str1x1 sta5x1 crit3x1 crit2x1 leech2x1 fortune3x1",
+ "mythic": {
+  "rarity": 5,
+  "sockets": 5,
+  "name": "Masse d'obsidienne de l'Ours"
+ },
+ "st0": {
+  "str": 114.9,
+  "crit": 12.78,
+  "leech": 0.01,
+  "fortune": 0,
+  "hp": 1690
+ },
+ "st1": {
+  "str": 127.86,
+  "crit": 12.64,
+  "leech": 0.0114,
+  "fortune": 1.9599999999999997,
+  "hp": 2429
+ },
+ "runesInWeapon": [
+  {
+   "t": "str",
+   "l": 3
+  },
+  null,
+  {
+   "t": "leech",
+   "l": 2
+  },
+  {
+   "t": "fortune",
+   "l": 3
+  },
+  null
+ ],
+ "afterUnsock": "str1x1 sta5x1 crit3x1 crit2x1",
+ "afterRaidDrop": 7
+}
+shot r1_fusion
+shot r1_sertissage
+shot r1_tip

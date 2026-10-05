@@ -1,0 +1,31 @@
+deaths 1 kills 0 {"lvl":15,"xp":0,"hp":231,"maxHp":2357,"mp":59,"pos":[-100,318],"ents":31,"target":"Noxynn","gold":20,"dead":false}
+quests active: 
+Noxynn(21 assassin f1) hp148/749 tgt:- 
+Saeric(22 archer f1) hp1053/1053 tgt:Testeur 
+chat: Niveau 8 ! — Nouvelles compétences : Mur de bouclier. Un point de talent à dépenser (touche K). || Niveau 9 ! — Un point de talent à dépenser (touche K). || Niveau 10 ! — Nouvelles compétences : Heurt de bouclier, Monture (à acheter à l&#39;écurie). Un point de talent à dépenser (touche K). || Niveau 11 ! — Un point de talent à dépenser (touche K). || Niveau 12 ! — Un point de talent à dépenser (touche K). || Niveau 13 ! — Nouvelles compétences : Brise-armure. Un point de talent à dépenser (touche K). || Niveau 14 ! — Un point de talent à dépenser (touche K). || Niveau 15 ! — Un point de talent à dépenser (touche K). || Vous entrez dans : Cœur d&#39;Orvalis || [Général] Wenric : bonne soirée tout le monde
+shot marais2
+t0 boss hp=100% bots=12 fighting=0
+mort 14
+t15 boss hp=89% bots=4 fighting=2
+mort 16
+mort 19
+mort 21
+mort 24
+mort 28
+mort 30
+t30 boss hp=76% bots=4 fighting=3
+mort 34
+mort 37
+mort 43
+t45 boss hp=61% bots=4 fighting=4
+mort 48
+mort 51
+t60 boss hp=39% bots=8 fighting=4
+mort 66
+t75 boss hp=12% bots=7 fighting=5
+mort 78
+mort 81
+mort 85
+BOSS MORT à 85
+{"lvl":30,"xp":0,"hp":499,"maxHp":831,"mp":955,"pos":[0,-1598],"ents":27,"target":"Azhkar, le Dévoreur d'Orages","gold":450,"dead":false}
+shot boss2

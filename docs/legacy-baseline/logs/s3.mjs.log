@@ -1,0 +1,25 @@
+{
+ "emis": [
+  "Messagère Ondine@havrebleu d=30",
+  "Veilleur Gwenn@chenevert d=7",
+  "Veilleuse Maud@fort_roseau d=7",
+  "Veilleur Thibaut@garde_aube d=7",
+  "Veilleuse Blanche@refuge_col d=7",
+  "Veilleur Hugues@aube_grise d=7",
+  "Grand Veilleur Albéric@bastide d=7",
+  "Messager Drakh@forge_cendre d=30",
+  "Veilleuse Kesra@scorie_noire d=7",
+  "Veilleur Mog@bivouac_crocs d=7",
+  "Veilleuse Irka@braise_vive d=7",
+  "Veilleur Tovar@halte_cornes d=7",
+  "Veilleuse Zhena@camp_obsidienne d=7",
+  "Grand Veilleur Orrok@bivouac_tonnerre d=7"
+ ],
+ "pm": "Maîtresse Ruga Main-Calleuse 1624,-55"
+}
+{
+ "txt": "Maîtresse Ruga Main-Calleuse\nMaîtresse des métiers\n« Un bon métier nourrit mieux qu'une bonne épée. Deux primaires, deux secondaires : pas un de plus. »\n!\nCartographier : Cime des Tempêtes (niv. 30)\n!\nCartographier : Pics Gelés (niv. 24)\n!\nCartographier : Désolation Cendrée (niv. 27)\n!\nCartographier : Val d'Azur (niv. 3)\n!\nCartographier : Cœur d'Orvalis (niv. 18)\n!\nCartographier : Terres de Braise (niv. 3)\n!\nCartographier : Bois-Murmure (niv. 6)\n!\nCartographier : Marais de Vasegrise (niv. 12)\n!\nCartographier : Canyon des Scories (niv. 6)\n◆\nApprendre ou gérer mes métiers\n×\nAu revoir",
+ "profsOpen": true,
+ "npcOpen": false
+}
+shot s3_profs_from_npc

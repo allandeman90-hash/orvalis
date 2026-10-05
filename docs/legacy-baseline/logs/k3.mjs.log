@@ -1,0 +1,13 @@
+shot k3_bear
+{"form":"ours","armor":1112,"hp":1047,"basic":{"k":"s","id":"d_patte"}}
+changement de spé après forme : true sp_sauvage
+shot k3_cat
+objets ["Veste de drake du Cerf","Veste en cuir","Couronne sylvestre de rôdeur du Cerf","Bâton d'argent-lune de l'Ours"]
+shot k3_cmp_better
+shot k3_cmp_worse
+shot k3_cmp_empty
+flèches vertes 2
+cible {"x":-1740,"z":484,"label":"Parler à Archidruide Éolas","d":1407}
+shot k3_guide
+shot k3_guide_facing
+shot k3_bars

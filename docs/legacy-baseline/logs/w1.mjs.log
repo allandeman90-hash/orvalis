@@ -1,0 +1,13 @@
+shot w1_login
+shot w1_cine
+shot w1_create_default
+shot w1_create_braise_chaman
+nom aléatoire Rivard
+{"mode":"game","name":"Rivard","cls":"chaman"}
+shot w1_select_one
+shot w1_create_templier
+shot w1_select_two
+shot w1_select_other
+shot w1_delete
+{"chars":1,"mode":"t-select"}
+shot w1_options

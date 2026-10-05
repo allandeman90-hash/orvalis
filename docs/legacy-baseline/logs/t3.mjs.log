@@ -1,0 +1,5 @@
+target=Loup des prés lvl 4 hp=146.0/146 armor=34 dodge=3
+P power=25.9 dmgMul=1 crit=5.48
+immediately after: hp=131.0 tappers=1 state=combat
+after 0.2s: hp=131.0 combatT=0.20
+after 2s: hp=117.0

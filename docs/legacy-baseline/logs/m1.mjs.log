@@ -1,0 +1,6 @@
+SCENARIO ERROR page.goto: Timeout 30000ms exceeded.
+Call log:
+[2m  - navigating to "file:///home/claude/orvalis/dist/test.html#mockroom", waiting until "load"[22m
+
+    at Module.default (/home/claude/orvalis/tests/m1.mjs:11:11)
+    at async file:///home/claude/orvalis/tools/play.mjs:24:7

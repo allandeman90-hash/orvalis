@@ -1,0 +1,9 @@
+isaure rec -1632,51 ent=true mark=!
+win npc open=true
+active=val1
+gaspard ent=true mark=done
+ready val1=true
+complete=true xp=19 lvl=1
+avail gaspard=val2,val3
+shot w1
+shot w2

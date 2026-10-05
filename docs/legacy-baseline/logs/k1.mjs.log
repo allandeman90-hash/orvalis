@@ -1,0 +1,13 @@
+ok
+{"spec":"sp_rempart","free":17,"skills":11}
+shot k1_tree_empty
+nœuds affichés 13
+après clics {"free":9,"tal":"{\"robuste\":5,\"defense\":3}","hp":3290,"armor":1173,"threat":2.2}
+shot k1_tree_tip
+répartition complète {"free":0,"tal":{"robuste":5,"defense":3,"bouclier":3,"heurt":2,"tonnerre":1,"mur":3}}
+shot k1_tree_full
+shot k1_preview_armes
+{"spec":"sp_armes","threat":1,"bar":["g_frappe","g_heurt","g_brise","g_charge","g_cri","g_tourbillon","g_entaille","g_mur","pot_hp1","x_rappel"]}
+shot k1_after_switch
+shot k1_book
+shot k1_hud

@@ -1,0 +1,3 @@
+lod {"sh":3,"noSh":20,"hidden":5,"shown":18,"calls":197}
+auto [{"lvlSlow":4,"pr":0.6,"shadows":false},{"lvlFast":0,"pr":1,"pr0":1,"fpsText":"60 i/s"}]
+shot f2_fps

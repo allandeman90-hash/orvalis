@@ -1,0 +1,20 @@
+caravans: Chariot du Pacte f0 path 86 pts, start -400,1200 | Chariot des Clans f1 path 86 pts, start 400,1200
+enemy caravan moved 16 m, pi 1 -> 2, hp 9000
+enemy caravan dead=true tapped=true fame 0 -> 45 gold 3000 -> 3190
+ally caravan arrived=true fame 45 -> 75
+player dead before bastion: false
+bastion p 100 -> 100.0 owner 1
+bastion captured owner=1 p=100 buff=false
+shot qa_bastion
+auction npc: Oriane @-1615,77
+market rows 39 listings 48
+bought: gold 3330 -> 3304 bag 3 -> 4
+listed: 1 mine
+after market ticks listings 0 gold 3304 -> 3329
+shot qa_market
+saved id cmur9snvi name Testeur lvl 20 code ORV1.eyJvIjo… (6405 chars)
+shot qa_title_list
+title chars in DOM 1 play button true mode title
+after reload: mode game name Testeur lvl 20 gold 4242 zone Val d'Azur pos -1615,79
+import ok=true bad=false chars now 2
+shot qa_reloaded
