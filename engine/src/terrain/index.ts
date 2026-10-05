@@ -40,7 +40,7 @@ export type { StreamingConfig, StreamingEvents, TileBuild, TileProvider } from '
 export type { TileEdgeSums } from './tile';
 export { buildFarTile, FAR_CELLS, FAR_OUTER, FAR_TRIANGLES, FAR_VERTICES, farCenterIndex, farOuterIndex, FarTerrainWindow, farTileIndices, farVertexGridPosition } from './farTerrain';
 export type { FarTile, FarWindowEvents } from './farTerrain';
-export { buildChunkMask, MASK_LIT, MASK_SIZE, MAX_TERRAIN_LAYERS, paintFixture } from './paint';
+export { buildChunkMask, CHUNK_MASK_BYTES, MASK_LIT, MASK_SIZE, MAX_TERRAIN_LAYERS, paintFixture, validateChunkMaterial } from './paint';
 export type { ChunkMaterial, LayerAlphaFunction, PaintKind, TerrainPaint } from './paint';
 export type { ChunkBounds, TerrainChunk, TerrainTile, TerrainTileOptions, TileHeightKind, TileNormalMode, WorldHeightFunction } from './tile';
 export { decodeGridZone, encodeGridZone, GRID_ZONE_MAGIC, gridZonePaint, gridZoneSampler, gridZoneTiles, validateGridZone } from './gridZone';
@@ -48,3 +48,21 @@ export type { GridDiagonal, GridZone, GridZoneSampler } from './gridZone';
 export { legacyToEngine, TEST_ZONE, testZonePaint } from './testZone';
 export { buildChunkLiquidGeometry, LIQUID_CELL_NONE, LIQUID_CELLS, LIQUID_TYPE_CODE, LIQUID_TYPES, LIQUID_VERTEX_FLOATS, LIQUID_VERTICES, LIQUID_VERTICES_PER_SIDE, liquidCellIndex, liquidFixture, liquidTypeOfCell, liquidVertexIndex, sampleChunkLiquid } from './liquid';
 export type { ChunkLiquid, ChunkLiquidGeometry, LiquidFixtureKind, LiquidSource, LiquidType } from './liquid';
+export {
+  MAX_PRODUCTION_TERRAIN_LAYERS,
+  MIN_TERRAIN_LAYERS,
+  resolveTerrainChunkMaterialContract,
+  TERRAIN_CHUNKS_PER_TILE,
+  terrainChunkMaterialIndex,
+  validateTerrainChunkMaterialContract,
+  validateTerrainTextureDefinition,
+  validateTerrainTextureLibrary,
+  validateTerrainTileMaterialContract,
+} from './productionContract';
+export type {
+  ResolvedTerrainChunkMaterialContract,
+  TerrainChunkMaterialContract,
+  TerrainTextureDefinition,
+  TerrainTextureLibrary,
+  TerrainTileMaterialContract,
+} from './productionContract';
