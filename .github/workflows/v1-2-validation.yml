@@ -57,3 +57,12 @@ jobs:
 
       - name: Build engine
         run: npm run build
+
+      - name: Install Chromium for model/character smokes
+        run: npx playwright install --with-deps chromium
+
+      - name: Model smokes — WebGL2 + WebGPU
+        run: npm run smoke:model -- --no-build
+
+      - name: Character smokes — WebGL2 + WebGPU
+        run: npm run smoke:character -- --no-build
