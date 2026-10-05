@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { bindCharacterBodyAsset, type CharacterBodyContract } from '../../src/character';
+import {
+  applyResolvedAppearanceTextures,
+  bindCharacterBodyAsset,
+  CharacterComposite,
+  ORVALIS_CHARACTER_SECTION_FORMAT,
+  resolvedAppearanceGeosetSelection,
+  type CharacterBodyContract,
+  type ExternalCharacterSectionAsset,
+  type ResolvedItemAppearance,
+} from '../../src/character';
 import { ORVALIS_MODEL_FORMAT, type ExternalModelAsset, type ModelMesh } from '../../src/model';
 
 const positions = new Float32Array([
@@ -68,6 +77,22 @@ const body: CharacterBodyContract = {
   customization: { skinIds: ['skin-a'], faceIds: ['face-a'], hairStyleIds: ['hair-a'], hairColorIds: ['brown'], facialHairStyleIds: ['none'] },
 };
 
+const torsoSource = 'assets/characters/sections/test-shirt-torso.orvsection.json';
+const torsoPixels = new Uint8Array(128 * 96 * 4).fill(255);
+const torsoAsset: ExternalCharacterSectionAsset = {
+  format: ORVALIS_CHARACTER_SECTION_FORMAT,
+  sourceUrl: torsoSource,
+  section: { name: 'test-shirt-torso', region: 'torso', alpha: 'key', data: torsoPixels },
+};
+const shirtAppearance: ResolvedItemAppearance = {
+  id: 'test-shirt',
+  bodyId: body.id,
+  textures: [{ region: 'torso', asset: torsoSource, alpha: 'key' }],
+  geosets: [],
+  attached: [],
+  hide: {},
+};
+
 describe('V1.2 production character asset binding', () => {
   it('binds the authored rig, semantic sockets and geoset groups to the loaded external model', () => {
     const bound = bindCharacterBodyAsset(body, asset);
@@ -111,5 +136,30 @@ describe('V1.2 production character asset binding', () => {
       mesh: { ...mesh, submeshes: [{ geosetId: 2, indexStart: 0, indexCount: 6, material: 0 }] },
     };
     expect(() => bindCharacterBodyAsset(body, noBody)).toThrow(/geoset 0/);
+  });
+
+  it('feeds external appearance textures into the existing P5 composite and clears stale equipment layers', () => {
+    const composite = new CharacterComposite({ dither: false });
+    const sections = new Map([[torsoSource, torsoAsset]]);
+    applyResolvedAppearanceTextures(composite, { shirt: shirtAppearance }, sections);
+    expect(Array.from(composite.texture().data.slice(0, 4))).toEqual([255, 255, 255, 255]);
+
+    applyResolvedAppearanceTextures(composite, {}, sections);
+    expect(Array.from(composite.texture().data.slice(0, 4))).toEqual([0, 0, 0, 255]);
+  });
+
+  it('requires loaded external texture sources and a paintable equipment slot', () => {
+    const composite = new CharacterComposite({ dither: false });
+    expect(() => applyResolvedAppearanceTextures(composite, { shirt: shirtAppearance }, new Map())).toThrow(/unloaded texture/);
+    expect(() => applyResolvedAppearanceTextures(composite, { mainHand: shirtAppearance }, new Map([[torsoSource, torsoAsset]]))).toThrow(/cannot paint/);
+  });
+
+  it('combines resolved geosets with the existing highest-variant rule and checks the real mesh', () => {
+    const bound = bindCharacterBodyAsset(body, asset);
+    const hair: ResolvedItemAppearance = { ...shirtAppearance, id: 'hair-geometry', textures: [], geosets: [{ name: 'hair', group: 0, variant: 2 }] };
+    expect(resolvedAppearanceGeosetSelection(bound, [hair])).toEqual({ 0: 2 });
+    expect(resolvedAppearanceGeosetSelection(bound, [{ ...hair, id: 'baseline', geosets: [{ name: 'hair', group: 0, variant: 1 }] }], { 0: 2 })).toEqual({ 0: 2 });
+    expect(() => resolvedAppearanceGeosetSelection(bound, [{ ...hair, geosets: [{ name: 'hair', group: 0, variant: 3 }] }])).toThrow(/no hair variant 3/);
+    expect(() => resolvedAppearanceGeosetSelection(bound, [{ ...hair, bodyId: 'other-body' }])).toThrow(/not "test-body"/);
   });
 });
