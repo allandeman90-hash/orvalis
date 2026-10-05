@@ -19,3 +19,21 @@ export { clipPolygonToSides, floodPortals, FULL_SCREEN, intersectRects, PORTAL_D
 export type { PortalFlood, PortalFloodOptions, ScreenRect } from './visibility';
 export { BUILDING_FOG_FLAG_SKIP, FOG_TRANSITION_SECONDS, FogTransition, fogWeight, MAX_GROUP_FOGS, mixFog, resolveFog, selectBuildingFog, validateBuildingFogs } from './fog';
 export type { BuildingFog, ResolvedFog } from './fog';
+export { ENVIRONMENT_MATERIAL_REFERENCE, resolveBuildingGroupContract, resolveEnvironmentMaterial, validateBuildingAssetContract, validateEnvironmentMaterialDefinition, validateEnvironmentTextureDefinition } from './productionContract';
+export type {
+  BuildingAssetContract,
+  BuildingGroupAssetDefinition,
+  BuildingGroupBatchContract,
+  EnvironmentDoodadModelDefinition,
+  EnvironmentDoodadPlacementDefinition,
+  EnvironmentDoodadSetDefinition,
+  EnvironmentFogDefinition,
+  EnvironmentLocalLightDefinition,
+  EnvironmentMaterialDefinition,
+  EnvironmentPortalDefinition,
+  EnvironmentTextureDefinition,
+  EnvironmentWrapMode,
+  ResolvedBuildingGroupBatch,
+  ResolvedBuildingGroupContract,
+  ResolvedEnvironmentMaterial,
+} from './productionContract';
