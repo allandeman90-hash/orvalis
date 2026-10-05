@@ -52,3 +52,9 @@ jobs:
 
       - name: Build engine
         run: npm run build
+
+      - name: Install locked Chromium for terrain smoke
+        run: node node_modules/playwright-core/cli.js install --with-deps chromium
+
+      - name: Textured terrain smoke — WebGL2 + WebGPU
+        run: node scripts/smoke.mjs --suite=textured --no-build
