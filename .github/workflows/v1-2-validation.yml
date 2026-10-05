@@ -11,6 +11,7 @@ on:
       - 'engine/src/character/assetAdapter.ts'
       - 'engine/src/character/externalSection.ts'
       - 'engine/src/character/index.ts'
+      - 'engine/scripts/v1-2-character-assets-smoke.mjs'
       - 'engine/tests/assets/modelAsset.integration.test.ts'
       - 'engine/tests/character/assetAdapter.test.ts'
       - 'engine/tests/character/externalSection.test.ts'
@@ -50,7 +51,7 @@ jobs:
         run: npm run typecheck
 
       - name: Lint V1.1/V1.2 files
-        run: npx eslint src/model/externalAsset.ts src/character/assetAdapter.ts src/character/externalSection.ts tests/assets/modelAsset.integration.test.ts tests/character/assetAdapter.test.ts tests/character/externalSection.test.ts
+        run: npx eslint src/model/externalAsset.ts src/character/assetAdapter.ts src/character/externalSection.ts scripts/v1-2-character-assets-smoke.mjs tests/assets/modelAsset.integration.test.ts tests/character/assetAdapter.test.ts tests/character/externalSection.test.ts
 
       - name: Run external asset and character adapter tests
         run: npx vitest run tests/assets/modelAsset.integration.test.ts tests/character/productionContract.test.ts tests/character/assetAdapter.test.ts tests/character/externalSection.test.ts
@@ -58,11 +59,8 @@ jobs:
       - name: Build engine
         run: npm run build
 
-      - name: Install Chromium for model/character smokes
+      - name: Install locked Chromium for browser smoke
         run: node node_modules/playwright-core/cli.js install --with-deps chromium
 
-      - name: Model smokes — WebGL2 + WebGPU
-        run: npm run smoke:model -- --no-build
-
-      - name: Character smokes — WebGL2 + WebGPU
-        run: npm run smoke:character -- --no-build
+      - name: V1.2 model + character smoke — WebGL2 + WebGPU
+        run: node scripts/v1-2-character-assets-smoke.mjs
