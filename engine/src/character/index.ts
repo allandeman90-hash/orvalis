@@ -14,6 +14,15 @@ export {
   validateEquipment,
 } from './equipment';
 export type { AttachedModelKey, CharacterEquipment, EquipmentItem, EquipmentSlot, ItemKey } from './equipment';
+export {
+  CHARACTER_SOCKET_NAMES, REQUIRED_CHARACTER_SOCKETS, effectiveAppearanceId, resolveEquippedAppearance, resolveItemAppearance,
+  validateCharacterBodyContract, validateCharacterRoster, validateItemAppearanceDefinition,
+} from './productionContract';
+export type {
+  CharacterAttachedAppearancePart, CharacterBodyContract, CharacterCustomizationContract, CharacterSocketContract, CharacterSocketName,
+  CharacterTextureAppearancePart, CharacterVisibilityRules, EquippedItemAppearanceRef, ItemAppearanceDefinition, ItemAppearancePayload,
+  ItemAppearanceRegistry, Quat, ResolvedCharacterAttachment, ResolvedCharacterGeoset, ResolvedItemAppearance, Vec3,
+} from './productionContract';
 export { ANIMATION_ID, CharacterAnimator } from './animator';
 export type { CharacterAnimationState, Locomotion } from './animator';
 export { MANNEQUIN_SEQUENCES, mannequinAnimation } from './mannequinAnimation';
