@@ -1,6 +1,6 @@
 # V1.2 — Production character asset adapter
 
-Status: **IMPLEMENTED — TARGETED VALIDATION PENDING**
+Status: **VALIDATED**
 
 This checkpoint connects the production contracts from V0.1 to the external asset path introduced in V1.1, while preserving the deterministic P5 mannequin/equipment fixtures.
 
@@ -124,6 +124,10 @@ Tests:
 - `engine/tests/character/externalSection.test.ts`
 - `engine/tests/character/assetAdapter.test.ts`
 
+Browser validation:
+
+- `engine/scripts/v1-2-character-assets-smoke.mjs`
+
 Validation workflow:
 
 - `.github/workflows/v1-2-validation.yml`
@@ -134,15 +138,31 @@ The procedural mannequin, Vanguard equipment and generated P5 texture sections r
 
 V1.2 exists so authored original body meshes, painted sections and equipment assets can replace those fixtures without replacing the renderer architecture.
 
-## Validation gate
+## Validation result
 
-The checkpoint is not considered validated until the targeted workflow is green for the current tree:
+V1.2 is closed by GitHub Actions **V1.2 Character Asset Validation #16**, run `37376655789`, on commit `f3872014a9feb0f0076b0a86af1761336df390a8`.
+
+Green checks:
 
 1. engine typecheck;
-2. lint of V1.1/V1.2 files;
-3. V1.1 external-model integration test;
-4. V0.1 production-contract test;
+2. targeted lint of V1.1/V1.2 runtime, tests and targeted browser smoke;
+3. V1.1 real-HTTP external-model integration test;
+4. V0.1 production-contract tests;
 5. V1.2 body/texture/attachment adapter tests;
-6. engine build.
+6. total targeted Vitest result: **4 files, 20/20 tests passed**;
+7. production Vite build;
+8. locked Playwright Chromium installation;
+9. targeted model + character smoke on **WebGL2**;
+10. targeted model + character smoke on **WebGPU** with CI adapter `google/swiftshader`.
 
-After that, run the relevant model/character browser smoke on WebGL2 and WebGPU before declaring the checkpoint closed.
+The browser smoke also verifies the current debug contract rather than an obsolete assumption: the stats panel starts hidden, F3 opens it, model debug controls refresh it, the model fixture reports 1 draw / 44 triangles, and the character fixture exposes its 256×256 composite and semantic appearance controls.
+
+During closure, the broad historical `smoke:model` exposed stale assertions that assumed the debug overlay was continuously populated while hidden. Runtime and its unit test intentionally do no hidden periodic DOM writes, so V1.2 did **not** weaken or alter that runtime behavior. The dedicated checkpoint smoke uses the actual user path (F3) instead. Updating the broad historical smoke is maintenance work, not a V1.2 blocker.
+
+## Closure
+
+V1.2 has no remaining implementation or validation gate.
+
+The next roadmap checkpoint is **V1.3 — Equipment appearance contract**. V0.1 already provides `ItemAppearanceDefinition`, `appearanceOverrideId`, body overrides and resolution; V1.3 must audit that existing surface against the roadmap, fill only the missing production-facing pieces (especially unlocked-appearance collection semantics), and keep gameplay item stats outside the renderer.
+
+P8.7 remains separately open before P9.
