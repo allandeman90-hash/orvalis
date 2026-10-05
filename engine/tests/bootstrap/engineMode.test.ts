@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { DEFAULT_ENGINE_MODE, legacyPageUrl, modeUrl, parseEngineMode } from '../../src/bootstrap/engineMode';
 
 describe('parseEngineMode', () => {
-  it('defaults to the legacy game', () => {
-    expect(DEFAULT_ENGINE_MODE).toBe('legacy');
-    for (const q of ['', '?', '?foo=bar', '?engine=', '?renderer=webgpu']) expect(parseEngineMode(q)).toEqual({ mode: 'legacy' });
+  it('defaults to the new engine', () => {
+    expect(DEFAULT_ENGINE_MODE).toBe('new');
+    for (const q of ['', '?', '?foo=bar', '?engine=', '?renderer=webgpu']) expect(parseEngineMode(q)).toEqual({ mode: 'new' });
   });
   it('reads an explicit choice, case-insensitively, among other parameters', () => {
     expect(parseEngineMode('?engine=new')).toEqual({ mode: 'new' });
@@ -12,8 +12,8 @@ describe('parseEngineMode', () => {
     expect(parseEngineMode('?engine=NEW')).toEqual({ mode: 'new' });
     expect(parseEngineMode('?renderer=webgl2&engine=new&x=1')).toEqual({ mode: 'new' });
   });
-  it('an unknown value falls back to legacy and is reported', () => {
-    expect(parseEngineMode('?engine=three')).toEqual({ mode: 'legacy', ignoredValue: 'three' });
+  it('an unknown value falls back to the default new engine and is reported', () => {
+    expect(parseEngineMode('?engine=three')).toEqual({ mode: 'new', ignoredValue: 'three' });
   });
 });
 
