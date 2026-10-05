@@ -26,27 +26,27 @@ Do not begin P9 until this is green.
 
 The engine is technically Vanilla-inspired but the visible test fixtures do not yet feel like Vanilla. This phase exists to fix that before adding large gameplay/backend layers.
 
-## V0 — OpenWow reference audit
-### V0.1 Character pipeline
+## V0 — OpenWow reference audit — COMPLETE
+### V0.1 Character pipeline — COMPLETE
 - OpenWow character/M2/equipment/composite/attachment audit.
 - Compare with 1.12.1 master spec.
 - Orvalis gap matrix.
 - Production character asset contract.
 
-### V0.2 Terrain/material pipeline
+### V0.2 Terrain/material pipeline — COMPLETE
 - OpenWow terrain layers, alpha maps, vertex colors, baked shadows.
 - Compare to Orvalis P1–P3 implementation.
 - Define production terrain material contract.
 
-### V0.3 WMO/doodad/material pipeline
+### V0.3 WMO/doodad/material pipeline — COMPLETE
 - OpenWow WMO material/group/doodad conventions.
 - Define Orvalis environment asset contract.
 
-## V1 — Real asset pipeline
-### V1.1 Model asset ingestion
+## V1 — Real asset pipeline — COMPLETE
+### V1.1 Model asset ingestion — COMPLETE
 Replace code-generated fixture art for player-facing scenes with real external original assets handled by `AssetManager`.
 
-### V1.2 Character asset contract
+### V1.2 Character asset contract — COMPLETE
 Each base archetype defines:
 - body mesh;
 - skeleton/animation compatibility;
@@ -56,15 +56,17 @@ Each base archetype defines:
 - body-type fit data;
 - geoset/visibility rules.
 
-### V1.3 Equipment appearance contract
+### V1.3 Equipment appearance contract — COMPLETE
 Separate gameplay item from appearance:
 - `Item` = stats/progression/requirements;
 - `ItemAppearance` = visual data;
 - `appearanceOverride` = transmog;
 - unlocked appearances persist in collection.
 
-## V2 — Vanilla-like rendering/material convergence
-### V2.1 Terrain 4-layer blend + alpha maps
+Validated production rule: an equipped item's native appearance is always usable when known; a transmog override must be known and unlocked. Persistence remains a later-system responsibility.
+
+## V2 — Vanilla-like rendering/material convergence — ACTIVE
+### V2.1 Terrain 4-layer blend + alpha maps — NEXT
 ### V2.2 Vertex color / baked shadow integration
 ### V2.3 M2-like material modes: opaque, alpha-key, alpha blend, unlit, two-sided, texture transforms
 ### V2.4 WMO/doodad materials in same visual language
