@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Orvalis — Human Male Vanilla target v2</title>
+<title>Orvalis — Human Male Vanilla target v3</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#090d13;color:#eef3f8;font:14px/1.45 system-ui,Segoe UI,Arial,sans-serif}#c{display:block;width:100%;height:100%}
 #panel{position:fixed;left:14px;top:14px;z-index:4;width:min(410px,calc(100vw - 56px));padding:12px 14px;border:1px solid #2d3948;border-radius:11px;background:#0d131be8;backdrop-filter:blur(8px)}
@@ -13,7 +13,7 @@ button{border:1px solid #3a495c;background:#17212e;color:#edf3fa;border-radius:7
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 </head><body>
 <canvas id="c"></canvas>
-<div id="panel"><b>Human Male — Vanilla silhouette target v2</b><small>Cette version force volontairement les proportions vers le benchmark : tête plus massive, cou court, épaules/torse larges, taille serrée, bras plus courts, avant-bras/mains énormes, jambes compactes et pieds larges. Drag = tourner · molette = zoom.</small><div id="buttons"><button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="raw">Base brute</button><button id="target" class="active">Cible Vanilla</button></div></div>
+<div id="panel"><b>Human Male — Vanilla silhouette target v3</b><small>Cette version applique réellement le morph à tous les squelettes : corps + cheveux + barbe + sourcils. La différence Base brute / Cible Vanilla doit être nette immédiatement.</small><div id="buttons"><button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="raw">Base brute</button><button id="target" class="active">Cible Vanilla</button></div></div>
 <div id="credit">Base temporaire Quaternius CC0 — aucune géométrie Blizzard.</div><div id="status">Chargement…</div>
 <script type="module">
 import * as THREE from 'three';
@@ -30,29 +30,25 @@ function load(u){return new Promise((ok,no)=>loader.load(u,ok,undefined,no));}
 function keyName(n){return (n||'').toLowerCase();}
 function remember(obj){obj.traverse(n=>{if(n.isBone&&!bases.has(n))bases.set(n,{s:n.scale.clone(),p:n.position.clone()});if(n.isMesh||n.isSkinnedMesh){n.castShadow=true;n.receiveShadow=true;const ms=Array.isArray(n.material)?n.material:[n.material];for(const m of ms){if(!m)continue;m.metalness=0;m.roughness=1;m.flatShading=true;m.needsUpdate=true;}}});}
 function restore(){for(const [b,t] of bases){b.scale.copy(t.s);b.position.copy(t.p);}}
-function bonesByName(){const m=new Map();for(const o of loaded)o.traverse(n=>{if(n.isBone)m.set(keyName(n.name),n)});return m;}
-function mulScale(map,n,x,y,z){const b=map.get(n);if(b){b.scale.x*=x;b.scale.y*=y;b.scale.z*=z;}}
+function bonesByName(){const m=new Map();for(const o of loaded)o.traverse(n=>{if(!n.isBone)return;const k=keyName(n.name);const list=m.get(k);if(list)list.push(n);else m.set(k,[n]);});return m;}
+function eachBone(map,n,fn){const list=map.get(n);if(list)for(const b of list)fn(b);}
+function mulScale(map,n,x,y,z){eachBone(map,n,b=>{b.scale.x*=x;b.scale.y*=y;b.scale.z*=z;});}
 function uniform(map,n,s){mulScale(map,n,s,s,s)}
-function posScale(map,n,x=1,y=1,z=1){const b=map.get(n);if(b){b.position.x*=x;b.position.y*=y;b.position.z*=z;}}
+function posScale(map,n,x=1,y=1,z=1){eachBone(map,n,b=>{b.position.x*=x;b.position.y*=y;b.position.z*=z;});}
 function applyTarget(){restore();if(!vanilla)return;const m=bonesByName();
- // head / neck: larger head and shorter neck.
- uniform(m,'head',1.17);mulScale(m,'neck_01',1.13,.72,1.13);
- // heroic upper body: wide chest, narrow lower waist, broad clavicles.
- mulScale(m,'spine_01',.94,.98,.96);mulScale(m,'spine_02',1.18,.98,1.10);mulScale(m,'spine_03',1.24,.98,1.12);
- mulScale(m,'clavicle_l',1.10,1.22,1.10);mulScale(m,'clavicle_r',1.10,1.22,1.10);
- // arms: shorter but much heavier, especially forearms and hands.
- for(const s of ['l','r']){mulScale(m,'upperarm_'+s,1.18,.86,1.18);mulScale(m,'lowerarm_'+s,1.31,.88,1.31);uniform(m,'hand_'+s,1.31);posScale(m,'hand_'+s,1,.94,1);
-  for(const f of ['thumb','index','middle','ring','pinky'])for(const i of ['01','02','03'])uniform(m,`${f}_${i}_${s}`,1.05);}
- // legs: compact and powerful, with broad feet.
- for(const s of ['l','r']){mulScale(m,'thigh_'+s,1.16,.91,1.16);mulScale(m,'calf_'+s,1.18,.90,1.18);mulScale(m,'foot_'+s,1.32,1.18,1.32);}
- // pelvis slightly wider, vertical silhouette slightly compressed.
- mulScale(m,'pelvis',1.08,.96,1.05);
+ uniform(m,'head',1.20);mulScale(m,'neck_01',1.16,.66,1.16);
+ mulScale(m,'spine_01',.90,.96,.93);mulScale(m,'spine_02',1.22,.98,1.13);mulScale(m,'spine_03',1.30,.98,1.16);
+ mulScale(m,'clavicle_l',1.14,1.30,1.14);mulScale(m,'clavicle_r',1.14,1.30,1.14);
+ for(const s of ['l','r']){mulScale(m,'upperarm_'+s,1.22,.82,1.22);mulScale(m,'lowerarm_'+s,1.38,.84,1.38);uniform(m,'hand_'+s,1.38);posScale(m,'hand_'+s,1,.90,1);
+  for(const f of ['thumb','index','middle','ring','pinky'])for(const i of ['01','02','03','04_leaf'])uniform(m,`${f}_${i}_${s}`,1.08);}
+ for(const s of ['l','r']){mulScale(m,'thigh_'+s,1.20,.86,1.20);mulScale(m,'calf_'+s,1.23,.84,1.23);mulScale(m,'foot_'+s,1.38,1.22,1.38);}
+ mulScale(m,'pelvis',1.10,.92,1.06);
 }
 function prep(g){remember(g.scene);loaded.push(g.scene);root.add(g.scene);}
-function fit(){const b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);root.position.y-=b.min.y;const bb=new THREE.Box3().setFromObject(root);bb.getSize(s);bb.getCenter(c);const y=bb.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*2.15,2.25);controls.target.set(c.x,y,c.z);camera.position.set(c.x,y,c.z+d);controls.update();}
+function fit(){root.position.set(0,0,0);let b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);root.position.y=-b.min.y;b=new THREE.Box3().setFromObject(root);b.getSize(s);b.getCenter(c);const y=b.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*2.15,2.25);controls.target.set(c.x,y,c.z);camera.position.set(c.x,y,c.z+d);controls.update();}
 function view(side){const b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);const y=b.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*2.15,2.25);camera.position.set(c.x+side[0]*d,y,c.z+side[1]*d);controls.target.set(c.x,y,c.z);controls.update();}
-function setMode(v){vanilla=v;applyTarget();fit();document.querySelector('#target').classList.toggle('active',v);document.querySelector('#raw').classList.toggle('active',!v);status.textContent=v?'Cible Vanilla : morph agressif actif':'Base Quaternius brute';}
-try{const body=await load(URLS[0]);prep(body);const extra=await Promise.allSettled(URLS.slice(1).map(load));for(const r of extra)if(r.status==='fulfilled')prep(r.value);applyTarget();fit();status.textContent='Cible Vanilla : morph agressif actif';}catch(e){console.error(e);status.classList.add('err');status.textContent='Échec chargement modèle';}
+function setMode(v){vanilla=v;applyTarget();fit();document.querySelector('#target').classList.toggle('active',v);document.querySelector('#raw').classList.toggle('active',!v);status.textContent=v?'Cible Vanilla : morph corps + accessoires ACTIF':'Base Quaternius brute';}
+try{const body=await load(URLS[0]);prep(body);const extra=await Promise.allSettled(URLS.slice(1).map(load));for(const r of extra)if(r.status==='fulfilled')prep(r.value);applyTarget();fit();status.textContent='Cible Vanilla : morph corps + accessoires ACTIF';}catch(e){console.error(e);status.classList.add('err');status.textContent='Échec chargement modèle';}
 document.querySelector('#front').onclick=()=>view([0,1]);document.querySelector('#side').onclick=()=>view([1,0]);document.querySelector('#back').onclick=()=>view([0,-1]);document.querySelector('#raw').onclick=()=>setMode(false);document.querySelector('#target').onclick=()=>setMode(true);
 function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 </script></body></html>
