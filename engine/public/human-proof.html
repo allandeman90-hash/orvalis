@@ -1,128 +1,58 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Orvalis — Human Male real-mesh proof v1</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orvalis — Human Male Vanilla target v2</title>
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#0a0e14;color:#eef3f8;font:14px/1.45 system-ui,Segoe UI,Arial,sans-serif}
-#c{display:block;width:100%;height:100%}
-#panel{position:fixed;left:14px;top:14px;z-index:4;width:min(390px,calc(100vw - 56px));padding:12px 14px;border:1px solid #2d3948;border-radius:11px;background:#0d131be8;backdrop-filter:blur(8px);box-shadow:0 10px 30px #0007}
-#panel b{display:block;font-size:16px;margin-bottom:4px}#panel small{display:block;color:#a8b4c2}
-#buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}button{border:1px solid #3a495c;background:#17212e;color:#edf3fa;border-radius:7px;padding:6px 10px;cursor:pointer}button:hover{background:#223145}.active{outline:2px solid #6f8bab}
-#status{position:fixed;right:14px;bottom:12px;z-index:4;padding:6px 9px;border-radius:7px;background:#0d131bc9;color:#93a2b4;font-size:12px}
-#credit{position:fixed;left:14px;bottom:12px;z-index:4;color:#75869a;font-size:11px;max-width:55vw}
-.err{color:#ff8b8b!important}
+html,body{margin:0;height:100%;overflow:hidden;background:#090d13;color:#eef3f8;font:14px/1.45 system-ui,Segoe UI,Arial,sans-serif}#c{display:block;width:100%;height:100%}
+#panel{position:fixed;left:14px;top:14px;z-index:4;width:min(410px,calc(100vw - 56px));padding:12px 14px;border:1px solid #2d3948;border-radius:11px;background:#0d131be8;backdrop-filter:blur(8px)}
+#panel b{display:block;font-size:16px;margin-bottom:4px}#panel small{display:block;color:#a8b4c2}#buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+button{border:1px solid #3a495c;background:#17212e;color:#edf3fa;border-radius:7px;padding:6px 10px;cursor:pointer}.active{outline:2px solid #8aa3c1;background:#223145}
+#status{position:fixed;right:14px;bottom:12px;z-index:4;padding:6px 9px;border-radius:7px;background:#0d131bc9;color:#93a2b4;font-size:12px}#credit{position:fixed;left:14px;bottom:12px;color:#75869a;font-size:11px}.err{color:#ff8b8b!important}
 </style>
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
-</script>
-</head>
-<body>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head><body>
 <canvas id="c"></canvas>
-<div id="panel">
-  <b>Orvalis Human Male — vraie base mesh v1</b>
-  <small>Cette fois : aucune anatomie bricolée en ellipsoïdes. Base humanoïde riggée Quaternius (CC0), utilisée seulement pour valider la direction du corps avant adaptation Orvalis. Drag = tourner · molette = zoom.</small>
-  <div id="buttons">
-    <button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="reset">Reset</button>
-    <button id="heroic" class="active">Silhouette Orvalis</button>
-  </div>
-</div>
-<div id="credit">Base temporaire : Quaternius — Universal Base Characters, CC0 1.0. Aucun asset Blizzard.</div>
-<div id="status">Chargement de la vraie mesh…</div>
+<div id="panel"><b>Human Male — Vanilla silhouette target v2</b><small>Cette version force volontairement les proportions vers le benchmark : tête plus massive, cou court, épaules/torse larges, taille serrée, bras plus courts, avant-bras/mains énormes, jambes compactes et pieds larges. Drag = tourner · molette = zoom.</small><div id="buttons"><button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="raw">Base brute</button><button id="target" class="active">Cible Vanilla</button></div></div>
+<div id="credit">Base temporaire Quaternius CC0 — aucune géométrie Blizzard.</div><div id="status">Chargement…</div>
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 const BASE='https://cdn.jsdelivr.net/gh/kirbycope/godot-3d-player-controller-v2@a928cfa67684352b75a65c510d8751d1f3f2489c/assets/universal_base_characters/';
-const urls={
- body:BASE+'Base%20Characters/Superhero_Male_FullBody.gltf',
- hair:BASE+'Hairstyles/Rigged/Hair_Long.gltf',
- beard:BASE+'Hairstyles/Rigged/Hair_Beard.gltf',
- brows:BASE+'Hairstyles/Rigged/Eyebrows_Regular.gltf'
-};
-const canvas=document.querySelector('#c'), status=document.querySelector('#status');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setClearColor(0x0a0e14,1);
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=.92;
-renderer.shadowMap.enabled=true;
-
-const scene=new THREE.Scene();
-scene.fog=new THREE.Fog(0x0a0e14,7.5,13);
-scene.add(new THREE.HemisphereLight(0xbdd7ff,0x32271f,1.65));
-const key=new THREE.DirectionalLight(0xffe5c7,3.1);key.position.set(-3,5,4);key.castShadow=true;scene.add(key);
-const rim=new THREE.DirectionalLight(0x809ed0,1.15);rim.position.set(4,3,-4);scene.add(rim);
-
-const ground=new THREE.Mesh(new THREE.CircleGeometry(3.8,64),new THREE.MeshStandardMaterial({color:0x101720,roughness:1,metalness:0}));
-ground.rotation.x=-Math.PI/2;ground.position.y=-.005;ground.receiveShadow=true;scene.add(ground);
-
-const camera=new THREE.PerspectiveCamera(38,1,.03,50);
-const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.enablePan=false;controls.minDistance=2.15;controls.maxDistance=5.7;controls.target.set(0,1.05,0);
-const root=new THREE.Group();scene.add(root);
-const loader=new GLTFLoader();
-let bounds=new THREE.Box3(), center=new THREE.Vector3(), size=new THREE.Vector3();
-let heroic=true;
-const loaded=[];
-const boneBase=new Map();
-
-function load(url){return new Promise((resolve,reject)=>loader.load(url,g=>resolve(g),undefined,reject));}
-function rememberBones(obj){obj.traverse(n=>{if(n.isBone&&!boneBase.has(n)) boneBase.set(n,{scale:n.scale.clone(),position:n.position.clone()});});}
-function restoreBones(){for(const [b,t] of boneBase){b.scale.copy(t.scale);b.position.copy(t.position);}}
-function tuneOneScene(obj,on){
- restoreBones();
- if(!on)return;
- const byName=new Map();obj.traverse(n=>{if(n.name)byName.set(n.name.toLowerCase(),n)});
- const scaleCross=(name,a,b=a)=>{const n=byName.get(name);if(n?.isBone){n.scale.x*=a;n.scale.z*=b;}};
- scaleCross('spine_02',1.10,1.06);
- scaleCross('spine_01',1.045,1.03);
- scaleCross('upperarm_l',1.055,1.055);scaleCross('upperarm_r',1.055,1.055);
- scaleCross('lowerarm_l',1.105,1.105);scaleCross('lowerarm_r',1.105,1.105);
- for(const n of ['hand_l','hand_r']){const b=byName.get(n);if(b?.isBone)b.scale.multiplyScalar(1.06);}
- scaleCross('thigh_l',1.035,1.035);scaleCross('thigh_r',1.035,1.035);
- scaleCross('calf_l',1.04,1.04);scaleCross('calf_r',1.04,1.04);
- for(const n of ['foot_l','foot_r']){const b=byName.get(n);if(b?.isBone){b.scale.x*=1.07;b.scale.z*=1.10;}}
+const URLS=[BASE+'Base%20Characters/Superhero_Male_FullBody.gltf',BASE+'Hairstyles/Rigged/Hair_Long.gltf',BASE+'Hairstyles/Rigged/Hair_Beard.gltf',BASE+'Hairstyles/Rigged/Eyebrows_Regular.gltf'];
+const canvas=document.querySelector('#c'),status=document.querySelector('#status');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0x090d13);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;
+const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xd5e2ee,0x39291f,2.0));const key=new THREE.DirectionalLight(0xffd9b8,3.0);key.position.set(-3,5,4);scene.add(key);const rim=new THREE.DirectionalLight(0x7e9ac1,1.0);rim.position.set(4,3,-4);scene.add(rim);
+const camera=new THREE.PerspectiveCamera(36,1,.03,50);const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.enablePan=false;controls.minDistance=1.8;controls.maxDistance=6;
+const root=new THREE.Group();scene.add(root);const loader=new GLTFLoader();const loaded=[];const bases=new Map();let vanilla=true;
+function load(u){return new Promise((ok,no)=>loader.load(u,ok,undefined,no));}
+function keyName(n){return (n||'').toLowerCase();}
+function remember(obj){obj.traverse(n=>{if(n.isBone&&!bases.has(n))bases.set(n,{s:n.scale.clone(),p:n.position.clone()});if(n.isMesh||n.isSkinnedMesh){n.castShadow=true;n.receiveShadow=true;const ms=Array.isArray(n.material)?n.material:[n.material];for(const m of ms){if(!m)continue;m.metalness=0;m.roughness=1;m.flatShading=true;m.needsUpdate=true;}}});}
+function restore(){for(const [b,t] of bases){b.scale.copy(t.s);b.position.copy(t.p);}}
+function bonesByName(){const m=new Map();for(const o of loaded)o.traverse(n=>{if(n.isBone)m.set(keyName(n.name),n)});return m;}
+function mulScale(map,n,x,y,z){const b=map.get(n);if(b){b.scale.x*=x;b.scale.y*=y;b.scale.z*=z;}}
+function uniform(map,n,s){mulScale(map,n,s,s,s)}
+function posScale(map,n,x=1,y=1,z=1){const b=map.get(n);if(b){b.position.x*=x;b.position.y*=y;b.position.z*=z;}}
+function applyTarget(){restore();if(!vanilla)return;const m=bonesByName();
+ // head / neck: larger head and shorter neck.
+ uniform(m,'head',1.17);mulScale(m,'neck_01',1.13,.72,1.13);
+ // heroic upper body: wide chest, narrow lower waist, broad clavicles.
+ mulScale(m,'spine_01',.94,.98,.96);mulScale(m,'spine_02',1.18,.98,1.10);mulScale(m,'spine_03',1.24,.98,1.12);
+ mulScale(m,'clavicle_l',1.10,1.22,1.10);mulScale(m,'clavicle_r',1.10,1.22,1.10);
+ // arms: shorter but much heavier, especially forearms and hands.
+ for(const s of ['l','r']){mulScale(m,'upperarm_'+s,1.18,.86,1.18);mulScale(m,'lowerarm_'+s,1.31,.88,1.31);uniform(m,'hand_'+s,1.31);posScale(m,'hand_'+s,1,.94,1);
+  for(const f of ['thumb','index','middle','ring','pinky'])for(const i of ['01','02','03'])uniform(m,`${f}_${i}_${s}`,1.05);}
+ // legs: compact and powerful, with broad feet.
+ for(const s of ['l','r']){mulScale(m,'thigh_'+s,1.16,.91,1.16);mulScale(m,'calf_'+s,1.18,.90,1.18);mulScale(m,'foot_'+s,1.32,1.18,1.32);}
+ // pelvis slightly wider, vertical silhouette slightly compressed.
+ mulScale(m,'pelvis',1.08,.96,1.05);
 }
-function tuneAll(){for(const o of loaded)tuneOneScene(o,heroic);requestAnimationFrame(fitCameraSoft);}
-
-function prep(obj){
- obj.traverse(n=>{
-   if(n.isMesh||n.isSkinnedMesh){n.castShadow=true;n.receiveShadow=true;const mats=Array.isArray(n.material)?n.material:[n.material];for(const m of mats){if(!m)continue;m.metalness=0;m.roughness=.82;m.needsUpdate=true;}}
- });
- rememberBones(obj);loaded.push(obj);root.add(obj);
-}
-function fitCameraSoft(){
- root.position.y=0;
- bounds.setFromObject(root);bounds.getCenter(center);bounds.getSize(size);
- root.position.y=-bounds.min.y;
- bounds.setFromObject(root);bounds.getCenter(center);bounds.getSize(size);
- controls.target.set(center.x,bounds.min.y+size.y*.51,center.z);
- const d=Math.max(size.y*1.65,size.x*2.15,2.4);
- camera.position.set(0,bounds.min.y+size.y*.53,d);
- controls.update();
-}
-function view(x,z){bounds.setFromObject(root);bounds.getCenter(center);bounds.getSize(size);const d=Math.max(size.y*1.65,size.x*2.15,2.4);const y=bounds.min.y+size.y*.53;camera.position.set(center.x+x*d,y,center.z+z*d);controls.target.set(center.x,y,center.z);controls.update();}
-
-try{
- const body=await load(urls.body);prep(body.scene);
- const extras=await Promise.allSettled([load(urls.hair),load(urls.beard),load(urls.brows)]);
- for(const r of extras)if(r.status==='fulfilled')prep(r.value.scene);
- tuneAll();fitCameraSoft();
- status.textContent=`mesh réelle · ${loaded.length} éléments · ${heroic?'silhouette Orvalis':'base brute'}`;
-}catch(err){console.error(err);status.classList.add('err');status.textContent='Échec de chargement de la mesh externe — recharge la page.';}
-
-document.querySelector('#front').onclick=()=>view(0,1);
-document.querySelector('#side').onclick=()=>view(1,0);
-document.querySelector('#back').onclick=()=>view(0,-1);
-document.querySelector('#reset').onclick=()=>fitCameraSoft();
-document.querySelector('#heroic').onclick=e=>{heroic=!heroic;e.currentTarget.classList.toggle('active',heroic);tuneAll();status.textContent=`mesh réelle · ${loaded.length} éléments · ${heroic?'silhouette Orvalis':'base brute'}`;};
-
-function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-addEventListener('resize',resize);resize();
-renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera);});
-</script>
-</body>
-</html>
+function prep(g){remember(g.scene);loaded.push(g.scene);root.add(g.scene);}
+function fit(){const b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);root.position.y-=b.min.y;const bb=new THREE.Box3().setFromObject(root);bb.getSize(s);bb.getCenter(c);const y=bb.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*2.15,2.25);controls.target.set(c.x,y,c.z);camera.position.set(c.x,y,c.z+d);controls.update();}
+function view(side){const b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);const y=b.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*2.15,2.25);camera.position.set(c.x+side[0]*d,y,c.z+side[1]*d);controls.target.set(c.x,y,c.z);controls.update();}
+function setMode(v){vanilla=v;applyTarget();fit();document.querySelector('#target').classList.toggle('active',v);document.querySelector('#raw').classList.toggle('active',!v);status.textContent=v?'Cible Vanilla : morph agressif actif':'Base Quaternius brute';}
+try{const body=await load(URLS[0]);prep(body);const extra=await Promise.allSettled(URLS.slice(1).map(load));for(const r of extra)if(r.status==='fulfilled')prep(r.value);applyTarget();fit();status.textContent='Cible Vanilla : morph agressif actif';}catch(e){console.error(e);status.classList.add('err');status.textContent='Échec chargement modèle';}
+document.querySelector('#front').onclick=()=>view([0,1]);document.querySelector('#side').onclick=()=>view([1,0]);document.querySelector('#back').onclick=()=>view([0,-1]);document.querySelector('#raw').onclick=()=>setMode(false);document.querySelector('#target').onclick=()=>setMode(true);
+function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+</script></body></html>
