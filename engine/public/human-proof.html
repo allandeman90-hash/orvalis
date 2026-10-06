@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orvalis — Human Male proof v0</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0b0f15;color:#edf2f7;font:14px system-ui,Segoe UI,sans-serif}
+canvas{width:100%;height:100%;display:block}
+#panel{position:fixed;left:16px;top:16px;max-width:360px;padding:12px 14px;border:1px solid #2e3948;border-radius:10px;background:#0d131bd9;backdrop-filter:blur(8px)}
+b{display:block;font-size:16px;margin-bottom:5px} small{color:#9aa8b8;line-height:1.4}
+#buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+button{padding:6px 10px;border-radius:7px;border:1px solid #3a485a;background:#17212d;color:#edf2f7;cursor:pointer}button:hover{background:#223044}
+#status{position:fixed;right:14px;bottom:12px;color:#8593a5}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="panel"><b>Orvalis Human Male — visual proof v0</b>
+<small>Silhouette originale basée uniquement sur les proportions du benchmark : ~7,1 têtes, épaules ~2,8–3× la largeur de tête, mains/pieds volontairement grands. Ce n’est ni un asset Blizzard ni le rig final. Drag = tourner · molette = zoom.</small>
+<div id="buttons"><button data-yaw="0">Face</button><button data-yaw="90">Profil</button><button data-yaw="180">Dos</button><button id="reset">Reset</button></div></div>
+<div id="status"></div>
+<script type="module">
+const P=[],N=[],C=[],I=[];
+const SKIN=[0.73,0.49,0.32], SKIN_L=[0.82,0.57,0.38], HAIR=[0.14,0.095,0.075], CLOTH=[0.26,0.11,0.08], EYE=[0.07,0.06,0.05], MOUTH=[0.38,0.12,0.10];
+const addV=(p,n,c)=>{P.push(...p);N.push(...n);C.push(...c);return P.length/3-1};
+const vsub=(a,b)=>a.map((x,i)=>x-b[i]), vdot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+vcross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],
+vnorm=a=>{const l=Math.hypot(...a)||1;return a.map(x=>x/l)};
+function ellipsoid([cx,cy,cz],[rx,ry,rz],col=SKIN,seg=12,rings=6){
+ const base=P.length/3;
+ for(let j=0;j<=rings;j++){const lat=-Math.PI/2+Math.PI*j/rings,cl=Math.cos(lat),sl=Math.sin(lat);
+  for(let i=0;i<seg;i++){const th=2*Math.PI*i/seg,ct=Math.cos(th),st=Math.sin(th);
+   const n=vnorm([cl*ct/rx,cl*st/ry,sl/rz]);addV([cx+rx*cl*ct,cy+ry*cl*st,cz+rz*sl],n,col)}}
+ for(let j=0;j<rings;j++)for(let i=0;i<seg;i++){const a=base+j*seg+i,b=base+j*seg+(i+1)%seg,c=base+(j+1)*seg+i,d=base+(j+1)*seg+(i+1)%seg;I.push(a,b,c,b,d,c)}
+}
+function loftZ(rings,col=SKIN,seg=14){
+ const base=P.length/3;
+ for(const [z,cx,cy,rx,ry] of rings)for(let i=0;i<seg;i++){const t=2*Math.PI*i/seg,ct=Math.cos(t),st=Math.sin(t),n=vnorm([ct/rx,st/ry,0]);addV([cx+rx*ct,cy+ry*st,z],n,col)}
+ for(let k=0;k<rings.length-1;k++)for(let i=0;i<seg;i++){const a=base+k*seg+i,b=base+k*seg+(i+1)%seg,c=base+(k+1)*seg+i,d=base+(k+1)*seg+(i+1)%seg;I.push(a,b,c,b,d,c)}
+}
+function frame(axis){const a=vnorm(axis),tmp=Math.abs(a[2])<.9?[0,0,1]:[0,1,0],u=vnorm(vcross(a,tmp)),v=vnorm(vcross(a,u));return[a,u,v]}
+function limb(points,radii,col=SKIN,seg=10){
+ const base=P.length/3,frames=[];
+ for(let k=0;k<points.length;k++){const a=points[Math.max(0,k-1)],b=points[Math.min(points.length-1,k+1)];frames.push(frame(vsub(b,a)))}
+ for(let k=0;k<points.length;k++){const p=points[k],r=Array.isArray(radii[k])?radii[k]:[radii[k],radii[k]],u=frames[k][1],v=frames[k][2];
+  for(let i=0;i<seg;i++){const t=2*Math.PI*i/seg,ct=Math.cos(t),st=Math.sin(t),n=vnorm([u[0]*ct/r[0]+v[0]*st/r[1],u[1]*ct/r[0]+v[1]*st/r[1],u[2]*ct/r[0]+v[2]*st/r[1]]);
+   addV([p[0]+u[0]*r[0]*ct+v[0]*r[1]*st,p[1]+u[1]*r[0]*ct+v[1]*r[1]*st,p[2]+u[2]*r[0]*ct+v[2]*r[1]*st],n,col)}}
+ for(let k=0;k<points.length-1;k++)for(let i=0;i<seg;i++){const a=base+k*seg+i,b=base+k*seg+(i+1)%seg,c=base+(k+1)*seg+i,d=base+(k+1)*seg+(i+1)%seg;I.push(a,b,c,b,d,c)}
+}
+function box([cx,cy,cz],[sx,sy,sz],col){
+ sx/=2;sy/=2;sz/=2;const faces=[
+ [[1,0,0],[[sx,-sy,-sz],[sx,sy,-sz],[sx,sy,sz],[sx,-sy,sz]]],
+ [[-1,0,0],[[-sx,sy,-sz],[-sx,-sy,-sz],[-sx,-sy,sz],[-sx,sy,sz]]],
+ [[0,1,0],[[-sx,sy,-sz],[sx,sy,-sz],[sx,sy,sz],[-sx,sy,sz]]],
+ [[0,-1,0],[[sx,-sy,-sz],[-sx,-sy,-sz],[-sx,-sy,sz],[sx,-sy,sz]]],
+ [[0,0,1],[[-sx,-sy,sz],[-sx,sy,sz],[sx,sy,sz],[sx,-sy,sz]]],
+ [[0,0,-1],[[-sx,sy,-sz],[-sx,-sy,-sz],[sx,-sy,-sz],[sx,sy,-sz]]]];
+ for(const [n,pts] of faces){const b=P.length/3;for(const q of pts)addV([cx+q[0],cy+q[1],cz+q[2]],n,col);I.push(b,b+1,b+2,b,b+2,b+3)}
+}
+// Heroic base body. +Y = face, Z = up.
+loftZ([[1.00,0,0,.18,.135],[1.08,0,0,.235,.155],[1.18,0,.012,.225,.155],[1.27,0,.025,.19,.145],[1.37,0,.035,.235,.165],[1.49,0,.045,.30,.185],[1.59,0,.04,.365,.195],[1.66,0,.025,.405,.175],[1.70,0,.02,.25,.13],[1.75,0,.015,.085,.08]],SKIN,16);
+ellipsoid([-.15,.15,1.52],[.17,.07,.115],SKIN_L);ellipsoid([.15,.15,1.52],[.17,.07,.115],SKIN_L);
+for(const z of [1.39,1.30]){ellipsoid([-.065,.151,z],[.07,.032,.064],SKIN,9,4);ellipsoid([.065,.151,z],[.07,.032,.064],SKIN,9,4)}
+for(const s of [-1,1]){
+ ellipsoid([s*.39,.015,1.60],[.13,.125,.15],SKIN,12,5);
+ limb([[s*.41,0,1.56],[s*.46,.01,1.41],[s*.48,.015,1.29]],[[.11,.115],[.105,.11],[.085,.09]],SKIN);
+ ellipsoid([s*.48,.015,1.27],[.095,.09,.085],SKIN,10,4);
+ limb([[s*.48,.015,1.25],[s*.50,.04,1.14],[s*.49,.055,1.035]],[[.087,.09],[.105,.10],[.072,.075]],SKIN);
+ ellipsoid([s*.49,.075,.94],[.078,.055,.105],SKIN,10,5);limb([[s*.49,.075,.90],[s*.49,.078,.835]],[.065,.048],SKIN,8);limb([[s*.445,.10,.955],[s*.425,.13,.90]],[.03,.022],SKIN,7);
+ ellipsoid([s*.145,0,1.00],[.16,.145,.12],SKIN,12,5);
+ limb([[s*.15,0,.98],[s*.16,.005,.80],[s*.165,0,.59]],[[.14,.145],[.135,.14],[.102,.108]],SKIN,11);
+ ellipsoid([s*.165,.015,.565],[.105,.105,.085],SKIN,10,4);
+ limb([[s*.165,0,.53],[s*.165,-.025,.35],[s*.165,0,.16]],[[.095,.10],[.11,.102],[.072,.072]],SKIN,10);
+ ellipsoid([s*.165,.095,.085],[.105,.19,.075],SKIN,12,5);ellipsoid([s*.165,.22,.068],[.11,.09,.05],SKIN,10,4);
+}
+// Strong, simple face.
+loftZ([[1.75,0,.018,.065,.07],[1.79,0,.04,.105,.095],[1.835,0,.06,.13,.115],[1.89,0,.062,.145,.13],[1.95,0,.055,.148,.135],[2.01,0,.04,.137,.125],[2.055,0,.02,.105,.10],[2.075,0,.01,.055,.06]],SKIN,14);
+box([0,.174,1.965],[.22,.025,.032],SKIN);for(const s of [-1,1]){box([s*.055,.19,1.971],[.078,.018,.014],HAIR);ellipsoid([s*.055,.194,1.946],[.019,.011,.010],EYE,8,3);ellipsoid([s*.148,.045,1.92],[.028,.018,.045],SKIN,8,3)}
+box([0,.192,1.91],[.052,.06,.085],SKIN_L);box([0,.191,1.855],[.075,.012,.012],MOUTH);
+// Chunky hair + beard masses, original.
+loftZ([[1.985,0,-.015,.142,.125],[2.035,0,-.025,.142,.13],[2.085,0,-.03,.115,.11],[2.115,0,-.02,.05,.055]],HAIR,14);
+ellipsoid([0,-.095,1.91],[.13,.055,.16],HAIR,12,5);ellipsoid([0,.105,1.825],[.125,.055,.075],HAIR,12,4);ellipsoid([0,.11,1.79],[.085,.05,.065],HAIR,10,4);
+// Simple base shorts: not an armor set.
+loftZ([[.94,0,0,.19,.14],[1.02,0,0,.225,.155],[1.09,0,0,.235,.16],[1.145,0,0,.215,.15]],CLOTH,12);
+for(const s of [-1,1])limb([[s*.145,0,.99],[s*.15,0,.89]],[.152,.145],CLOTH,10);
+
+const canvas=document.querySelector('#c'),gl=canvas.getContext('webgl2',{antialias:true});
+if(!gl)throw new Error('WebGL2 indisponible');
+const vs=`#version 300 es
+layout(location=0)in vec3 aP;layout(location=1)in vec3 aN;layout(location=2)in vec3 aC;
+uniform mat4 uMVP;out vec3 n;out vec3 c;out vec3 p;
+void main(){n=aN;c=aC;p=aP;gl_Position=uMVP*vec4(aP,1.);}`;
+const fs=`#version 300 es
+precision highp float;in vec3 n;in vec3 c;in vec3 p;out vec4 o;
+void main(){vec3 N=normalize(n);vec3 L=normalize(vec3(-.45,.7,.62));float d=max(dot(N,L),0.);float hemi=.5+.5*N.z;float l=.34+.50*d+.13*hemi;
+float rim=pow(1.-max(N.y,0.),3.)*.05;o=vec4(c*(l+rim),1.);}`;
+function sh(t,s){const q=gl.createShader(t);gl.shaderSource(q,s);gl.compileShader(q);if(!gl.getShaderParameter(q,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(q));return q}
+const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
+const vao=gl.createVertexArray();gl.bindVertexArray(vao);
+function attr(loc,data){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0)}
+attr(0,P);attr(1,N);attr(2,C);const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(I),gl.STATIC_DRAW);
+const u=gl.getUniformLocation(pr,'uMVP');
+function mul(a,b){const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];return o}
+function persp(fy,ar,n,f){const t=1/Math.tan(fy/2),o=new Float32Array(16);o[0]=t/ar;o[5]=t;o[10]=(f+n)/(n-f);o[11]=-1;o[14]=2*f*n/(n-f);return o}
+function look(eye,tar){const z=vnorm(vsub(eye,tar)),x=vnorm(vcross([0,0,1],z)),y=vcross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-vdot(x,eye),-vdot(y,eye),-vdot(z,eye),1])}
+let yaw=0,pitch=4,dist=3.65,target=1.06,drag=false,lx=0,ly=0;
+function resize(){const d=Math.min(devicePixelRatio,2),w=innerWidth*d|0,h=innerHeight*d|0;if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h)}}
+function draw(){resize();const y=yaw*Math.PI/180,p=pitch*Math.PI/180,cp=Math.cos(p),eye=[Math.sin(y)*dist*cp,Math.cos(y)*dist*cp,target+Math.sin(p)*dist];
+gl.uniformMatrix4fv(u,false,mul(persp(38*Math.PI/180,canvas.width/canvas.height,.05,20),look(eye,[0,0,target])));
+gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.clearColor(.043,.059,.082,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.drawElements(gl.TRIANGLES,I.length,gl.UNSIGNED_SHORT,0);requestAnimationFrame(draw)}
+canvas.onpointerdown=e=>{drag=true;lx=e.clientX;ly=e.clientY;canvas.setPointerCapture(e.pointerId)};canvas.onpointerup=()=>drag=false;
+canvas.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-lx)*.45;pitch=Math.max(-25,Math.min(35,pitch-(e.clientY-ly)*.3));lx=e.clientX;ly=e.clientY};
+canvas.addEventListener('wheel',e=>{e.preventDefault();dist=Math.max(2.55,Math.min(5.2,dist+Math.sign(e.deltaY)*.18))},{passive:false});
+document.querySelectorAll('[data-yaw]').forEach(b=>b.onclick=()=>{yaw=+b.dataset.yaw;pitch=4;dist=3.65});document.querySelector('#reset').onclick=()=>{yaw=0;pitch=4;dist=3.65};
+document.querySelector('#status').textContent=`${P.length/3} sommets · ${I.length/3} triangles · proof isolé`;
+draw();
+</script>
+</body></html>
