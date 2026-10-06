@@ -2,19 +2,24 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Orvalis — Human Male vertex sculpt v4</title>
+<title>Orvalis — Human Male idles v4.2</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#090d13;color:#eef3f8;font:14px/1.45 system-ui,Segoe UI,Arial,sans-serif}#c{display:block;width:100%;height:100%}
-#panel{position:fixed;left:14px;top:14px;z-index:4;width:min(430px,calc(100vw - 56px));padding:12px 14px;border:1px solid #2d3948;border-radius:11px;background:#0d131be8;backdrop-filter:blur(8px)}
-#panel b{display:block;font-size:16px;margin-bottom:4px}#panel small{display:block;color:#a8b4c2}#buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+#panel{position:fixed;left:14px;top:14px;z-index:4;width:min(520px,calc(100vw - 56px));padding:12px 14px;border:1px solid #2d3948;border-radius:11px;background:#0d131be8;backdrop-filter:blur(8px)}
+#panel b{display:block;font-size:16px;margin-bottom:4px}#panel small{display:block;color:#a8b4c2}#buttons,#idles{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 button{border:1px solid #3a495c;background:#17212e;color:#edf3fa;border-radius:7px;padding:6px 10px;cursor:pointer}.active{outline:2px solid #8aa3c1;background:#223145}
 #status{position:fixed;right:14px;bottom:12px;z-index:4;padding:6px 9px;border-radius:7px;background:#0d131bc9;color:#93a2b4;font-size:12px}#credit{position:fixed;left:14px;bottom:12px;color:#75869a;font-size:11px}.err{color:#ff8b8b!important}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 </head><body>
 <canvas id="c"></canvas>
-<div id="panel"><b>Human Male — direct vertex sculpt v4.1</b><small>Aucun bone n'est redimensionné. La cible déforme directement la vraie géométrie : jambes plus compactes, torse en V, taille serrée, épaules fortes, bras moins longs, tête/mains/pieds plus présents. Coupe courte et barbe brun foncé pour éviter le look moine blanc.</small><div id="buttons"><button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="raw">Base brute</button><button id="target" class="active">Cible Vanilla</button></div></div>
-<div id="credit">Base temporaire Quaternius CC0 — aucune géométrie Blizzard.</div><div id="status">Chargement…</div>
+<div id="panel">
+  <b>Human Male — vertex sculpt + idles v4.2</b>
+  <small>Silhouette par déformation directe des vertices. Le rig sert maintenant uniquement à l'animation. Idles originaux Vanilla-like : sobres, lisibles et volontairement peu mocap.</small>
+  <div id="buttons"><button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="raw">Base brute</button><button id="target" class="active">Cible Vanilla</button></div>
+  <div id="idles"><button data-idle="stand" class="active">Idle 1 · Stand</button><button data-idle="shift">Idle 2 · Weight Shift</button><button data-idle="look">Idle 3 · Look Around</button><button data-idle="ready">Idle 4 · Ready</button></div>
+</div>
+<div id="credit">Base temporaire Quaternius CC0 — aucune géométrie/animation Blizzard.</div><div id="status">Chargement…</div>
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -27,12 +32,23 @@ const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixe
 const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xd5e2ee,0x39291f,1.8));const key=new THREE.DirectionalLight(0xffd9b8,2.8);key.position.set(-3,5,4);scene.add(key);const rim=new THREE.DirectionalLight(0x7e9ac1,.9);rim.position.set(4,3,-4);scene.add(rim);
 const camera=new THREE.PerspectiveCamera(36,1,.03,50);const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.enablePan=false;controls.minDistance=1.8;controls.maxDistance=6;
 const root=new THREE.Group();scene.add(root);const loader=new GLTFLoader();const parts=[];let bodyScene=null;let target=true;let reference=null;
-const p=new THREE.Vector3(), q=new THREE.Vector3(), inv=new THREE.Matrix4();
+const p=new THREE.Vector3(),q=new THREE.Vector3(),inv=new THREE.Matrix4();
+
+const boneRest=new Map(),boneGroups=new Map(),idleRest=new Map();
+let idle='stand',startTime=performance.now()/1000;
+
 function load(u){return new Promise((ok,no)=>loader.load(u,ok,undefined,no));}
 function prep(g,isBody=false,hairTint=false){
   if(isBody)bodyScene=g.scene;
-  g.scene.traverse(n=>{if(!(n.isMesh||n.isSkinnedMesh)||!n.geometry?.attributes?.position)return;n.castShadow=true;n.receiveShadow=true;
-    const mats=Array.isArray(n.material)?n.material:[n.material];for(const m of mats){if(!m)continue;m.metalness=0;m.roughness=.95;m.flatShading=false;if(hairTint){m.map=null;m.color?.set(0x211914);}m.needsUpdate=true;}
+  g.scene.traverse(n=>{
+    if(n.isBone){
+      boneRest.set(n,{q:n.quaternion.clone(),p:n.position.clone(),s:n.scale.clone()});
+      const k=(n.name||'').toLowerCase(); if(!boneGroups.has(k))boneGroups.set(k,[]); boneGroups.get(k).push(n);
+    }
+    if(!(n.isMesh||n.isSkinnedMesh)||!n.geometry?.attributes?.position)return;
+    n.castShadow=true;n.receiveShadow=true;
+    const mats=Array.isArray(n.material)?n.material:[n.material];
+    for(const m of mats){if(!m)continue;m.metalness=0;m.roughness=.95;m.flatShading=false;if(hairTint){m.map=null;m.color?.set(0x211914);}m.needsUpdate=true;}
     const pos=n.geometry.attributes.position;parts.push({mesh:n,original:new Float32Array(pos.array)});
   });
   root.add(g.scene);
@@ -41,26 +57,12 @@ function restoreGeometry(){for(const part of parts){const a=part.mesh.geometry.a
 function smoothstep(a,b,x){const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t)}
 function lerp(a,b,t){return a+(b-a)*t}
 function remapHeight(t){const xs=[0,.12,.34,.50,.61,.76,.84,.89,1],ys=[0,.115,.31,.455,.57,.75,.83,.88,1];for(let i=0;i<xs.length-1;i++)if(t<=xs[i+1])return lerp(ys[i],ys[i+1],(t-xs[i])/(xs[i+1]-xs[i]));return 1;}
-function coreScale(t){
-  if(t<.10)return 1.22;
-  if(t<.34)return 1.10;
-  if(t<.50)return 1.13;
-  if(t<.59)return 1.08;
-  if(t<.66)return lerp(.90,1.00,(t-.59)/.07);
-  if(t<.78)return lerp(1.00,1.18,(t-.66)/.12);
-  if(t<.84)return 1.20;
-  if(t<.89)return .98;
-  return 1.13;
-}
-function depthScale(t,armness){
-  let s=t<.10?1.22:t<.34?1.08:t<.50?1.10:t<.59?1.06:t<.66?.94:t<.78?1.10:t<.84?1.12:t<.89?.98:1.10;
-  if(armness>.65)s*=1.13;
-  return s;
-}
+function coreScale(t){if(t<.10)return 1.22;if(t<.34)return 1.10;if(t<.50)return 1.13;if(t<.59)return 1.08;if(t<.66)return lerp(.90,1.00,(t-.59)/.07);if(t<.78)return lerp(1.00,1.18,(t-.66)/.12);if(t<.84)return 1.20;if(t<.89)return .98;return 1.13;}
+function depthScale(t,armness){let s=t<.10?1.22:t<.34?1.08:t<.50?1.10:t<.59?1.06:t<.66?.94:t<.78?1.10:t<.84?1.12:t<.89?.98:1.10;if(armness>.65)s*=1.13;return s;}
 function warpWorld(v){
   const r=reference,H=r.h,half=r.halfW;let t=(v.y-r.minY)/H;t=Math.max(0,Math.min(1,t));const dy=remapHeight(t);
   const dx=v.x-r.cx,dz=v.z-r.cz,ax=Math.abs(dx);
-  const shoulderRaw=H*.205, shoulderTarget=H*.235, armMax=Math.max(shoulderRaw+.001,half), armTarget=armMax*.89;
+  const shoulderRaw=H*.205,shoulderTarget=H*.235,armMax=Math.max(shoulderRaw+.001,half),armTarget=armMax*.89;
   let nx;
   if(t>.62&&t<.86&&ax>shoulderRaw){const u=(ax-shoulderRaw)/(armMax-shoulderRaw);const curved=Math.pow(Math.max(0,Math.min(1,u)),.92);nx=Math.sign(dx)*(shoulderTarget+curved*(armTarget-shoulderTarget));}
   else nx=dx*coreScale(t);
@@ -68,12 +70,9 @@ function warpWorld(v){
   if(t>.64&&t<.84&&armness>.78){const handBoost=smoothstep(.78,1,armness);nx*=1+0.015*handBoost;}
   let ny=r.minY+dy*H;
   if(t>.64&&t<.84&&armness>.75){const hb=smoothstep(.75,1,armness);ny=r.minY+(.5+(dy-.5)*(1+.13*hb))*H;}
-  const nz=dz*depthScale(t,armness);
-  return v.set(r.cx+nx,ny,r.cz+nz);
+  const nz=dz*depthScale(t,armness);return v.set(r.cx+nx,ny,r.cz+nz);
 }
-function buildReference(){
-  root.position.set(0,0,0);root.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(bodyScene),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);reference={minY:b.min.y,maxY:b.max.y,h:s.y,cx:c.x,cz:c.z,halfW:s.x*.5};
-}
+function buildReference(){root.position.set(0,0,0);root.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(bodyScene),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);reference={minY:b.min.y,maxY:b.max.y,h:s.y,cx:c.x,cz:c.z,halfW:s.x*.5};}
 function applyVertexTarget(){
   restoreGeometry();if(!target)return;root.updateMatrixWorld(true);
   for(const part of parts){const mesh=part.mesh,pos=mesh.geometry.attributes.position;mesh.updateMatrixWorld(true);inv.copy(mesh.matrixWorld).invert();
@@ -81,10 +80,85 @@ function applyVertexTarget(){
     pos.needsUpdate=true;mesh.geometry.computeVertexNormals();mesh.geometry.computeBoundingBox();mesh.geometry.computeBoundingSphere();
   }
 }
+function eachBone(name,fn){for(const b of boneGroups.get(name)||[])fn(b);}
+function resetBonesToRest(){for(const [b,t] of boneRest){b.quaternion.copy(t.q);b.position.copy(t.p);b.scale.copy(t.s);}}
+function orientBoneWorld(b,desired){
+  if(!b.children.length)return;const child=b.children.find(x=>x.isBone)||b.children[0];if(!child)return;
+  b.updateWorldMatrix(true,true);child.updateWorldMatrix(true,true);
+  const bp=new THREE.Vector3(),cp=new THREE.Vector3();b.getWorldPosition(bp);child.getWorldPosition(cp);
+  const current=cp.sub(bp).normalize(),want=desired.clone().normalize();if(current.lengthSq()<.5||want.lengthSq()<.5)return;
+  const delta=new THREE.Quaternion().setFromUnitVectors(current,want),worldQ=new THREE.Quaternion(),parentQ=new THREE.Quaternion();
+  b.getWorldQuaternion(worldQ);delta.multiply(worldQ);
+  if(b.parent)b.parent.getWorldQuaternion(parentQ);else parentQ.identity();
+  b.quaternion.copy(parentQ.invert().multiply(delta));
+}
+function buildIdleBase(){
+  resetBonesToRest();root.updateMatrixWorld(true);
+  eachBone('upperarm_l',b=>orientBoneWorld(b,new THREE.Vector3(.28,-.95,.06)));
+  eachBone('upperarm_r',b=>orientBoneWorld(b,new THREE.Vector3(-.28,-.95,.06)));
+  root.updateMatrixWorld(true);
+  eachBone('lowerarm_l',b=>orientBoneWorld(b,new THREE.Vector3(.12,-.93,.34)));
+  eachBone('lowerarm_r',b=>orientBoneWorld(b,new THREE.Vector3(-.12,-.93,.34)));
+  root.updateMatrixWorld(true);
+  idleRest.clear();for(const b of boneRest.keys())idleRest.set(b,{q:b.quaternion.clone(),p:b.position.clone(),s:b.scale.clone()});
+}
+function resetIdlePose(){for(const [b,t] of idleRest){b.quaternion.copy(t.q);b.position.copy(t.p);b.scale.copy(t.s);}}
+function worldRotate(name,axis,angle){
+  eachBone(name,b=>{
+    b.parent?.updateWorldMatrix(true,false);b.updateWorldMatrix(true,false);
+    const pw=new THREE.Quaternion(),bw=new THREE.Quaternion(),dq=new THREE.Quaternion().setFromAxisAngle(axis,angle);
+    b.getWorldQuaternion(bw);if(b.parent)b.parent.getWorldQuaternion(pw);else pw.identity();
+    b.quaternion.copy(pw.invert().multiply(dq.multiply(bw)));
+  });
+}
+function localMove(name,x,y,z){eachBone(name,b=>{b.position.x+=x;b.position.y+=y;b.position.z+=z;});}
+function applyIdle(t){
+  if(!idleRest.size)return;resetIdlePose();
+  const breath=Math.sin(t*2.05),slow=Math.sin(t*.82),slow2=Math.sin(t*.61+1.1);
+  if(idle==='stand'){
+    worldRotate('spine_02',new THREE.Vector3(1,0,0),breath*.012);
+    worldRotate('spine_03',new THREE.Vector3(0,0,1),slow*.010);
+    worldRotate('head',new THREE.Vector3(0,1,0),slow2*.018);
+    localMove('pelvis',0,breath*.0018,0);
+  }else if(idle==='shift'){
+    const w=Math.sin(t*.72),w2=Math.sin(t*.36);
+    localMove('pelvis',w*.012,0,0);
+    worldRotate('pelvis',new THREE.Vector3(0,0,1),w*.028);
+    worldRotate('spine_02',new THREE.Vector3(0,0,1),-w*.022);
+    worldRotate('head',new THREE.Vector3(0,1,0),w2*.05);
+    worldRotate('upperarm_l',new THREE.Vector3(0,0,1),Math.max(0,w)*.025);
+    worldRotate('upperarm_r',new THREE.Vector3(0,0,1),Math.min(0,w)*.025);
+  }else if(idle==='look'){
+    const look=Math.sin(t*.50),nod=Math.sin(t*.87+1.8);
+    worldRotate('spine_03',new THREE.Vector3(0,1,0),look*.055);
+    worldRotate('neck_01',new THREE.Vector3(0,1,0),look*.11);
+    worldRotate('head',new THREE.Vector3(0,1,0),look*.17);
+    worldRotate('head',new THREE.Vector3(1,0,0),nod*.022);
+    worldRotate('spine_02',new THREE.Vector3(1,0,0),breath*.009);
+  }else if(idle==='ready'){
+    worldRotate('upperarm_l',new THREE.Vector3(0,0,1),-.11);
+    worldRotate('upperarm_r',new THREE.Vector3(0,0,1),.11);
+    worldRotate('lowerarm_l',new THREE.Vector3(1,0,0),-.10+breath*.015);
+    worldRotate('lowerarm_r',new THREE.Vector3(1,0,0),-.10+breath*.015);
+    worldRotate('spine_02',new THREE.Vector3(1,0,0),-.025+breath*.010);
+    worldRotate('head',new THREE.Vector3(0,1,0),slow*.025);
+    localMove('pelvis',0,-.006+Math.abs(breath)*.001,0);
+  }
+  root.updateMatrixWorld(true);
+}
 function fit(){root.position.set(0,0,0);let b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);root.position.y=-b.min.y;b=new THREE.Box3().setFromObject(root);b.getSize(s);b.getCenter(c);const y=b.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*1.45,2.25);controls.target.set(c.x,y,c.z);camera.position.set(c.x,y,c.z+d);controls.update();}
 function view(side){const b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);const y=b.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*1.45,2.25);camera.position.set(c.x+side[0]*d,y,c.z+side[1]*d);controls.target.set(c.x,y,c.z);controls.update();}
-function setMode(v){target=v;applyVertexTarget();fit();document.querySelector('#target').classList.toggle('active',v);document.querySelector('#raw').classList.toggle('active',!v);status.textContent=v?'Cible Vanilla : déformation DIRECTE des vertices':'Base Quaternius brute';}
-try{const body=await load(URLS[0]);prep(body,true);const extra=await Promise.allSettled(URLS.slice(1).map(load));for(const r of extra)if(r.status==='fulfilled')prep(r.value,false,true);buildReference();applyVertexTarget();fit();status.textContent='Cible Vanilla : vertex sculpt · cheveux brun foncé';}catch(e){console.error(e);status.classList.add('err');status.textContent='Échec chargement modèle';}
+function setMode(v){target=v;applyVertexTarget();buildIdleBase();fit();document.querySelector('#target').classList.toggle('active',v);document.querySelector('#raw').classList.toggle('active',!v);status.textContent=(v?'Cible Vanilla':'Base brute')+' · '+idle;}
+function setIdle(name){idle=name;startTime=performance.now()/1000;document.querySelectorAll('[data-idle]').forEach(b=>b.classList.toggle('active',b.dataset.idle===name));status.textContent=(target?'Cible Vanilla':'Base brute')+' · '+name;}
+
+try{
+  const body=await load(URLS[0]);prep(body,true);
+  const extra=await Promise.allSettled(URLS.slice(1).map(load));for(const r of extra)if(r.status==='fulfilled')prep(r.value,false,true);
+  buildReference();applyVertexTarget();buildIdleBase();fit();status.textContent='Cible Vanilla · stand';
+}catch(e){console.error(e);status.classList.add('err');status.textContent='Échec chargement modèle';}
+
 document.querySelector('#front').onclick=()=>view([0,1]);document.querySelector('#side').onclick=()=>view([1,0]);document.querySelector('#back').onclick=()=>view([0,-1]);document.querySelector('#raw').onclick=()=>setMode(false);document.querySelector('#target').onclick=()=>setMode(true);
-function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+document.querySelectorAll('[data-idle]').forEach(b=>b.onclick=()=>setIdle(b.dataset.idle));
+function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();
+renderer.setAnimationLoop(()=>{applyIdle(performance.now()/1000-startTime);controls.update();renderer.render(scene,camera);});
 </script></body></html>
