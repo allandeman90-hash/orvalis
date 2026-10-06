@@ -13,7 +13,7 @@ button{border:1px solid #3a495c;background:#17212e;color:#edf3fa;border-radius:7
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 </head><body>
 <canvas id="c"></canvas>
-<div id="panel"><b>Human Male — direct vertex sculpt v4</b><small>Aucun bone n'est redimensionné. La cible déforme directement la vraie géométrie : jambes plus compactes, torse en V, taille serrée, épaules fortes, bras moins longs, tête/mains/pieds plus présents.</small><div id="buttons"><button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="raw">Base brute</button><button id="target" class="active">Cible Vanilla</button></div></div>
+<div id="panel"><b>Human Male — direct vertex sculpt v4.1</b><small>Aucun bone n'est redimensionné. La cible déforme directement la vraie géométrie : jambes plus compactes, torse en V, taille serrée, épaules fortes, bras moins longs, tête/mains/pieds plus présents. Coupe courte et barbe brun foncé pour éviter le look moine blanc.</small><div id="buttons"><button id="front">Face</button><button id="side">Profil</button><button id="back">Dos</button><button id="raw">Base brute</button><button id="target" class="active">Cible Vanilla</button></div></div>
 <div id="credit">Base temporaire Quaternius CC0 — aucune géométrie Blizzard.</div><div id="status">Chargement…</div>
 <script type="module">
 import * as THREE from 'three';
@@ -21,7 +21,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const BASE='https://cdn.jsdelivr.net/gh/kirbycope/godot-3d-player-controller-v2@a928cfa67684352b75a65c510d8751d1f3f2489c/assets/universal_base_characters/';
-const URLS=[BASE+'Base%20Characters/Superhero_Male_FullBody.gltf',BASE+'Hairstyles/Rigged/Hair_Long.gltf',BASE+'Hairstyles/Rigged/Hair_Beard.gltf',BASE+'Hairstyles/Rigged/Eyebrows_Regular.gltf'];
+const URLS=[BASE+'Base%20Characters/Superhero_Male_FullBody.gltf',BASE+'Hairstyles/Rigged/Hair_Buzzed.gltf',BASE+'Hairstyles/Rigged/Hair_Beard.gltf',BASE+'Hairstyles/Rigged/Eyebrows_Regular.gltf'];
 const canvas=document.querySelector('#c'),status=document.querySelector('#status');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0x090d13);renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xd5e2ee,0x39291f,1.8));const key=new THREE.DirectionalLight(0xffd9b8,2.8);key.position.set(-3,5,4);scene.add(key);const rim=new THREE.DirectionalLight(0x7e9ac1,.9);rim.position.set(4,3,-4);scene.add(rim);
@@ -29,10 +29,10 @@ const camera=new THREE.PerspectiveCamera(36,1,.03,50);const controls=new OrbitCo
 const root=new THREE.Group();scene.add(root);const loader=new GLTFLoader();const parts=[];let bodyScene=null;let target=true;let reference=null;
 const p=new THREE.Vector3(), q=new THREE.Vector3(), inv=new THREE.Matrix4();
 function load(u){return new Promise((ok,no)=>loader.load(u,ok,undefined,no));}
-function prep(g,isBody=false){
+function prep(g,isBody=false,hairTint=false){
   if(isBody)bodyScene=g.scene;
   g.scene.traverse(n=>{if(!(n.isMesh||n.isSkinnedMesh)||!n.geometry?.attributes?.position)return;n.castShadow=true;n.receiveShadow=true;
-    const mats=Array.isArray(n.material)?n.material:[n.material];for(const m of mats){if(!m)continue;m.metalness=0;m.roughness=.95;m.flatShading=false;m.needsUpdate=true;}
+    const mats=Array.isArray(n.material)?n.material:[n.material];for(const m of mats){if(!m)continue;m.metalness=0;m.roughness=.95;m.flatShading=false;if(hairTint){m.map=null;m.color?.set(0x211914);}m.needsUpdate=true;}
     const pos=n.geometry.attributes.position;parts.push({mesh:n,original:new Float32Array(pos.array)});
   });
   root.add(g.scene);
@@ -84,7 +84,7 @@ function applyVertexTarget(){
 function fit(){root.position.set(0,0,0);let b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);root.position.y=-b.min.y;b=new THREE.Box3().setFromObject(root);b.getSize(s);b.getCenter(c);const y=b.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*1.45,2.25);controls.target.set(c.x,y,c.z);camera.position.set(c.x,y,c.z+d);controls.update();}
 function view(side){const b=new THREE.Box3().setFromObject(root),s=new THREE.Vector3(),c=new THREE.Vector3();b.getSize(s);b.getCenter(c);const y=b.min.y+s.y*.52,d=Math.max(s.y*1.58,s.x*1.45,2.25);camera.position.set(c.x+side[0]*d,y,c.z+side[1]*d);controls.target.set(c.x,y,c.z);controls.update();}
 function setMode(v){target=v;applyVertexTarget();fit();document.querySelector('#target').classList.toggle('active',v);document.querySelector('#raw').classList.toggle('active',!v);status.textContent=v?'Cible Vanilla : déformation DIRECTE des vertices':'Base Quaternius brute';}
-try{const body=await load(URLS[0]);prep(body,true);const extra=await Promise.allSettled(URLS.slice(1).map(load));for(const r of extra)if(r.status==='fulfilled')prep(r.value);buildReference();applyVertexTarget();fit();status.textContent='Cible Vanilla : déformation DIRECTE des vertices';}catch(e){console.error(e);status.classList.add('err');status.textContent='Échec chargement modèle';}
+try{const body=await load(URLS[0]);prep(body,true);const extra=await Promise.allSettled(URLS.slice(1).map(load));for(const r of extra)if(r.status==='fulfilled')prep(r.value,false,true);buildReference();applyVertexTarget();fit();status.textContent='Cible Vanilla : vertex sculpt · cheveux brun foncé';}catch(e){console.error(e);status.classList.add('err');status.textContent='Échec chargement modèle';}
 document.querySelector('#front').onclick=()=>view([0,1]);document.querySelector('#side').onclick=()=>view([1,0]);document.querySelector('#back').onclick=()=>view([0,-1]);document.querySelector('#raw').onclick=()=>setMode(false);document.querySelector('#target').onclick=()=>setMode(true);
 function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 </script></body></html>
