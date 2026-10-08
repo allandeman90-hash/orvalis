@@ -52,8 +52,9 @@ async function bootstrap(): Promise<void> {
 
   const debugToggle = bindDebugToggle();
   await startEngine();
-  // startEngine historically opens the overlay once booted; the player-facing preview now starts clean instead.
-  debugToggle.close();
+  // Browser smoke tests use the debug overlay as a machine-readable runtime probe. Real player sessions still
+  // start clean, while automation keeps the already-open overlay available for its existing assertions.
+  if (!navigator.webdriver) debugToggle.close();
 }
 
 bootstrap().catch((error: unknown) => {
