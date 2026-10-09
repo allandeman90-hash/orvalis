@@ -50,18 +50,18 @@ jobs:
         working-directory: engine
         run: npm run build
 
-      - name: Art review visual smoke
+      - name: Environment review visual smoke
         working-directory: engine
         env:
           CHROMIUM_PATH: /usr/bin/google-chrome
-        run: node scripts/art-review-smoke.mjs
+        run: node scripts/environment-review-smoke.mjs
 
-      - name: Upload art review screenshot
+      - name: Upload environment review screenshot
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: art-review-screenshot
-          path: engine/artifacts/art-review.png
+          name: environment-review-screenshot
+          path: engine/artifacts/environment-review.png
           if-no-files-found: warn
           retention-days: 7
 
