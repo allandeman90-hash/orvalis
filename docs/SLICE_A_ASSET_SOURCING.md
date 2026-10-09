@@ -8,15 +8,74 @@ Ce document ne remplace pas `ACT_I_MASTER_ASSET_LIST.md`. Il transforme le besoi
 
 Principe :
 
-> **Ne pas remplir Orvalis avec un seul asset pack. Utiliser les packs libres comme matière première générique, Meshy pour les formes spécifiques à Orvalis, puis normaliser l'ensemble sous une direction artistique commune.**
+> **Ne pas remplir Orvalis avec un seul asset pack. Priorité absolue à la bibliothèque gratuite Meshy, inspectée visuellement via navigateur et recherchée par tags + descriptions ; compléter ensuite avec CC0/free externes ; générer du custom seulement si un besoin reste réellement vide.**
 
 ---
 
-# I. TROIS VOIES D'ACQUISITION
+# 0. CONTRAT VISUEL + BUDGET GÉOMÉTRIQUE — VERROUILLÉ
 
-Chaque asset du Slice A doit être classé dans une de ces voies.
+Direction artistique globale :
+- stylisé / cartoon MMO ;
+- formes lisibles à distance ;
+- proportions légèrement exagérées quand cela aide la silhouette ;
+- surfaces propres, peintes ou semi-stylisées ;
+- détails lisibles plutôt que micro-détails réalistes ;
+- **pas de photoréalisme comme direction de production**.
 
-## A — CC0 / FREE SEED
+Budget géométrique par asset :
+- **~15 000 triangles** = cible de base pour la majorité des props, végétation, créatures communes et modules ;
+- **jusqu'à ~50 000 triangles** = asset important / hero / personnage ou objet vu souvent et de près ;
+- **100 000 triangles maximum** = exceptionnel, uniquement quand le gain visuel est réellement nécessaire et justifié ;
+- au-delà = rejet ou simplification obligatoire pour le runtime web.
+
+Le nombre affiché par Meshy peut être en faces/quads plutôt qu'en triangles : mesurer le GLB final avant validation runtime.
+
+La silhouette, le nombre d'instances simultanées, les matériaux, textures, bones et draw calls comptent autant que le simple polycount.
+
+---
+
+# I. ORDRE D'ACQUISITION — MESHY GRATUIT D'ABORD
+
+Pour **chaque besoin** de la Master Asset List :
+
+1. rechercher d'abord dans la bibliothèque **gratuite Meshy** ;
+2. exploiter les **tags et la description/prompt**, pas seulement le titre ;
+3. utiliser plusieurs synonymes anglais liés au rôle, au matériau, à la silhouette et au style ;
+4. ouvrir les meilleurs résultats dans un navigateur dynamique et **inspecter réellement le preview / viewer 3D** ;
+5. relever titre, URL, auteur, licence, tags, description, topologie, faces/vertices visibles et rôle potentiel ;
+6. classer `APPROVED`, `MAYBE` ou `REJECT` ;
+7. ajouter chaque candidat au registre central avant téléchargement ;
+8. seulement si aucun asset gratuit satisfaisant n'existe : chercher Quaternius / Poly Pizza / Kenney / autres CC0 ;
+9. seulement après ces deux passes : générer un nouvel asset Meshy custom.
+
+### Exemple de vocabulaire de recherche
+
+Maison rurale : `medieval`, `fantasy`, `stylized`, `cartoon`, `low poly`, `game asset`, `cottage`, `farmhouse`, `village`, `timber`, `stone`, `slate`.
+
+Arbre : `tree`, `oak`, `deciduous`, `stylized`, `lowpoly`, `nature`, `environment`, `game asset`, `hand painted`.
+
+Props : combiner rôle + matériau + style, par ex. `handcart wooden medieval stylized game asset`.
+
+Ne jamais accepter un asset parce que son **nom** semble correct : la validation est visuelle.
+
+---
+
+# II. TROIS VOIES DE PRODUCTION
+
+## A — MESHY FREE LIBRARY — PRIORITÉ 1
+
+Usage : tout asset gratuit qui satisfait visuellement et techniquement le besoin.
+
+Avantages :
+- immense bibliothèque ;
+- preview 3D inspectable ;
+- tags / descriptions / prompts utiles ;
+- GLB et formats de jeu disponibles sur de nombreux modèles ;
+- de nombreux assets stylisés/game-ready déjà proches d'Orvalis.
+
+Règle : les résultats Meshy mentionnant explicitement une IP tierce dans leur prompt/titre (`World of Warcraft`, etc.) ne sont pas prioritaires et ne doivent pas devenir une dépendance identitaire d'Orvalis. Préférer les assets génériques/originaux équivalents.
+
+## B — CC0 / FREE EXTERNE — PRIORITÉ 2
 
 Usage :
 - végétation générique ;
@@ -30,10 +89,12 @@ Usage :
 
 Ces assets ne sont jamais acceptés « bruts » dans le rendu final : scale, pivot, matériaux, palette, textures, vertex colors, collisions, LOD et variations d'instance passent par la normalisation Orvalis.
 
-## B — MESHY CUSTOM
+## C — MESHY CUSTOM / ORIGINAL CONTROLLED — PRIORITÉ 3
 
-Usage :
-- objets qui doivent être visuellement spécifiques à Orvalis mais ne justifient pas encore un pipeline d'artiste manuel complet ;
+À utiliser uniquement lorsque la bibliothèque gratuite + sources CC0 ne suffisent pas.
+
+Usage potentiel :
+- objets visuellement spécifiques à Orvalis ;
 - variantes d'architecture Azur ;
 - éléments runiques ;
 - statues ;
@@ -42,29 +103,13 @@ Usage :
 - props héroïques ;
 - pièces de décor qui doivent éviter le look « asset pack reconnaissable ».
 
-Règle de provenance : chaque génération conserve son prompt, date, plan Meshy utilisé, éventuelle référence d'entrée et preuve que cette référence est originale/licenciée.
+Règle de provenance : chaque génération conserve prompt, date, plan Meshy utilisé, éventuelle référence d'entrée et preuve que cette référence est originale/licenciée.
 
-Les générations Meshy **gratuites** sont traitées comme `CC BY 4.0` avec attribution Meshy dans le registre du projet. Les générations faites sous un plan payant sont enregistrées comme production privée/propriétaire selon les conditions applicables au moment de génération.
-
-Ne jamais fournir comme référence une capture de WoW, Hordes.io, Aion, ou une autre IP protégée. Les références Meshy doivent être créées par nous ou provenir de sources dont les droits sont clairs.
-
-## C — ORIGINAL CONTROLLED
-
-Obligatoire pour :
-- corps joueur masculin/féminin de production ;
-- squelette/rig de référence ;
-- topologie compatible équipement/transmog ;
-- équipement signature des huit Ordres ;
-- identité principale de Havrebleu ;
-- runes et Ancrages majeurs ;
-- héros/PNJ signatures ;
-- éléments que le joueur verra des centaines d'heures.
-
-Meshy peut aider à explorer des silhouettes/concepts pour ces catégories, mais un mesh brut généré n'est jamais automatiquement le modèle de production.
+Pour les corps joueurs, rigs, topologies de transmog et équipements signature, Meshy peut aider à explorer mais un mesh brut généré n'est jamais automatiquement le contrat de production.
 
 ---
 
-# II. SHORTLIST CC0 — NATURE DU VAL
+# III. SHORTLIST CC0 — NATURE DU VAL
 
 ## 1. Quaternius — Ultimate Stylized Nature Pack
 
@@ -73,14 +118,7 @@ Licence : **CC0**
 Formats : FBX / OBJ / glTF / Blend
 Contenu : 60+ assets nature, arbres, herbes, fleurs, rochers, textures/normal maps.
 
-Décision : **P0 REVIEW PRIORITY**.
-
-Usage potentiel :
-- arbres feuillus du Val ;
-- petits buissons ;
-- fleurs ;
-- herbe en touffes ;
-- rochers calcaires après recolor/material pass.
+Décision : **P0 FALLBACK/COMPLEMENT**, après recherche Meshy gratuite.
 
 ## 2. Quaternius — Stylized Nature MegaKit
 
@@ -89,9 +127,7 @@ Licence : **CC0**
 Formats : FBX / OBJ / glTF
 Contenu : 110+ modèles, dont environ 40 arbres, 35 plantes/fleurs, 27 rochers.
 
-Décision : **P1 REVIEW**.
-
-Raison : très bonne réserve de variantes, mais ne pas importer 110 modèles avant d'avoir choisi 5–10 formes de base cohérentes.
+Décision : **P1 FALLBACK / VARIATION**.
 
 ## 3. Kenney — Nature Kit
 
@@ -101,11 +137,9 @@ Contenu : 330 fichiers 3D.
 
 Décision : **P1 FALLBACK / VARIATION**.
 
-Usage potentiel : petites plantes, rochers secondaires, souches, éléments de scatter si le style reste compatible après normalisation.
-
 ---
 
-# III. SHORTLIST CC0 — FERME / VILLAGE
+# IV. SHORTLIST CC0 — FERME / VILLAGE
 
 ## 4. Quaternius — Farm Buildings Pack / Bundle
 
@@ -116,13 +150,9 @@ Sources :
 Licence : **CC0**
 Formats disponibles : FBX / GLB (bundle Poly Pizza), FBX / OBJ / Blend côté Quaternius.
 
-Contenu vérifié : clôtures, silos, granges, poulailler, plusieurs barns, Tower Windmill.
+Contenu : clôtures, silos, granges, poulailler, plusieurs barns, Tower Windmill.
 
-Décision : **P0 REVIEW PRIORITY**.
-
-Usage : Clairbourg / fermes du Val / silhouette de moulin secondaire.
-
-Important : ces bâtiments servent de matière première rurale, pas de langage architectural final de Havrebleu.
+Décision : **fallback après Meshy free audit**.
 
 ## 5. Quaternius — Medieval Village MegaKit
 
@@ -131,16 +161,7 @@ Licence : **CC0**
 Formats : FBX / OBJ / glTF
 Contenu : 300+ pièces modulaires, murs, sols, escaliers, toits, portes, fenêtres, végétation grimpante, collisions dans les versions source.
 
-Décision : **P0/P1 REVIEW pour construire le prototype du kit Azur**.
-
-Usage :
-- volume de maisons ;
-- petites boutiques ;
-- auberge ;
-- murs secondaires ;
-- bases de toiture.
-
-Limite : Havrebleu doit recevoir ensuite des modules/monuments originaux. Le MegaKit ne doit jamais rendre la capitale reconnaissable comme une démo Quaternius.
+Décision : **fallback / base modulaire si Meshy ne couvre pas assez de modules cohérents**.
 
 ## 6. Kenney — Fantasy Town Kit
 
@@ -148,35 +169,20 @@ Source : https://kenney.nl/assets/fantasy-town-kit
 Licence : **CC0**
 Contenu : 160 fichiers 3D.
 
-Décision : **P1 ALTERNATIVE STYLE TEST**.
-
-Ne pas mélanger automatiquement avec Quaternius. Comparer d'abord dans l'Art Review sous la même lumière.
+Décision : **alternative style test uniquement**.
 
 ---
 
-# IV. SHORTLIST CC0 — PROPS
+# V. SHORTLIST CC0 — PROPS
 
 ## 7. Quaternius — Fantasy Props MegaKit
 
 Source : https://quaternius.com/packs/fantasypropsmegakit.html
 Licence : **CC0**
 Formats : FBX / OBJ / glTF / Blend
-Contenu : 200+ props avec très peu de jeux de textures partagés.
+Contenu : 200+ props.
 
-Décision : **P0 REVIEW PRIORITY**.
-
-Usage potentiel :
-- caisses ;
-- tonneaux ;
-- sacs ;
-- outils ;
-- étals ;
-- meubles ;
-- livres ;
-- chests ;
-- accessoires artisans.
-
-Très intéressant pour le web grâce à la mutualisation des textures.
+Décision : **fallback/complement** après Meshy free.
 
 ## 8. Kay Lousberg — Lantern
 
@@ -184,11 +190,11 @@ Déjà dans `art-review-registry.json`.
 Source : https://poly.pizza/m/CtHBJ1ufeW
 Licence : **CC0**
 
-Décision : conserver comme test de compatibilité inter-auteur.
+Décision : conserver comme contrôle de compatibilité inter-auteur.
 
 ---
 
-# V. SHORTLIST CC0 — ANIMAUX / CREATURES COMMUNES
+# VI. SHORTLIST CC0 — ANIMAUX / CREATURES COMMUNES
 
 ## 9. Quaternius — Animated Animal Pack
 
@@ -196,9 +202,9 @@ Source : https://poly.pizza/bundle/Animated-Animal-Pack-ILAPXeUYiS
 Licence : **CC0**
 Formats : FBX / glTF
 
-Contenu vérifié : Cow, Donkey, Deer, Alpaca, Bull, Fox, Shiba Inu, Stag, Husky, **Wolf**, White Horse, Horse ; plus de 12 animations par animal dans le pack d'origine.
+Contenu : Cow, Donkey, Deer, Alpaca, Bull, Fox, Shiba Inu, Stag, Husky, Wolf, White Horse, Horse ; plus de 12 animations par animal dans le pack d'origine.
 
-Décision : **P0 pour Wolf** ; deer/horse/fox potentiellement utiles plus tard.
+Décision : **fort fallback pour Wolf/animaux**, car l'animation peut valoir plus qu'un meilleur mesh statique gratuit.
 
 ## 10. Quaternius — Farm Animal Pack
 
@@ -206,152 +212,80 @@ Source : https://poly.pizza/bundle/Farm-Animal-Pack-1kUvRTPLzT
 Licence : **CC0**
 Formats : FBX / GLTF
 
-Contenu vérifié : llama, **pig**, pug, sheep, horse, cow, zebra.
-
-Décision : **P1 pour ambiance agricole**.
-
-Le pig peut servir de base technique pour un sanglier uniquement comme prototype. Le sanglier final doit avoir une silhouette sauvage distincte, idéalement Meshy/custom si aucun CC0 compatible n'est trouvé.
+Décision : P1 ambiance agricole.
 
 ---
 
-# VI. MESHY — CIBLES PRIORITAIRES DU SLICE A
+# VII. MESHY CUSTOM — UNIQUEMENT SI LE GRATUIT ÉCHOUE
 
-Meshy est utilisé là où les packs gratuits commenceraient à rendre le jeu générique.
+Besoins potentiels :
+- Sanglier du Val ;
+- Gelée runique ;
+- panneaux routiers Azur ;
+- petit sanctuaire de route Azur ;
+- modules signature Havrebleu ;
+- Vieux pont ;
+- Vieux Moulin.
 
-## M0 — Sanglier du Val
-
-But : créature commune originale, lisible, stylisée, faible complexité.
-
-Contraintes :
-- quadrupède ;
-- proportions légèrement héroïques mais crédibles ;
-- défenses lisibles ;
-- silhouette différente du simple cochon de ferme ;
-- matériaux mats ;
-- peu de micro-détails ;
-- rig quadrupède propre requis avant production.
-
-## M1 — Gelée runique du Val
-
-But : premier monstre explicitement Orvalis.
-
-Direction :
-- masse translucide stylisée mais pas réaliste ;
-- noyau minéral/runique visible ;
-- asymétrie légère ;
-- formes suffisamment simples pour variantes de couleur/noyau ;
-- doit fonctionner avec animation shader + quelques bones ou blendshapes simples.
-
-## M2 — Kit de panneaux routiers Azur
-
-3–5 variantes :
-- pierre claire + chêne ;
-- petites ferrures bronze ;
-- emplacement d'inscriptions runiques discrètes ;
-- silhouettes cohérentes avec Havrebleu/Val sans être trop monumentales.
-
-## M3 — Petit sanctuaire de route Azur
-
-Objet récurrent très identifiable :
-- socle calcaire ;
-- toiture/bois travaillé ;
-- niche ou plaque de serment ;
-- élément runique discret ;
-- variantes intacte/usée/envahie par la végétation.
-
-## M4 — Modules signature Havrebleu
-
-À générer comme **prototypes**, puis normaliser/reconstruire si nécessaire :
-- arche portuaire ;
-- segment de balustrade ;
-- borne de quai ;
-- pierre de digue sculptée ;
-- petit module de galerie couverte ;
-- lampe/enseigne administrative.
-
-Ne PAS tenter de générer « toute Havrebleu » en un modèle.
-
-## M5 — Vieux pont du Val
-
-Si les ponts CC0 paraissent trop génériques :
-- calcaire clair ancien ;
-- une ou deux arches ;
-- réparation visible en bois/pierre plus récente ;
-- garde-corps irrégulier ;
-- mousse légère ;
-- traces de Continuité discrètes.
-
-## M6 — Vieux Moulin signature
-
-Utiliser les moulins CC0 pour greybox seulement si nécessaire.
-
-Le Vieux Moulin final mérite une version Meshy/custom originale car c'est un landmark narratif :
-- base de pierre ancienne ;
-- volume rural réparé sur plusieurs époques ;
-- roue hydraulique plutôt qu'un moulin à vent si le placement final le permet ;
-- cave/ancien canal lisible dans la structure ;
-- silhouette identifiable à distance.
+Avant génération de chacun : faire une recherche gratuite dédiée avec tags/descriptions et enregistrer la preuve qu'aucun candidat n'est suffisamment bon.
 
 ---
 
-# VII. CE QU'ON NE FAIT PAS AVEC MESHY
+# VIII. CE QU'ON NE VALIDE PAS DIRECTEMENT
 
-Ne pas valider directement comme production :
-- corps joueurs ;
-- équipement devant fonctionner sur tous les morphs ;
-- personnage principal riggé sans inspection ;
+Ne pas valider automatiquement comme production :
+- photoréalisme ;
+- asset trop détaillé sans justification ;
+- corps joueur ou équipement multi-morph sans inspection rig/topologie ;
+- personnage principal riggé sans inspection de toutes les animations ;
 - gros bâtiment monobloc pour capitale ;
-- asset issu d'une image WoW/Hordes/Aion comme référence ;
-- mesh avec squelette arbitraire incompatible avec le contrat Orvalis.
-
-Pour ces cas Meshy = **concept / base de retopo / silhouette**, pas contrat final.
+- asset issu d'une image d'IP protégée comme référence ;
+- mesh avec squelette arbitraire incompatible avec Orvalis.
 
 ---
 
-# VIII. PREMIER LOT À IMPORTER / REVIEWER
+# IX. PREMIER LOT À REVIEWER
 
-Lot recommandé minimal avant toute acquisition massive :
+Priorité actuelle dans la bibliothèque gratuite Meshy :
+1. arbres feuillus / chênes ;
+2. rochers calcaires / mossy rocks ;
+3. buissons / fleurs / herbes ;
+4. grange / ferme / petite maison ;
+5. moulin ;
+6. clôtures / murs bas ;
+7. charrette / handcart ;
+8. caisses / tonneaux / sacs ;
+9. lanterne / lamp post ;
+10. loup / sanglier ;
+11. pont ;
+12. premiers modules pierre/bois compatibles Azur.
 
-1. 3–5 arbres feuillus Quaternius ;
-2. 3 rochers ;
-3. 2 buissons + 2 fleurs + 2 touffes d'herbe ;
-4. 1 grange ;
-5. 1 petite ferme ;
-6. 1 moulin CC0 de greybox ;
-7. 1 clôture ;
-8. 1 set caisses/tonneaux/sacs ;
-9. 1 lanterne ;
-10. 1 loup animé ;
-11. 1 sanglier Meshy/custom ;
-12. 1 gelée runique Meshy/custom ;
-13. 1 panneau routier Azur Meshy ;
-14. 1 module architectural Azur/Havrebleu custom.
-
-Ce lot suffit à répondre à la question essentielle :
-
-> **Peut-on obtenir dans le navigateur un Val d'Azur dense, lisible et original sans que l'on voie immédiatement de quels packs gratuits viennent les éléments ?**
-
-Si la réponse est oui, élargir le kit. Si non, corriger palette, shaders, proportions et sourcing avant d'importer davantage.
+Chaque candidat doit recevoir un verdict explicite.
 
 ---
 
-# IX. REGISTRE / DROITS
+# X. REGISTRE / DROITS
 
-Pour tout asset externe :
-- source stable ;
+Pour tout asset :
+- ID stable ;
+- rôle Orvalis ;
+- titre ;
+- URL source ;
 - auteur ;
 - licence ;
-- date de récupération ;
-- fichier local ;
-- modifications ;
-- statut candidate/vetted/local/normalized/runtime/approved.
+- tags ;
+- résumé description/prompt ;
+- topologie ;
+- faces / vertices affichés ;
+- triangles réels après téléchargement ;
+- textures / matériaux ;
+- animations ;
+- verdict visuel ;
+- raison ;
+- statut candidate/vetted/local/normalized/runtime/approved ;
+- chemin local ;
+- modifications.
 
-Pour Meshy : ajouter :
-- prompt exact ;
-- seed/id de génération si disponible ;
-- plan Free/Paid au moment de génération ;
-- attribution requise oui/non ;
-- provenance de toute image de référence ;
-- étapes de retopo/rig/modification.
+Pour Meshy custom ajouter prompt exact, seed/id, plan, provenance des références et étapes de retopo/rig/modification.
 
 Aucune dépendance de production à une URL distante.
