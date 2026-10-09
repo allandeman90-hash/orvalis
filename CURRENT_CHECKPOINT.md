@@ -12,12 +12,13 @@ Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution
 - Secondary implementation reference: `World0fWarcraft/OpenWow`.
 - Hordes.io is a rendering/world-density reference only, not an asset/code source.
 
-## CANONICAL LORE — LOCKED FOUNDATION + ERAS + CULTURES + FACTIONS
+## CANONICAL LORE — LOCKED FOUNDATION + ERAS + CULTURES + FACTIONS + ORDERS
 Read these in order:
 1. `docs/LORE_FOUNDATION.md`
 2. `docs/LORE_01_CHRONOLOGY.md`
 3. `docs/LORE_02_PEOPLES_CULTURES.md`
 4. `docs/LORE_03_FACTIONS_CAPITALS.md`
+5. `docs/LORE_04_EIGHT_ORDERS.md`
 
 The central pillar is **unbounded runic ascension**: runes are fragments of the laws of reality, fusion reconstructs increasingly exact versions of those laws, and Ascendants can continue accepting runic modifications without a known ceiling. Two initially identical individuals can therefore become incomparably different in power.
 
@@ -42,7 +43,11 @@ Core canon currently includes:
 - Havrebleu as a horizontal maritime capital built over its drowned pre-Fracture layers;
 - Forge-Cendre as a vertical mesa/forge capital powered by geothermal fractures;
 - distinct capital districts, monuments, economy, political tensions and hidden historical problems;
-- player runic progression becoming a political issue, not merely a stat increase.
+- player runic progression becoming a political issue, not merely a stat increase;
+- the Eight playable classes as eight living runic grammars descended from the founders' Great Runes;
+- each Order itself being part of its Seal: the physical fragment, place, secondary inscriptions and living tradition function together;
+- Order-specific doctrines, taboos, schisms, sanctuaries, traitors and Heralds;
+- the hidden **Neuvième Lecture** hypothesis: understanding the eight Seals as one larger sentence may reveal a deeper unified reading of the Grand Glyph.
 
 Do NOT redesign major quests, dungeons, raids, capitals, zones, landmarks or production art sets independently of this lore. The world, architecture, creatures and assets must become consequences of the canon.
 
@@ -56,23 +61,23 @@ The user explicitly reprioritized Orvalis on 2026-10-09: before mass asset acqui
 - **LORE 1** — historical eras and chronology through 1000 AF.
 - **LORE 2** — peoples, cultures, political identity, architecture and intelligent non-human peoples.
 - **LORE 3** — Pacte d'Azur, Clans de Braise, current politics, Havrebleu and Forge-Cendre.
+- **LORE 4** — the Eight Orders, founders, Seals, class grammars, sanctuaries, doctrines, taboos, schisms, traitors, Heralds and the Neuvième Lecture.
 
 ### Current next lore block
-Build **LORE 4 — the Eight Orders in depth**:
-- founder and original role of each Order;
-- philosophy and relationship to its Great Rune/Seal;
-- how each Order survived the last millennium;
-- sanctuaries and visual identity;
-- internal schisms and forbidden doctrines;
-- relationship to Azur, Braise, Ascendants and Voilés;
-- why each playable class mechanically exists in the world;
-- secrets that can later generate class quests, dungeons and raids.
+Build **LORE 5 — the nine regions in depth as consequences of the Fracture**:
+- what each region was before year 0 AF;
+- exactly what runic law/resonance broke there during the Fracture;
+- why its present terrain, weather, water, vegetation and creatures look the way they do;
+- current settlements, regional cultures and faction presence;
+- local ruins and visible layers of old Orvalis;
+- scenic landmarks and memorable environmental compositions;
+- local myths versus hidden truth;
+- direct hooks for future quests, dungeons, raids and asset requirements.
 
 Then derive:
-1. the nine regions as detailed consequences of the Fracture;
-2. local myths versus hidden truth;
-3. quest/dungeon/raid rewrites;
-4. world/environment Master Asset List.
+1. local myths versus hidden truth at quest-detail level;
+2. quest/dungeon/raid rewrites;
+3. world/environment Master Asset List.
 
 ## Stable engine state
 - P0–P7 substantially implemented/validated.
@@ -138,5 +143,6 @@ Read order:
 4. `docs/LORE_01_CHRONOLOGY.md`
 5. `docs/LORE_02_PEOPLES_CULTURES.md`
 6. `docs/LORE_03_FACTIONS_CAPITALS.md`
-7. `ROADMAP.md`
-8. only docs/code needed for the exact active block.
+7. `docs/LORE_04_EIGHT_ORDERS.md`
+8. `ROADMAP.md`
+9. only docs/code needed for the exact active block.
