@@ -5,28 +5,27 @@ Updated: 2026-10-09
 ## Mandatory first read
 Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution/CI/commit/stop rules are binding unless the user explicitly reprioritizes the project in the current conversation.
 
-## Product / references
+# PRODUCT / DIRECTION
 - Product: Orvalis web MMORPG, original world/assets/content.
 - Visual target: dense stylized browser MMO with Hordes.io-like readability/density and WoW-Vanilla-like gameplay depth, without copying proprietary assets/content.
-- Primary technical truth for Vanilla mechanics/data behaviour: `docs/WoW_Vanilla_1.12.1_RE_Master.md`.
+- Primary Vanilla mechanics/data reference: `docs/WoW_Vanilla_1.12.1_RE_Master.md`.
 - Secondary implementation reference: `World0fWarcraft/OpenWow`.
 
-# CANONICAL RELEASE / ACT STRUCTURE — READ FIRST
+# RELEASE / ACT STRUCTURE — LOCKED
+Read first:
 1. `docs/RELEASE_SCOPE_AND_LONG_TERM_CAP.md`
 2. `docs/ACT_I_LAUNCH_SCOPE_1_50.md`
-3. `docs/CAMPAIGN_00_SCOPE_LEVEL_50.md`
 
-Locked:
 - **ACTE I = levels 1–50 = full launch/base game.**
+- Level 30 = major internal turning point, not act ending.
 - **Level 50 endgame concludes ACTE I.**
-- Level 30 is only a major internal turning point.
-- **ACTE II = future 50–75** and **ACTE III = future 75–100**; do not design them in detail now.
-- Long-term final character level target = **100**.
-- Runic progression remains **unbounded** regardless of conventional character level.
+- Future ACTE II = 50–75 and ACTE III = 75–100; do not detail them before launch.
+- Long-term conventional character cap target = 100.
+- Runic progression remains unbounded.
 - Runtime `LEVEL_CAP = 30` is design-obsolete but must later be migrated coherently with XP/items/professions/content rather than changed alone.
 
-# CANONICAL LORE + CAMPAIGN
-Read as needed:
+# CANONICAL LORE / CAMPAIGN
+Read only as needed:
 1. `docs/LORE_FOUNDATION.md`
 2. `docs/LORE_01_CHRONOLOGY.md`
 3. `docs/LORE_02_PEOPLES_CULTURES.md`
@@ -48,7 +47,7 @@ Narrative rule: **never default to “everything you knew was false.” Prefer �
 # ACTE I — WORLD / CONTENT STATE
 
 ## Levels 1–30 — Noyau d'Orvalis
-Nine major regions:
+Nine major regions remain canonically named:
 1. Val d'Azur
 2. Terres de Braise
 3. Bois-Murmure
@@ -59,9 +58,7 @@ Nine major regions:
 8. Désolation Cendrée
 9. Cime des Tempêtes
 
-The existing 74 regional quests remain an audit baseline only. Target is a much denser MMO world with new chains, hubs, interiors, events and cultural content.
-
-Level 30 remains a campaign turning point:
+Level 30 remains a major campaign turning point:
 - Hérauts defeated;
 - Sanctuaire des Tempêtes + Trône de Cendre-Noire = mid-Acte-I campaign/palier raids;
 - Nyxaroth Incarnation defeat is real but partial;
@@ -77,6 +74,84 @@ Four additional major regions:
 13. Territoires d'Orée — ~43–50, Cités d'Orée, Lisière Blanche, Confluence
 
 Level 50 opens the true launch endgame; completing the endgame story concludes Acte I.
+
+# WORLD GEOGRAPHY — CRITICAL OVERRIDE
+Read:
+- `docs/ACT_I_ORGANIC_WORLD_GEOGRAPHY_OVERRIDE.md`
+- `docs/ACT_I_WORLD_MAP_STREAMING_PLAN.md`
+
+## Absolute rule
+The final playable world must **NOT** preserve the current prototype's 3×3 square geography.
+
+The current runtime `src/data/zones.js` is explicitly legacy/prototype geography:
+- `col` / `row`;
+- `ZONE_GRID` 3×3;
+- `BORDER`;
+- straight vertical/horizontal region boundaries;
+- passes placed on those fixed lines.
+
+These are **NOT CANONICAL PRODUCTION GEOGRAPHY** and must be removed/replaced during world migration.
+
+What survives:
+- region names and lore;
+- broad compass relationships only;
+- useful hubs/landmarks/connections.
+
+What does NOT survive as production truth:
+- exact current x/z positions;
+- square region shapes;
+- equal-sized regions;
+- old pass coordinates;
+- rectangular borders;
+- grid-derived roads;
+- minimap/world map based on the 3×3.
+
+## Organic-map target
+The world must feel like an organic MMORPG continent:
+- irregular coastline;
+- asymmetric mountain ranges;
+- valleys/basins/rivers shaping travel;
+- winding roads;
+- region boundaries following terrain/ecology/history;
+- regions with irregular shapes, protrusions and transition bands;
+- no visible relationship between biome boundaries and terrain tiles.
+
+The old 3×3 remains only a rough lore mnemonic for general direction (west/east/north/etc.), never a physical map template.
+
+Validation rule:
+> **If a screenshot of the world map lets the player infer a 3×3 grid or the streaming tile grid, the geography has failed.**
+
+# TECHNICAL MAP / STREAMING PLAN — LOCKED BLUEPRINT
+Canonical technical blueprint: `docs/ACT_I_WORLD_MAP_STREAMING_PLAN.md`.
+
+Existing engine facts:
+- cell = 4 m;
+- chunk = 32 m;
+- terrain tile = 512 m;
+- TerrainMap is sparse;
+- coordinates are effectively unbounded integers;
+- multiple TerrainMaps can coexist;
+- TerrainStreamer already supports load/unload radii, hysteresis and time-sliced building;
+- far terrain already exists.
+
+Production organization:
+- `orvalis_mainland` = seamless main continent for surface regions;
+- `nacrebrume` = separate offshore map;
+- `sous_trame` = separate large underground map;
+- dungeons/raids/special scenarios = instanced maps.
+
+Important: **a lore region is not a TerrainMap and is not a terrain tile.** Region volumes/polygons will cross tile boundaries freely.
+
+Logical content-sector plan:
+- terrain tile = 512 × 512 m;
+- future content sector = 128 × 128 m for object/spawn/event organization;
+- this sector is a data/streaming unit only and must also remain invisible to players.
+
+Initial streaming profile to profile later:
+- detailed terrain load radius ≈ 1 tile;
+- unload radius ≈ 2 tiles;
+- far terrain radius ≈ 3 tiles;
+- landmarks survive farther via lightweight proxies.
 
 # DUNGEONS / RAIDS — LAUNCH TARGET
 Primary dungeon target = **10 strong dungeons**:
@@ -109,33 +184,15 @@ Endgame loops:
 Canonical production blueprint: `docs/ACT_I_MASTER_ASSET_LIST.md`.
 
 Locked production principles:
-- build reusable **asset families**, not isolated one-off models;
+- build reusable asset families, not isolated one-off models;
 - generic rocks/vegetation/small props may start from vetted CC0/free assets and be normalized into Orvalis style;
 - identity-critical content must be original/custom: player bodies/equipment, Havrebleu, Forge-Cendre, Graveur/Grand-Glyphe architecture, Huit Ordres/runes/Ancrages, intelligent peoples, signature bosses/raids and major monuments;
-- use modular architecture kits for Azur, Braise, Ancient Orvalis, Graveurs, Nacrebrume, Silex/Marches, Sous-Trame occupation and Orée;
-- launch target stays approximately 13 major persistent regions with many subzones/interiors instead of empty extra maps;
-- production target remains about 10 strong dungeons rather than quota-driven expansion;
+- use modular architecture kits;
 - regional kits must be recognizable from a HUD-less screenshot.
 
-## Intelligent peoples requiring original visual families
-- Gobelins
-- Kobolds
-- Crapoussins
-- Trolls
-- Drakônides
-
-## Character/equipment production target
-- controlled original male + female base body on shared skeleton/contract;
-- modular customization;
-- four armor families (cloth/leather/mail/plate);
-- roughly six visual progression tiers from low level through level-50 endgame;
-- shared weapon library;
-- eight Order/class signatures.
-
 # FIRST PRODUCTION VERTICAL SLICE — LOCKED
-
 ## Slice A — Val d'Azur + edge of Havrebleu
-This is now the first integrated production-art target.
+This is the first integrated production-art target.
 
 P0 needs include:
 - player M/F production bodies;
@@ -151,20 +208,9 @@ P0 needs include:
 - recognizable Havrebleu edge/silhouette;
 - base rune VFX.
 
-This slice must prove in one integrated player-facing scene:
-- terrain;
-- dense vegetation;
-- architecture;
-- player character;
-- equipment;
-- creatures;
-- roads/props;
-- landmark composition;
-- capital sightline;
-- browser performance;
-- unmistakable Orvalis visual identity.
+Technical authoring window may cover about 2×2 terrain tiles, but the **visible geography inside it must be organic**: winding roads, irregular fields, natural water, non-grid forest edges and sightlines that continue beyond the tile window.
 
-Do **not** broadly acquire assets for all 13 regions before this slice validates the art direction.
+The slice is part of the final mainland coordinates, not a disposable square test map.
 
 # ART PIPELINE
 Canonical rules: `docs/ART_ASSET_PIPELINE.md`.
@@ -176,15 +222,18 @@ Nothing enters production without provenance: asset id, author, licence, source,
 
 Prefer CC0 for generic environment seeds. No NC, ND, ripped-game or unclear-licence assets.
 
-# ACTIVE PRIORITY — WORLD PRODUCTION SKELETON
-Do NOT jump to future Acts II/III and do NOT yet mass-import assets.
+# ACTIVE PRIORITY
+World/streaming boundaries are now sufficiently defined and the 3×3 prototype has been explicitly rejected for production.
 
-Exact next coherent blocks available, in order:
-1. derive **technical map/streaming boundaries** for the 13 major regions, subzones, interiors, dungeons and raids;
-2. then resume **A0.1/A0.2 targeted asset review/acquisition only for Slice A (Val + Havrebleu edge)**;
-3. normalize/import the selected local seed assets through the existing production asset path;
-4. build and visually validate Slice A before expanding acquisition to Braise or other regions;
-5. only after the production-world skeleton is coherent should runtime quest/NPC/mob/progression migration begin in small blocks.
+Do NOT jump to Acts II/III and do NOT yet migrate quest/progression runtime.
+
+Next coherent block:
+1. resume **A0.1/A0.2 targeted asset review/acquisition only for Slice A — Val + Havrebleu edge**;
+2. select a tiny coherent set of CC0/free generic environment seeds;
+3. identify the mandatory custom-Orvalis gaps for the slice;
+4. localize + record provenance for approved candidates;
+5. then normalize/import the seed set and build the first organic production slice;
+6. use that slice to validate art direction, density and browser performance before expanding world production.
 
 # Stable engine state
 - P0–P7 substantially implemented/validated.
@@ -197,9 +246,8 @@ Exact next coherent blocks available, in order:
 # Visual convergence / assets
 - V0 complete.
 - V1 complete.
-- V2.1 terrain blend implemented; one WebGPU closure proof remains deferred due runner limitation. Do NOT restart V2.1 from zero.
+- V2.1 terrain blend implemented; one WebGPU closure proof remains deferred due runner limitation. Do NOT restart V2.1.
 - A0 production asset work remains valid.
-- Broad acquisition was paused until this Master Asset List existed; it may now resume **only in targeted Slice-A scope** after map/streaming boundaries are defined.
 
 # CI rules
 - No checkpoint-specific GitHub Actions workflows.
@@ -210,9 +258,8 @@ Exact next coherent blocks available, in order:
 Read order:
 1. `AGENT_RULES.md`
 2. `CURRENT_CHECKPOINT.md`
-3. `docs/RELEASE_SCOPE_AND_LONG_TERM_CAP.md`
-4. `docs/ACT_I_LAUNCH_SCOPE_1_50.md`
-5. `docs/CAMPAIGN_03_ACT_I_LEVELS_30_50.md`
-6. `docs/ACT_I_MASTER_ASSET_LIST.md`
-7. `docs/ART_ASSET_PIPELINE.md`
-8. only files/docs needed for the exact active block.
+3. `docs/ACT_I_ORGANIC_WORLD_GEOGRAPHY_OVERRIDE.md`
+4. `docs/ACT_I_WORLD_MAP_STREAMING_PLAN.md`
+5. `docs/ACT_I_MASTER_ASSET_LIST.md`
+6. `docs/ART_ASSET_PIPELINE.md`
+7. only files/docs needed for the exact active block.
