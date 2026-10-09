@@ -12,36 +12,37 @@ Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution
 - Secondary implementation reference: `World0fWarcraft/OpenWow`.
 - Hordes.io is a rendering/world-density reference only, not an asset/code source.
 
-## CANONICAL LORE — LOCKED FOUNDATION + ERAS + CULTURES
+## CANONICAL LORE — LOCKED FOUNDATION + ERAS + CULTURES + FACTIONS
 Read these in order:
 1. `docs/LORE_FOUNDATION.md`
 2. `docs/LORE_01_CHRONOLOGY.md`
 3. `docs/LORE_02_PEOPLES_CULTURES.md`
+4. `docs/LORE_03_FACTIONS_CAPITALS.md`
 
 The central pillar is **unbounded runic ascension**: runes are fragments of the laws of reality, fusion reconstructs increasingly exact versions of those laws, and Ascendants can continue accepting runic modifications without a known ceiling. Two initially identical individuals can therefore become incomparably different in power.
 
 Core canon currently includes:
-- the Informe;
-- the Première Rune and the Écriture Première;
-- the Trame as written reality;
+- the Informe, Première Rune, Écriture Première and Trame;
 - runes as fragments of world-law rather than ordinary enchantments;
 - equipment as runic Ancrages;
-- the Voile as the boundary between written reality and the Informe;
-- Nyxaroth / Celle-qui-n'a-pas-de-Nom;
-- the Graveurs and the Grand Glyphe beneath ancient Valcœur;
-- the Kingdom of Orvalis as the political union built around that Glyphe;
-- Morvhal, Elyra and the Grande Réécriture;
-- the Fracture in year 0 AF and the nine regions of resonance;
+- the Voile and Nyxaroth / Celle-qui-n'a-pas-de-Nom;
+- the Graveurs and Grand Glyphe beneath ancient Valcœur;
+- the Kingdom of Orvalis, Morvhal, Elyra and the Grande Réécriture;
+- the Fracture in year 0 AF and nine regions of resonance;
 - the Eight founders, Eight Orders and Eight Seals;
-- the modern Ascendants / Inachevés as potentially the Trame's living self-repair mechanism;
+- modern Ascendants / Inachevés as potentially the Trame's living self-repair mechanism;
 - the Voilés and their goal of completing the Grande Réécriture;
 - the game beginning in year 1000 AF;
+- intelligent Crapoussins, kobolds, goblins, trolls and drakônides with internal cultures/factions;
 - the Pacte d'Azur as a continuity/stability-oriented alliance centred on Havrebleu;
 - the Clans de Braise as an autonomy/proof-oriented federation centred on Forge-Cendre;
-- Azur and Braise as political cultures, not biological races or simple good/evil factions;
-- distinct regional cultures in Val d'Azur, Bois-Murmure, Canyon des Scories, Vasegrise, the Cœur, Pics Gelés, Désolation and Cime;
-- Crapoussins, kobolds, goblins, trolls and drakônides as intelligent peoples with internal factions/cultures rather than automatic monster species;
-- architecture, funeral customs, rune regulation and treatment of Ascendants as direct consequences of each culture's history.
+- Isaure Valcourt as Commandante du Pacte and Korvash as Seigneur de guerre;
+- the Conseil des Marées and Azur's Continuistes, Gardiens, Libres-Quais and Couronnistes;
+- the Assemblée des Feux and Braise's Libres-Cendres, Forges-Mères, Crocs Rouges and Unificateurs;
+- Havrebleu as a horizontal maritime capital built over its drowned pre-Fracture layers;
+- Forge-Cendre as a vertical mesa/forge capital powered by geothermal fractures;
+- distinct capital districts, monuments, economy, political tensions and hidden historical problems;
+- player runic progression becoming a political issue, not merely a stat increase.
 
 Do NOT redesign major quests, dungeons, raids, capitals, zones, landmarks or production art sets independently of this lore. The world, architecture, creatures and assets must become consequences of the canon.
 
@@ -54,23 +55,24 @@ The user explicitly reprioritized Orvalis on 2026-10-09: before mass asset acqui
 - **LORE 0** — cosmology / Écriture Première / runic ascension.
 - **LORE 1** — historical eras and chronology through 1000 AF.
 - **LORE 2** — peoples, cultures, political identity, architecture and intelligent non-human peoples.
+- **LORE 3** — Pacte d'Azur, Clans de Braise, current politics, Havrebleu and Forge-Cendre.
 
 ### Current next lore block
-Build **LORE 3 — the two factions and their capitals in depth**:
-- exact political institutions;
-- current leaders and rival power blocs;
-- districts and social geography of Havrebleu and Forge-Cendre;
-- class tensions, economy and rune policy;
-- capital landmarks rooted in history;
-- how an Ascendant experiences each capital at game start;
-- faction conflicts that can generate future questlines without making either side simply evil.
+Build **LORE 4 — the Eight Orders in depth**:
+- founder and original role of each Order;
+- philosophy and relationship to its Great Rune/Seal;
+- how each Order survived the last millennium;
+- sanctuaries and visual identity;
+- internal schisms and forbidden doctrines;
+- relationship to Azur, Braise, Ascendants and Voilés;
+- why each playable class mechanically exists in the world;
+- secrets that can later generate class quests, dungeons and raids.
 
 Then derive:
-1. the Eight Orders and their internal history;
-2. the nine regions as detailed consequences of the Fracture;
-3. local myths versus hidden truth;
-4. quest/dungeon/raid rewrites;
-5. world/environment Master Asset List.
+1. the nine regions as detailed consequences of the Fracture;
+2. local myths versus hidden truth;
+3. quest/dungeon/raid rewrites;
+4. world/environment Master Asset List.
 
 ## Stable engine state
 - P0–P7 substantially implemented/validated.
@@ -135,5 +137,6 @@ Read order:
 3. `docs/LORE_FOUNDATION.md`
 4. `docs/LORE_01_CHRONOLOGY.md`
 5. `docs/LORE_02_PEOPLES_CULTURES.md`
-6. `ROADMAP.md`
-7. only docs/code needed for the exact active block.
+6. `docs/LORE_03_FACTIONS_CAPITALS.md`
+7. `ROADMAP.md`
+8. only docs/code needed for the exact active block.
