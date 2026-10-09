@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "purpose": "Meshy CC0 candidate kit for the first Orvalis crypt/dungeon review scene. Source pages are provenance records; production assets must be downloaded as GLB and copied locally before use.",
+  "sceneId": "orvalis-crypt-a7",
+  "assets": [
+    {
+      "id": "meshy-stone-dungeon-pack",
+      "label": "Stone Dungeon Asset Pack",
+      "category": "environment/dungeon/modular",
+      "author": "danyatatarin228",
+      "license": "CC0-1.0",
+      "source": "https://www.meshy.ai/3d-models/Stone-Dungeon-Asset-Pack-019e6b8e-4937-7d5b-8f61-223e7a714e2e",
+      "status": "candidate-download-required",
+      "priority": "core",
+      "usage": "Primary modular stone language: walls/floor/architectural mass if the downloaded GLB contains separable usable pieces.",
+      "notes": "Meshy page marks the model as lowpoly/stylized and CC0. Reject or split pieces that are incoherent or unnecessarily dense."
+    },
+    {
+      "id": "meshy-ossuary-gate",
+      "label": "Ossuary Gate",
+      "category": "environment/dungeon/landmark",
+      "author": "jurafjvs",
+      "license": "CC0-1.0",
+      "source": "https://www.meshy.ai/3d-models/Ossuary-Gate-019eee17-b46a-79e6-8cbf-46154a2ecf6c",
+      "status": "candidate-download-required",
+      "priority": "core",
+      "usage": "End-of-room landmark / locked progression gate at the back of the crypt.",
+      "notes": "Gothic stonework, crypt/ossuary tags. Use once as a focal landmark rather than repeating it."
+    },
+    {
+      "id": "meshy-dungeon-floor",
+      "label": "Dungeon Stone Floor",
+      "category": "environment/dungeon/floor",
+      "author": "juho.katsomo",
+      "license": "CC0-1.0",
+      "source": "https://www.meshy.ai/3d-models/0199401c-f061-7fbb-9fb1-3b9d2af451ae",
+      "status": "candidate-download-required",
+      "priority": "core",
+      "usage": "Primary walkable stone floor module; repeat only after checking seams and pivot.",
+      "notes": "Tagged ground/floor/dungeon/stone/tiles/rough/medieval/fantasy. Normalize to Orvalis scale and flatten accidental underside geometry if present."
+    },
+    {
+      "id": "meshy-ancient-dungeon-door",
+      "label": "Ancient Wooden Dungeon Door",
+      "category": "environment/dungeon/door",
+      "author": "BlueLog",
+      "license": "CC0-1.0",
+      "source": "https://www.meshy.ai/3d-models/Ancient-wooden-dungeon-door-with-frame-heavy-iron-hinges-and-ring-handle-slightly-warped-wood-texture-designed-to-fit-standard-modular-wall-opening-separate-door-and-frame-meshes-stylized-fantasy-v2-019634b8-8d9c-7c83-95a8-5a6b687b23da",
+      "status": "candidate-download-required",
+      "priority": "support",
+      "usage": "Side-room door / secondary exit. Prefer one or two instances maximum in the first scene.",
+      "notes": "Prompt explicitly targets a stylized fantasy modular dungeon door with separate door/frame meshes."
+    },
+    {
+      "id": "meshy-bone-pile",
+      "label": "Bone Pile",
+      "category": "environment/dungeon/prop",
+      "author": "Warface",
+      "license": "CC0-1.0",
+      "source": "https://www.meshy.ai/3d-models/019c5cc9-3817-7927-8c22-564a87ede1e5",
+      "status": "candidate-download-required",
+      "priority": "support",
+      "usage": "Sparse storytelling prop near walls, coffins and dead ends; never carpet the floor with repeated copies.",
+      "notes": "Use rotation/scale variation and low density so the scene reads as an old crypt rather than horror clutter."
+    },
+    {
+      "id": "meshy-wooden-coffin",
+      "label": "Wooden Coffin",
+      "category": "environment/dungeon/prop",
+      "author": "johaniashivclaw",
+      "license": "CC0-1.0",
+      "source": "https://www.meshy.ai/3d-models/Wooden-Coffin-019c2d23-b449-7e6a-84ad-3ef777b91047",
+      "status": "candidate-download-required",
+      "priority": "support",
+      "usage": "Crypt side alcove prop; 2-4 instances with deliberate offsets and orientation changes.",
+      "notes": "CC0 Meshy 6 model. Keep only if its silhouette/material language survives Orvalis normalization."
+    }
+  ]
+}
