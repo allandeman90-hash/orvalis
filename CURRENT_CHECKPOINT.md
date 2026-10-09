@@ -12,7 +12,7 @@ Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution
 - Secondary implementation reference: `World0fWarcraft/OpenWow`.
 - Hordes.io is a rendering/world-density reference only, not an asset/code source.
 
-## CANONICAL LORE — LOCKED THROUGH LORE 6
+## CANONICAL LORE + CAMPAIGN — LOCKED THROUGH CAMPAIGN 1
 Read these in order:
 1. `docs/LORE_FOUNDATION.md`
 2. `docs/LORE_01_CHRONOLOGY.md`
@@ -21,6 +21,7 @@ Read these in order:
 5. `docs/LORE_04_EIGHT_ORDERS.md`
 6. `docs/LORE_05_NINE_REGIONS.md`
 7. `docs/LORE_06_BELIEFS_AND_TRUTHS.md`
+8. `docs/CAMPAIGN_01_LEVELING_1_30.md`
 
 The central pillar is **unbounded runic ascension**: runes are fragments of the laws of reality, fusion reconstructs increasingly exact versions of those laws, and Ascendants can continue accepting runic modifications without a known ceiling. Two initially identical individuals can therefore become incomparably different in power.
 
@@ -70,7 +71,7 @@ Core canon currently includes:
 
 Narrative rule for future twists: **never default to “everything you knew was false.” Prefer “what you knew was true, but you did not yet know what it meant.”**
 
-Do NOT redesign major quests, dungeons, raids, capitals, zones, landmarks or production art sets independently of this lore. The world, architecture, creatures and assets must become consequences of the canon.
+Do NOT redesign major quests, dungeons, raids, capitals, zones, landmarks or production art sets independently of this canon. The world, architecture, creatures, instances, quests and assets must become consequences of the lore and campaign.
 
 The lore is also intended to become the basis of a future opening cinematic/video, but the cinematic should preserve mysteries and not reveal every hidden truth immediately.
 
@@ -86,16 +87,29 @@ The user explicitly reprioritized Orvalis on 2026-10-09: first establish deep ep
 - **LORE 5** — the nine regions as runic scars of the Fracture, including terrain, water, vegetation, settlements, scenic identities, dungeon origins and connection to the Grand Glyph.
 - **LORE 6** — public beliefs, scholarly interpretations, hidden truths, unresolved mysteries and the reveal structure for the main story.
 
-### Exact next design block
-Build the **lore-derived main campaign and instance rewrite plan** before changing runtime data:
-1. define the level 1–30 main narrative spine from the player's awakening in 1000 AF to the first endgame raids;
-2. map which Lore 6 truths are revealed at each stage and which remain hidden;
-3. preserve useful existing quests, dungeon names, bosses and systems when compatible;
-4. recontextualize each dungeon so it reveals one meaningful piece of the larger mystery;
-5. make the level-30 raid victories substantial without resolving Nyxaroth, the Neuvième Lecture, the Graveurs or infinite Ascendance;
-6. only after the narrative plan is coherent, update quest/dungeon/raid runtime data.
+### Completed campaign block
+- **CAMPAIGN 1 — L'ASCENDANCE** (`docs/CAMPAIGN_01_LEVELING_1_30.md`) — canonical level 1–30 narrative spine plus endgame raid conclusion.
+- Preserve the current technical structure of 16 class-story chapters at levels `1,1,2,3,5,6,8,11,13,16,19,22,25,28,30,30` where practical.
+- Faction paths remain distinct through the starting regions and first secondary region, then converge narratively in Vasegrise and later contested zones.
+- Introduces recurring opposite-faction Ascendant rivals Maëlys Varenne and Darek Cendre-Libre.
+- Reframes intelligent peoples so hostile factions can be fought without treating whole species as generic monsters.
+- Reframes each dungeon as an optional-but-important lore proof rather than a mandatory leveling blocker.
+- Reframes Azhkar as a recurring Potentiel phenomenon, not a boss that inexplicably resurrects.
+- Sanctuaire des Tempêtes reveals that the nine-region geography has become part of the Grand Glyph.
+- Trône de Cendre-Noire ends the base arc with the destruction of a true but partial Nyxaroth Incarnation.
+- End stinger preserves the Rune Impossible mystery with `VOUS APPRENEZ ENCORE À LIRE.`
 
-After the campaign plan:
+### Exact next design block
+Build **CAMPAIGN 2 — detailed quest/dungeon/raid rewrite specification** before changing runtime data:
+1. map every existing zone quest to KEEP / REWRITE / REPLACE / REMOVE;
+2. define the exact new main and side quest chains by zone;
+3. define dungeon entrance quests, solo fallback breadcrumbs and post-dungeon follow-ups;
+4. define recurring Maëlys/Darek encounters and class-specific Order beats;
+5. define which existing bosses remain, which are recontextualized and which need replacement encounters;
+6. preserve useful objective types/systems (kill, collect, explore, talk, event, PvP) while eliminating lore-breaking premises;
+7. only after this specification is coherent, update `src/data/quests.js`, `src/data/story.js`, `src/data/dungeons.js` and related NPC/mob data in small implementation blocks.
+
+After the detailed campaign rewrite specification:
 - derive the production world/environment Master Asset List;
 - derive lore-driven scenic/environment briefs for each region and capital;
 - resume broad production asset acquisition only from those lists.
@@ -168,5 +182,6 @@ Read order:
 7. `docs/LORE_04_EIGHT_ORDERS.md`
 8. `docs/LORE_05_NINE_REGIONS.md`
 9. `docs/LORE_06_BELIEFS_AND_TRUTHS.md`
-10. `ROADMAP.md`
-11. only docs/code needed for the exact active block.
+10. `docs/CAMPAIGN_01_LEVELING_1_30.md`
+11. `ROADMAP.md`
+12. only docs/code needed for the exact active block.
