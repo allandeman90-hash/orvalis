@@ -12,6 +12,46 @@ Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution
 - Secondary implementation reference: `World0fWarcraft/OpenWow`.
 - Hordes.io is a rendering/world-density reference only, not an asset/code source.
 
+## CANONICAL LORE FOUNDATION — LOCKED
+The canonical lore foundation is now `docs/LORE_FOUNDATION.md`.
+
+Its central pillar is **unbounded runic ascension**: runes are fragments of the laws of reality, fusion reconstructs increasingly exact versions of those laws, and Ascendants can continue accepting runic modifications without a known ceiling. Two initially identical individuals can therefore become incomparably different in power.
+
+Core canon currently includes:
+- the Informe;
+- the Première Rune and the Écriture Première;
+- the Trame as written reality;
+- runes as fragments of world-law rather than ordinary enchantments;
+- equipment as runic Ancrages;
+- the Voile as the boundary between written reality and the Informe;
+- Nyxaroth / Celle-qui-n'a-pas-de-Nom;
+- the Grand Glyphe beneath ancient Valcœur;
+- Morvhal and his daughter Elyra;
+- the Grande Réécriture and the temporary erasure of Death;
+- the Fracture into nine regions of resonance;
+- the Eight founders, Eight Orders and Eight Seals;
+- the modern Ascendants / Inachevés;
+- the Voilés and their goal of completing the Grande Réécriture.
+
+Do NOT redesign major quests, dungeons, raids, capitals, zones, landmarks or production art sets independently of this lore. The world, architecture, creatures and assets must become consequences of the canon.
+
+The lore is also intended to become the basis of a future opening cinematic/video, but the cinematic should preserve mysteries and not reveal every hidden truth immediately.
+
+## ACTIVE PRIORITY — LORE-FIRST WORLD DESIGN
+The user explicitly reprioritized Orvalis on 2026-10-09: before mass asset acquisition or broad world decoration, build a deep epic lore and then derive quests, dungeons, raids, capitals, environments and asset requirements from it.
+
+### Current next lore block
+Build **LORE 1 — historical eras and chronology**, from the earliest known civilizations through the exact present-day moment when the new generation of Ascendants appears.
+
+Then derive:
+1. peoples/cultures and political history;
+2. the two current factions and their capitals;
+3. the Eight Orders and their internal history;
+4. the nine regions as consequences of the Fracture;
+5. local myths versus hidden truth;
+6. quest/dungeon/raid rewrites;
+7. world/environment Master Asset List.
+
 ## Stable engine state
 - P0–P7 substantially implemented/validated.
 - P8.1–P8.6 implemented/validated.
@@ -34,8 +74,8 @@ Useful V2.1 work already present includes external terrain texture/alpha support
 
 The last remaining closure proof was one WebGPU terrain smoke. The user explicitly chose not to block visible progress on that runner limitation. Do NOT restart V2.1 from zero. Its closure proof can be completed later when a suitable browser runner is available.
 
-## ACTIVE PRIORITY — A0 production asset foundation
-The user explicitly reprioritized visual convergence on 2026-10-09: assets come before further shader/world polish because placeholder geometry cannot meaningfully prove the desired art direction.
+## Asset foundation — PAUSED BEHIND LORE
+A0 production asset work remains valid but is not the current design priority.
 
 ### A0.1 — Art review + provenance registry — IN PROGRESS
 Goal:
@@ -51,15 +91,7 @@ Initial candidate seed set:
 
 See `docs/ART_ASSET_PIPELINE.md`.
 
-## Exact next technical block after A0.1 lands
-Do ONE small A0.2 block:
-1. verify the art-review page is present in the Pages build;
-2. select/retain a tiny coherent environment seed kit (trees + rocks + one small prop; reject anything visibly incompatible);
-3. copy approved source assets locally into Orvalis rather than depending on external CDN mirrors;
-4. record exact local paths + provenance;
-5. stop/report before building broad world decoration.
-
-After the seed kit exists locally, A0.3 builds the smallest practical static-GLB ingestion/normalization path into the custom renderer. Do not rewrite the renderer and do not import hundreds of assets at once.
+Do not perform broad asset acquisition until the lore-derived world/environment Master Asset List exists. Existing technical asset pipeline work should be preserved, not restarted.
 
 ## CI rules still apply
 - No checkpoint-specific GitHub Actions workflows.
@@ -73,11 +105,13 @@ The production world must prioritize:
 - batching/instancing and distance-aware cost control;
 - stylized non-PBR material language;
 - strong vertex/baked lighting, fog, foliage, shadows and readable silhouettes;
-- coherent assets rather than raw mixed asset packs.
+- coherent assets rather than raw mixed asset packs;
+- environments whose terrain, architecture, settlements, water, props and scenic compositions visibly follow the world's history and cultures.
 
 ## Chat continuity
 Read order:
 1. `AGENT_RULES.md`
 2. `CURRENT_CHECKPOINT.md`
-3. `ROADMAP.md`
-4. only docs/code needed for the exact active block.
+3. `docs/LORE_FOUNDATION.md`
+4. `ROADMAP.md`
+5. only docs/code needed for the exact active block.
