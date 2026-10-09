@@ -1,15 +1,16 @@
 # CURRENT_CHECKPOINT
 
-Updated: 2026-10-06
+Updated: 2026-10-09
 
 ## Mandatory first read
-Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution/CI/commit/stop rules are binding.
+Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution/CI/commit/stop rules are binding unless the user explicitly reprioritizes the project in the current conversation.
 
 ## Product / references
 - Product: Orvalis web MMORPG, original world/assets/content.
-- Primary technical truth: `docs/WoW_Vanilla_1.12.1_RE_Master.md`.
+- Visual/world target: dense stylized browser MMO world with Hordes.io-like readability/density principles and WoW-Vanilla-like gameplay depth, without copying proprietary assets/content.
+- Primary technical truth for Vanilla mechanics/data behaviour: `docs/WoW_Vanilla_1.12.1_RE_Master.md`.
 - Secondary implementation reference: `World0fWarcraft/OpenWow`.
-- Do not copy proprietary Blizzard assets or blindly port native/WotLK-specific OpenWow paths.
+- Hordes.io is a rendering/world-density reference only, not an asset/code source.
 
 ## Stable engine state
 - P0–P7 substantially implemented/validated.
@@ -27,56 +28,56 @@ Reference/production contracts for character, terrain and environment exist.
 - V1.1 external model ingestion validated.
 - V1.2 production character asset adapter validated on WebGL2 + WebGPU.
 - V1.3 equipment appearance/transmog contract validated.
-- Gameplay item stats remain separate from visual appearance/transmog state.
 
-### V2.1 — IMPLEMENTED, CLOSURE PENDING
-A previous session over-ran badly (72 commits / excessive GitHub Actions polling). Do NOT repeat that process.
+### V2.1 — IMPLEMENTED, CLOSURE DEFERRED
+Useful V2.1 work already present includes external terrain texture/alpha support, production terrain layer adapter, 1–4 layer material path work, palette/material integration and targeted terrain production tests.
 
-Useful V2.1 work already present in the repo includes:
-- external terrain texture/alpha asset support;
-- production terrain layer adapter;
-- 1–4 layer material path work;
-- palette/material integration through TerrainRenderer;
-- targeted terrain production tests/integration proof.
+The last remaining closure proof was one WebGPU terrain smoke. The user explicitly chose not to block visible progress on that runner limitation. Do NOT restart V2.1 from zero. Its closure proof can be completed later when a suitable browser runner is available.
 
-V2.1 is NOT to be restarted from zero.
+## ACTIVE PRIORITY — A0 production asset foundation
+The user explicitly reprioritized visual convergence on 2026-10-09: assets come before further shader/world polish because placeholder geometry cannot meaningfully prove the desired art direction.
 
-## Exact next technical block
-Do ONE short closure block for V2.1:
-1. inspect the current targeted terrain smoke / last demonstrated V2.1 failure once;
-2. if it is a stale expectation, fix only that stale smoke/test — do not change correct runtime behavior merely to satisfy old UI assumptions;
-3. run targeted terrain tests + typecheck/lint for affected files;
-4. run ONE relevant WebGPU terrain smoke (and WebGL2 only if the runtime code changed in a backend-sensitive way or the previous proof is no longer valid);
-5. if green, mark V2.1 closed and advance `ROADMAP.md` / this file to V2.2;
-6. stop and report. Do not autonomously continue into V2.2 in the same block.
+### A0.1 — Art review + provenance registry — IN PROGRESS
+Goal:
+- create `engine/public/art-review.html`;
+- compare real legally usable candidate assets under one consistent camera/light/fog setup;
+- keep author/licence/original source in `engine/public/assets/art-review-registry.json`;
+- keep review URLs temporary: approved production assets must be copied locally before shipping.
 
-## CI cleanup already performed
-Temporary checkpoint workflows have been removed:
-- `v1-2-validation.yml` removed;
-- `v1-3-validation.yml` removed;
-- `v2-1-validation.yml` removed.
+Initial candidate seed set:
+- Quaternius Pine Trees — CC0;
+- Quaternius Rocks — CC0;
+- Kay Lousberg Lantern — CC0.
 
-Do NOT recreate checkpoint-specific GitHub Actions workflows.
-Use the permanent Pages workflow only as deployment/build confirmation, not as a development loop.
+See `docs/ART_ASSET_PIPELINE.md`.
+
+## Exact next technical block after A0.1 lands
+Do ONE small A0.2 block:
+1. verify the art-review page is present in the Pages build;
+2. select/retain a tiny coherent environment seed kit (trees + rocks + one small prop; reject anything visibly incompatible);
+3. copy approved source assets locally into Orvalis rather than depending on external CDN mirrors;
+4. record exact local paths + provenance;
+5. stop/report before building broad world decoration.
+
+After the seed kit exists locally, A0.3 builds the smallest practical static-GLB ingestion/normalization path into the custom renderer. Do not rewrite the renderer and do not import hundreds of assets at once.
+
+## CI rules still apply
+- No checkpoint-specific GitHub Actions workflows.
+- Permanent `.github/workflows/pages.yml` is deployment/build confirmation only.
+- Use targeted tests/smokes when runtime code changes.
 
 ## Visual target
-Production characters must already look intentional without armor:
-- heroic old-school stylized silhouette;
-- exaggerated coherent proportions;
-- readable faces;
-- expressive larger hands/feet;
-- distinct male/female base shapes;
-- fitted armor with correct shoulder/helmet anchoring;
-- hand-painted/non-PBR material language;
-- clear level-1 → endgame progression;
-- transmog supported across the eventual 8 base archetypes.
+The production world must prioritize:
+- large streamed world;
+- high decoration density without empty plains;
+- batching/instancing and distance-aware cost control;
+- stylized non-PBR material language;
+- strong vertex/baked lighting, fog, foliage, shadows and readable silhouettes;
+- coherent assets rather than raw mixed asset packs.
 
 ## Chat continuity
-New-chat read order:
+Read order:
 1. `AGENT_RULES.md`
 2. `CURRENT_CHECKPOINT.md`
 3. `ROADMAP.md`
-4. only the docs/code needed for the exact active block
-
-Do not read all of `PROJECT_STATUS.md` unless a precise historical fact is needed.
-Do not run autonomously for hours. A normal `go` = one small block, validation, report, stop.
+4. only docs/code needed for the exact active block.

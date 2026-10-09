@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "purpose": "Orvalis art-review candidate registry. Review URLs are temporary; approved game assets must be copied into Orvalis and normalized before shipping.",
+  "assets": [
+    {
+      "id": "quaternius-pines",
+      "label": "Pine Trees",
+      "category": "environment/tree",
+      "author": "Quaternius",
+      "license": "CC0-1.0",
+      "source": "https://poly.pizza/m/oYtDty0fR6",
+      "reviewUrl": "https://cdn.jsdelivr.net/gh/kr8tiv-ai/aura-homes@main/app/public/models/pines.glb",
+      "reviewHeight": 3.2,
+      "status": "candidate",
+      "notes": "Candidate for a first Orvalis conifer family. Review copy only; do not ship from the external CDN."
+    },
+    {
+      "id": "quaternius-rocks",
+      "label": "Rocks",
+      "category": "environment/rock",
+      "author": "Quaternius",
+      "license": "CC0-1.0",
+      "source": "https://poly.pizza/m/OQvi8PIZ40",
+      "reviewUrl": "https://cdn.jsdelivr.net/gh/kr8tiv-ai/aura-homes@main/app/public/models/rocks.glb",
+      "reviewHeight": 1.35,
+      "status": "candidate",
+      "notes": "Candidate for batched ground/road/forest rock variation. Review copy only; do not ship from the external CDN."
+    },
+    {
+      "id": "kay-lantern",
+      "label": "Lantern",
+      "category": "environment/prop",
+      "author": "Kay Lousberg",
+      "license": "CC0-1.0",
+      "source": "https://poly.pizza/m/CtHBJ1ufeW",
+      "reviewUrl": "https://cdn.jsdelivr.net/gh/kr8tiv-ai/aura-homes@main/app/public/models/lantern.glb",
+      "reviewHeight": 1.2,
+      "status": "candidate",
+      "notes": "Small-prop candidate to test whether the same Orvalis lighting/material language can unify another CC0 author. Review copy only."
+    }
+  ]
+}

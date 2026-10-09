@@ -1,6 +1,6 @@
 # ORVALIS ROADMAP
 
-Updated: 2026-10-05
+Updated: 2026-10-09
 
 This file is the short forward plan. `PROJECT_STATUS.md` remains the long historical record.
 
@@ -15,7 +15,7 @@ This file is the short forward plan. `PROJECT_STATUS.md` remains the long histor
 - P7 — gameplay camera.
 - P8.1–P8.6 — movement, slope/slide/step/jump/fall/swim foundations.
 
-## Immediate closure
+## Immediate gameplay closure
 ### P8.7 — movement special states
 Goal: walk-on-water / levitation behavior and final P8 validation.
 Do not begin P9 until this is green.
@@ -24,101 +24,97 @@ Do not begin P9 until this is green.
 
 # VISUAL CONVERGENCE PHASE — before P9
 
-The engine is technically Vanilla-inspired but the visible test fixtures do not yet feel like Vanilla. This phase exists to fix that before adding large gameplay/backend layers.
+Orvalis must stop proving visual systems only with generated fixtures. The user explicitly prioritized real production assets first so rendering decisions can be judged on believable content.
+
+## A0 — Production asset foundation — ACTIVE
+### A0.1 Art review + licence registry
+- `art-review.html` shows candidate real assets under one consistent review setup.
+- Every candidate records author, licence and original source.
+- Review URLs may be remote; shipping assets may not depend on third-party CDN mirrors.
+
+### A0.2 First local environment seed kit
+- choose a tiny coherent CC0 set first: trees + rocks + one small prop;
+- copy exact approved source files locally;
+- keep provenance beside the assets;
+- reject incompatible style before importing more.
+
+### A0.3 Static GLB ingestion / normalization
+- smallest practical GLB → Orvalis runtime path for static environment meshes;
+- normalize scale, axis, pivot, material policy and texture handling;
+- preserve useful vertex colours;
+- no renderer rewrite and no premature custom binary format.
+
+### A0.4 Production art-review proof
+- render locally owned candidates through Orvalis material/lighting rules;
+- prove repeated instances do not read as raw asset-pack placement;
+- establish screenshot/visual-review workflow for later assets.
 
 ## V0 — OpenWow reference audit — COMPLETE
 ### V0.1 Character pipeline — COMPLETE
-- OpenWow character/M2/equipment/composite/attachment audit.
-- Compare with 1.12.1 master spec.
-- Orvalis gap matrix.
-- Production character asset contract.
-
 ### V0.2 Terrain/material pipeline — COMPLETE
-- OpenWow terrain layers, alpha maps, vertex colors, baked shadows.
-- Compare to Orvalis P1–P3 implementation.
-- Define production terrain material contract.
-
 ### V0.3 WMO/doodad/material pipeline — COMPLETE
-- OpenWow WMO material/group/doodad conventions.
-- Define Orvalis environment asset contract.
 
-## V1 — Real asset pipeline — COMPLETE
+## V1 — Real asset pipeline contracts — COMPLETE
 ### V1.1 Model asset ingestion — COMPLETE
-Replace code-generated fixture art for player-facing scenes with real external original assets handled by `AssetManager`.
-
 ### V1.2 Character asset contract — COMPLETE
-Each base archetype defines:
-- body mesh;
-- skeleton/animation compatibility;
-- UV/layout rules;
-- face/hair/facial-hair options;
-- attachment sockets;
-- body-type fit data;
-- geoset/visibility rules.
-
 ### V1.3 Equipment appearance contract — COMPLETE
-Separate gameplay item from appearance:
-- `Item` = stats/progression/requirements;
-- `ItemAppearance` = visual data;
-- `appearanceOverride` = transmog;
-- unlocked appearances persist in collection.
 
-Validated production rule: an equipped item's native appearance is always usable when known; a transmog override must be known and unlocked. Persistence remains a later-system responsibility.
+## V2 — Rendering/material convergence
+### V2.1 Terrain 4-layer blend + alpha maps — IMPLEMENTED, CLOSURE PROOF DEFERRED
+Runtime/test work is present. One WebGPU smoke closure proof remains deferred because the available assistant browser runner cannot execute it. Do not restart V2.1.
 
-## V2 — Vanilla-like rendering/material convergence — ACTIVE
-### V2.1 Terrain 4-layer blend + alpha maps — NEXT
 ### V2.2 Vertex color / baked shadow integration
-### V2.3 M2-like material modes: opaque, alpha-key, alpha blend, unlit, two-sided, texture transforms
-### V2.4 WMO/doodad materials in same visual language
-### V2.5 Fog/sky/light tuning for painterly non-PBR output
+Use real A0 assets while implementing so the effect is judged on production-like geometry, not only fixtures.
+
+### V2.3 M2-like material modes
+Opaque, alpha-key, alpha blend, unlit, two-sided, texture transforms.
+
+### V2.4 WMO/doodad materials
+Bring buildings/props into the same stylized visual language.
+
+### V2.5 Fog/sky/light tuning
+Painterly, readable, non-PBR output; no effect stacking merely for complexity.
 
 ## V3 — Characters and equipment
 ### V3.1 First original male base body
-Must already look intentional and old-school heroic with no armor.
-
 ### V3.2 First original female base body
-Same standard: strong silhouette without equipment.
-
 ### V3.3 Base customization proof
-Skin/face/hair/facial hair and stable UV/composite behavior.
-
 ### V3.4 Equipment progression proof
-For the same character:
-- level-1/simple outfit;
-- mid-tier outfit;
-- endgame outfit.
-
 ### V3.5 Transmog proof
-Keep endgame stats while overriding appearance with previously unlocked visuals.
-
 ### V3.6 Eight base archetype framework
-Generalize sockets/fit/proportions so all 8 base characters can share equipment appearances where sensible, with body-specific overrides only when needed.
 
-## V4 — Original Orvalis environment kit
+## V4 — Original Orvalis environment kit + density systems
 ### V4.1 Trees/bushes/rocks
-### V4.2 Ground textures: grass/dirt/road/rock/sand
-### V4.3 Architecture/props: house/fence/sign/lamp/small props
+Use approved A0 assets as source material; add Orvalis-specific variants only where needed.
+
+### V4.2 Ground textures
+Grass/dirt/road/rock/sand with biome-compatible blending.
+
+### V4.3 Architecture/props
+House/fence/sign/lamp/small props; prefer modular kits.
+
 ### V4.4 Water/coast/river visual kit
 
-## V5 — First integrated world scene
-Create `?scene=world` combining:
-- terrain;
-- lighting/fog/sky;
-- water;
-- doodads;
-- buildings;
-- character;
-- gameplay camera;
-- P8 movement.
+### V4.5 Prop batching / instancing
+High decoration density without one draw call per object.
 
-### V5.1 Forest benchmark
-Original Orvalis zone, no copied geography/assets, but target the readability and visual cohesion of a 2004–2006 stylized MMO.
+### V4.6 Foliage density / biome placement
+Procedural/scatter rules, exclusion masks, distance density and readable composition.
 
-### V5.2 Contrasting benchmark
-Arid/swamp/snow test to prove the art language works beyond one green forest.
+## V5 — Integrated Orvalis migration scene
+The target is no longer a disconnected demo forest. Existing Orvalis content should progressively move onto the new engine and receive the production asset/material pipeline.
 
-### V5.3 User visual gate
-Do not call visual convergence done until the user can open `?scene=world` and genuinely say it starts to feel like Vanilla-era WoW rather than a generic low-poly test scene.
+### V5.1 Existing-world migration benchmark
+Take a real existing Orvalis area and replace its placeholder terrain/decor rendering progressively.
+
+### V5.2 Density benchmark
+The same area must feel deliberately decorated rather than like an empty plain: macro landmarks, medium props, small props and micro foliage layers.
+
+### V5.3 Contrasting biome proof
+Arid/swamp/snow or another non-green biome to prove the art language generalizes.
+
+### V5.4 User visual gate
+Do not call visual convergence done until the normal Orvalis page visibly feels like the intended game, not a generic low-poly technical scene.
 
 ---
 
@@ -139,10 +135,10 @@ Accounts/characters/persistence/world services, authoritative gameplay, content 
 ---
 
 # Permanent rules
-- Orvalis remains original; no Blizzard proprietary assets.
-- Master 1.12.1 RE spec is primary; OpenWow is secondary implementation reference.
-- OpenWow native/DirectX/WotLK/auth choices are not copied blindly.
-- Do not polish test fixtures into production art.
-- Each checkpoint must be atomic and verified before being marked complete.
-- Use targeted validation while iterating; broad verification only at checkpoint/phase boundaries.
-- Change chat after ~3–5 substantial checkpoints, major phase boundaries, or excessive debug/context accumulation.
+- Orvalis remains original; no Blizzard/Hordes proprietary assets or copied geography/content.
+- Hordes.io is a rendering/world-density reference, not a source tree.
+- Master 1.12.1 RE spec is primary for Vanilla-like mechanics; OpenWow is secondary implementation evidence.
+- Do not polish generated fixtures into production art.
+- Prefer real licensed assets + coherent Orvalis normalization over blind procedural modeling.
+- Each checkpoint should stay atomic and use targeted validation.
+- No temporary checkpoint CI workflows unless explicitly approved.
