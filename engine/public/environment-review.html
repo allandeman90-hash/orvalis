@@ -10,7 +10,7 @@
 </head>
 <body data-state="loading" data-loaded="0" data-failed="0">
 <canvas id="game"></canvas>
-<div id="hud"><b>Orvalis · Organic Convergence A4</b><small>Passe anti-cubique · volumes organiques, feuillage doux, vrai terrain, GLB de review.</small></div>
+<div id="hud"><b>Orvalis · Organic Convergence A5</b><small>Passe anti-cubique · volumes organiques, feuillage doux, vrai terrain, GLB de review.</small></div>
 <div id="credit">Review assets: Cabin Poly by Google (CC BY 3.0) · Pines/Rocks Quaternius (CC0) · Lantern Kay Lousberg (CC0). Environnement Orvalis original.</div>
 <div id="status">Construction de la scène…</div>
 <script type="module">
@@ -71,9 +71,9 @@ const terrain=new THREE.Mesh(terrainGeo,new THREE.MeshStandardMaterial({map:grou
 function pathX(z){return .95*Math.sin((z+4)*.16)-.025*(z+3)}
 const dummy=new THREE.Object3D();
 const pebbleGeo=new THREE.SphereGeometry(.42,10,7);const pebbleMats=[0xa3aa96,0x919a89,0xb0ae95].map(c=>new THREE.MeshStandardMaterial({color:c,map:stoneTex,roughness:1}));
-const pebbleMeshes=pebbleMats.map(m=>new THREE.InstancedMesh(pebbleGeo,m,165));pebbleMeshes.forEach(m=>{m.castShadow=true;m.receiveShadow=true;scene.add(m)});const pc=[0,0,0];
-for(let i=0;i<520;i++){const z=14-random()*41,x=pathX(z)+(random()-.5)*2.7,g=i%3,slot=pc[g]++;if(slot>=165)continue;dummy.position.set(x,groundHeight(x,z)+.035,z);dummy.rotation.set(random()*.15,random()*Math.PI,random()*.15);dummy.scale.set(.45+random()*.42,.13+random()*.11,.42+random()*.35);dummy.updateMatrix();pebbleMeshes[g].setMatrixAt(slot,dummy.matrix)}
-pebbleMeshes.forEach((m,i)=>{m.count=Math.min(pc[i],165);m.instanceMatrix.needsUpdate=true});
+const pebbleMeshes=pebbleMats.map(m=>new THREE.InstancedMesh(pebbleGeo,m,125));pebbleMeshes.forEach(m=>{m.castShadow=true;m.receiveShadow=true;scene.add(m)});const pc=[0,0,0];
+for(let i=0;i<360;i++){const z=14-random()*41,x=pathX(z)+(random()-.5)*2.25,g=i%3,slot=pc[g]++;if(slot>=125)continue;dummy.position.set(x,groundHeight(x,z)+.03,z);dummy.rotation.set(random()*.13,random()*Math.PI,random()*.13);dummy.scale.set(.36+random()*.34,.10+random()*.09,.34+random()*.30);dummy.updateMatrix();pebbleMeshes[g].setMatrixAt(slot,dummy.matrix)}
+pebbleMeshes.forEach((m,i)=>{m.count=Math.min(pc[i],125);m.instanceMatrix.needsUpdate=true});
 
 const grassMat=new THREE.MeshStandardMaterial({map:grassTex,alphaTest:.25,side:THREE.DoubleSide,roughness:1,color:0xb3dc91,emissive:0x12351b,emissiveIntensity:.18});
 const grassGeo=new THREE.PlaneGeometry(.52,.95);grassGeo.translate(0,.475,0);const grass=new THREE.InstancedMesh(grassGeo,grassMat,980);let gc=0;
@@ -83,16 +83,21 @@ grass.count=gc;grass.instanceMatrix.needsUpdate=true;scene.add(grass);
 const leafMat=new THREE.MeshStandardMaterial({map:leafTex,alphaTest:.16,side:THREE.DoubleSide,roughness:1,color:0x82ba70,emissive:0x102c18,emissiveIntensity:.12});
 function cylinderBetween(a,b,r,mat,radial=9){const d=b.clone().sub(a),m=new THREE.Mesh(new THREE.CylinderGeometry(r*.78,r,d.length(),radial),mat);m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());m.castShadow=true;m.receiveShadow=true;return m}
 const barkMat=new THREE.MeshStandardMaterial({color:0x574936,map:woodTex,roughness:1});
+function blobGeometry(seed=0){
+ const g=new THREE.SphereGeometry(1,16,11),p=g.attributes.position;
+ for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);const n=1+.13*Math.sin(x*4.7+seed*.8)+.08*Math.cos(z*5.3-seed*.6)+.06*Math.sin((x+y+z)*7.1);p.setXYZ(i,x*n,y*(1+.06*Math.sin(z*4+seed)),z*n)}
+ g.computeVertexNormals();return g
+}
 function organicTree(scale=1,seed=0){
  const g=new THREE.Group(),h=(8.3+seed*.25)*scale;
  const pts=[new THREE.Vector3(0,0,0),new THREE.Vector3(.18*scale,h*.25,.08*scale),new THREE.Vector3(-.12*scale,h*.52,.16*scale),new THREE.Vector3(.12*scale,h*.78,-.05*scale),new THREE.Vector3(0,h,0)];
  for(let i=0;i<pts.length-1;i++)g.add(cylinderBetween(pts[i],pts[i+1],(.82-i*.13)*scale,barkMat,10));
- const branchEnds=[[-2.4,h*.82,.5],[2.2,h*.87,.2],[-1.4,h*.96,-1.7],[1.6,h*.98,-1.45],[.15,h*1.04,1.9]];
- branchEnds.forEach((e,i)=>{const base=pts[Math.min(3,2+(i%2))].clone(),end=new THREE.Vector3(e[0]*scale,e[1],e[2]*scale);g.add(cylinderBetween(base,end,.23*scale,barkMat,8))});
- const canopyMat=[0x3f7d4f,0x4d9158,0x68a765,0x79b66b].map(c=>new THREE.MeshStandardMaterial({color:c,roughness:1,emissive:0x0d2714,emissiveIntensity:.08}));
- const clusters=[[-1.35,h*.99,.25,2.45,1.25,1.85],[1.35,h*1.02,.2,2.35,1.15,1.75],[-.4,h*1.10,-1.25,2.25,1.05,1.7],[.55,h*1.12,1.15,2.15,1.05,1.65],[0,h*1.18,0,2.45,1.12,1.85],[-2.0,h*.92,-.45,1.65,.92,1.35],[2.0,h*.94,-.4,1.7,.95,1.3]];
- clusters.forEach((q,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(1,18,12),canopyMat[(i+seed)%canopyMat.length]);m.position.set(q[0]*scale,q[1],q[2]*scale);m.scale.set(q[3]*scale,q[4]*scale,q[5]*scale);m.rotation.set(random()*.18,random()*Math.PI,random()*.12);m.castShadow=true;m.receiveShadow=true;g.add(m);
-   const card=new THREE.Mesh(new THREE.PlaneGeometry(3.2*scale,2.3*scale),leafMat);card.position.copy(m.position);card.position.y+=.1;card.rotation.set((random()-.5)*.25,random()*Math.PI,(random()-.5)*.12);card.castShadow=true;g.add(card)});
+ const branchEnds=[[-2.55,h*.81,.7],[2.4,h*.86,.25],[-1.7,h*.95,-1.75],[1.75,h*.99,-1.55],[.2,h*1.03,2.05],[-.3,h*.88,-2.3]];
+ branchEnds.forEach((e,i)=>{const base=pts[Math.min(3,2+(i%2))].clone(),end=new THREE.Vector3(e[0]*scale,e[1],e[2]*scale);g.add(cylinderBetween(base,end,(.25-i*.012)*scale,barkMat,8))});
+ const canopyMat=[0x2f7045,0x3f824d,0x579a59,0x6aae62].map(c=>new THREE.MeshStandardMaterial({color:c,roughness:1,emissive:0x0c2413,emissiveIntensity:.07}));
+ const clusters=[[-1.75,h*.96,.45,1.65,1.00,1.35],[-.45,h*1.04,.20,1.85,1.02,1.45],[1.25,h*1.00,.35,1.72,.96,1.30],[2.10,h*.93,-.28,1.30,.82,1.02],[-1.25,h*1.11,-1.35,1.55,.90,1.24],[.35,h*1.14,-1.55,1.62,.88,1.22],[1.60,h*1.08,-1.10,1.45,.86,1.16],[-.10,h*1.20,.75,1.55,.92,1.20],[-2.25,h*.89,-.55,1.22,.78,.96],[.95,h*.92,1.55,1.28,.80,1.00]];
+ clusters.forEach((q,i)=>{const m=new THREE.Mesh(blobGeometry(seed*17+i),canopyMat[(i+seed)%canopyMat.length]);m.position.set(q[0]*scale,q[1],q[2]*scale);m.scale.set(q[3]*scale,q[4]*scale,q[5]*scale);m.rotation.set((random()-.5)*.22,random()*Math.PI,(random()-.5)*.16);m.castShadow=true;m.receiveShadow=true;g.add(m);
+   if(i%2===0){const card=new THREE.Mesh(new THREE.PlaneGeometry(2.55*scale,1.75*scale),leafMat);card.position.copy(m.position);card.position.y+=.06;card.rotation.set((random()-.5)*.35,random()*Math.PI,(random()-.5)*.18);card.castShadow=true;g.add(card)}});
  return g
 }
 function placeTree(x,z,s=1,r=0,v=0){const t=organicTree(s,v);t.position.set(x,groundHeight(x,z),z);t.rotation.y=r;scene.add(t)}
@@ -152,7 +157,7 @@ async function boot(){
  cloneAt(a.pines,-20,-27,.48,.2);cloneAt(a.pines,20,-28,.46,-.4);
  cloneAt(a.rocks,-10,-24,.35,.2);cloneAt(a.rocks,10,-25,.34,.7);
  const l1=cloneAt(a.lantern,3.8,-9.4,.92,.1),l2=cloneAt(a.lantern,-3.9,-10.7,.90,-.1);glow(l1.position.x,l1.position.y+1.2,l1.position.z);glow(l2.position.x,l2.position.y+1.2,l2.position.z);
- document.body.dataset.state='ready';document.body.dataset.loaded=String(loaded);document.body.dataset.failed='0';status.textContent='READY · Organic A4 · 4/4 GLB';window.__orvalisEnvironmentReview={ready:true,loaded,objects:scene.children.length};
+ document.body.dataset.state='ready';document.body.dataset.loaded=String(loaded);document.body.dataset.failed='0';status.textContent='READY · Organic A5 · 4/4 GLB';window.__orvalisEnvironmentReview={ready:true,loaded,objects:scene.children.length};
 }
 boot().catch(e=>{console.error(e);document.body.dataset.state='error';document.body.dataset.failed='1';status.className='err';status.textContent=`ERREUR SCÈNE · ${e.message}`});
 function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();
