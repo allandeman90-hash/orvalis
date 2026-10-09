@@ -192,24 +192,98 @@ Important : une planche où 50 objets sont visibles séparément dans le preview
 
 ---
 
+# PASSE CIBLÉE — MINI SEED KIT A0.2 / 2026-10-09
+
+Cette passe vise explicitement le plus petit lot cohérent demandé par A0.2 : **tree + rock + petit prop d'environnement**, sans élargir encore le scope.
+
+Point outil : l'interface publique Meshy n'a pas exposé de filtre Triangle Count exploitable pendant cette passe. Les métadonnées techniques des pages individuelles ont donc été extraites avant verdict afin d'éviter les faux `lowpoly`. Le filtre authentifié pourra être retesté plus tard, mais il ne doit plus bloquer l'audit.
+
+## MF-VAL-ROCK-001 — Low poly rock
+
+- Rôle Orvalis : rocher générique / famille calcaire du Val après normalisation de palette.
+- Source : https://www.meshy.ai/3d-models/Low-poly-rock-019b1362-cb67-7b1b-81de-82214c3595b4?page=landing
+- Auteur : `feelzebub`
+- Licence affichée : **CC0**.
+- Génération : `Meshy-4`.
+- Tags : `rock`, `lowpoly`, `terrain`, `3dmodel`, `environment`, `nature`, `asset`, `geology`, `polygon`, `scenery`, `low`, `poly`, `lowpolyart`.
+- Topologie affichée : **Quad**.
+- Faces affichées : **1,076**.
+- Vertices affichés : **1,078**.
+- Inspection visuelle : silhouette angulaire simple composée de quelques volumes principaux, tons pierre/terre, lecture très claire et non photoréaliste ; bon candidat pour être recoloré vers un calcaire gris-bleu/ivoire Azur.
+- Verdict : **APPROVED FOR DOWNLOAD/GLB QA**.
+- Raisons : extrêmement léger, générique, CC0, stylisé, réutilisable en grand nombre avec variations de scale/rotation/teinte.
+- À vérifier après téléchargement : triangles réels après triangulation du Quad, nombre de matériaux, texture(s), pivot/échelle, possibilité de créer 2–3 variantes runtime sans dupliquer le mesh source.
+
+## MF-VAL-FENCE-001 — Low Poly Wooden Fence
+
+- Rôle Orvalis : clôture rurale / bord de champ / ferme / chemin du Val.
+- Source : https://www.meshy.ai/3d-models/low-poly-wooden-fence-019fa865-7de9-7a84-b0b4-bda388fa94af?page=landing
+- Auteur : `theanh75`
+- Licence affichée : **CC0**.
+- Génération : `Meshy 6`.
+- Tags : `wooden`, `fence`, `sturdy`, `planks`, `privacy`, `slats`, `grain`, `texture`, `outdoor`, `rustic`.
+- Topologie affichée : **Triangle**.
+- Faces affichées : **10,060**.
+- Vertices affichés : **11,705**.
+- Inspection visuelle : structure bois rustique, silhouette simple/lisible, grain visible sans basculer dans un rendu photoréaliste ; compatible avec un MMO stylisé après normalisation des matériaux.
+- Verdict : **APPROVED FOR DOWNLOAD/GLB QA**.
+- Raisons : sous la cible de base, rôle P0 immédiat, asset générique, CC0, facile à instancier et à décliner en segments.
+- À vérifier après téléchargement : nombre de meshes/primitives, dimensions exactes, pivot d'extrémité ou central, répétabilité bord-à-bord, matériaux/textures, possibilité de casser/recolorer certaines planches pour variantes.
+
+## MF-VAL-ROCK-002 — low poly beautiful mountain rocks
+
+- Source : https://www.meshy.ai/3d-models/low-poly-beautiful-mountain-rocks-019ed066-7114-70ee-8619-0d2fe1cd14b6?page=landing
+- Auteur : `a.balanyuk`
+- Licence : **CC0**.
+- Tags : `lowpoly`, `mountain`, `rocks`, `terrain`, `stylized`, `landscape`, `voxellike`, `polygonal`.
+- Inspection visuelle : très joli amas rocheux gris stylisé avec mousse, bon fit artistique brut pour le Val.
+- Topologie affichée : **Triangle**.
+- Faces affichées : **326,686**.
+- Vertices affichés : **181,499**.
+- Verdict : **REJECT — GEOMETRY FAIL**.
+- Raison : malgré le titre `low poly` et un excellent look, la géométrie dépasse largement le plafond absolu de 100k ; exemple typique de faux positif évité par l'audit technique.
+
+## MF-VAL-FENCE-002 — Weathered Fence
+
+- Source : https://www.meshy.ai/3d-models/Weathered-Fence-019988b8-ae38-719b-aacb-f2f56e5852fb
+- Auteur : `SashaRX`.
+- Licence : **CC0**.
+- Tags : `wood`, `fence`, `village`.
+- Topologie affichée : **Triangle**.
+- Faces affichées : **340,547**.
+- Vertices affichés : **198,919**.
+- Inspection : rendu plus réaliste/usé que notre cible, en plus d'une géométrie disproportionnée pour une clôture répétable.
+- Verdict : **REJECT — STYLE + GEOMETRY FAIL**.
+
+---
+
 # Résultat cumulé de l'audit
 
-Candidats individuels qualifiés : **7** (dont Wooden Stall).
+Candidats individuels qualifiés : **9** (dont Wooden Stall, Low poly rock et Low Poly Wooden Fence).
 Collections/planches qualifiées : **3**.
 
+## Mini seed kit A0.2 désormais qualifié
+
+1. **MF-VAL-TREE-001 — chêne stylisé** — CC0 — 10,854 faces affichées ;
+2. **MF-VAL-ROCK-001 — Low poly rock** — CC0 — 1,076 faces affichées ;
+3. **MF-VAL-FENCE-001 — Low Poly Wooden Fence** — CC0 — 10,060 faces affichées.
+
+Ce trio est volontairement petit : il suffit pour passer à la copie locale + GLB QA sans importer massivement des assets avant d'avoir validé le pipeline.
+
 Priorité téléchargement/QA actuelle :
-1. **Medieval Village Asset Pack** — pack CC0 stylized/game/lowpoly ;
-2. **chêne stylisé** — asset individuel léger ;
+1. **mini seed kit A0.2 : chêne + Low poly rock + Low Poly Wooden Fence** ;
+2. **Medieval Village Asset Pack** — pack CC0 stylized/game/lowpoly ;
 3. **petite maison bois/pierre** — asset individuel léger ;
 4. **Wooden Stall** — prop individuel léger ;
 5. **Rustic Timber & Stone Collection** — QA technique utile, mais filtre stylistique renforcé à cause de `photoreal`.
 
-Les modèles lourds isolés (lanterne 287k, charrette 168k, moulin 1,6M) deviennent moins intéressants maintenant que des collections gratuites cohérentes existent : on cherchera d'abord si les packs approuvés contiennent déjà une alternative légère avant de retopo quoi que ce soit.
+Les modèles lourds isolés (lanterne 287k, charrette 168k, moulin 1,6M, Weathered Fence 340k, amas rocheux 326k) restent hors runtime direct. Le mot `lowpoly` ne vaut jamais validation technique.
 
 # Prochaine passe
 
-1. examiner d'autres planches Meshy gratuites via tags `pack`, `collection`, `set`, `props`, `environment`, `modular`, `stylized`, `lowpoly` ;
-2. viser spécifiquement nature/vegetation/rocks/farm et architecture modulaire ;
-3. télécharger seulement les packs/individuels `APPROVED FOR DOWNLOAD/GLB QA` ;
-4. analyser le GLB pour connaître la vraie séparabilité et le triangle count par sous-asset ;
-5. alimenter ensuite le registre final d'assets approuvés et le downloader en lot.
+1. télécharger en priorité les **3 GLB du mini seed kit A0.2** ;
+2. les copier localement avec provenance ;
+3. analyser nodes / meshes / primitives / matériaux / textures / triangles réels / bounds ;
+4. seulement si ce lot est sain, télécharger ensuite `MF-VAL-PACK-001` pour QA de séparabilité ;
+5. alimenter le registre final d'assets approuvés et le downloader en lot ;
+6. passer ensuite à A0.3 — ingestion/normalisation GLB statique minimale.
