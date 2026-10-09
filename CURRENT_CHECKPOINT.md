@@ -12,13 +12,14 @@ Read `AGENT_RULES.md` before doing anything in a new chat/session. Its execution
 - Secondary implementation reference: `World0fWarcraft/OpenWow`.
 - Hordes.io is a rendering/world-density reference only, not an asset/code source.
 
-## CANONICAL LORE — LOCKED FOUNDATION + ERAS + CULTURES + FACTIONS + ORDERS
+## CANONICAL LORE — LOCKED FOUNDATION + ERAS + CULTURES + FACTIONS + ORDERS + REGIONS
 Read these in order:
 1. `docs/LORE_FOUNDATION.md`
 2. `docs/LORE_01_CHRONOLOGY.md`
 3. `docs/LORE_02_PEOPLES_CULTURES.md`
 4. `docs/LORE_03_FACTIONS_CAPITALS.md`
 5. `docs/LORE_04_EIGHT_ORDERS.md`
+6. `docs/LORE_05_NINE_REGIONS.md`
 
 The central pillar is **unbounded runic ascension**: runes are fragments of the laws of reality, fusion reconstructs increasingly exact versions of those laws, and Ascendants can continue accepting runic modifications without a known ceiling. Two initially identical individuals can therefore become incomparably different in power.
 
@@ -47,7 +48,10 @@ Core canon currently includes:
 - the Eight playable classes as eight living runic grammars descended from the founders' Great Runes;
 - each Order itself being part of its Seal: the physical fragment, place, secondary inscriptions and living tradition function together;
 - Order-specific doctrines, taboos, schisms, sanctuaries, traitors and Heralds;
-- the hidden **Neuvième Lecture** hypothesis: understanding the eight Seals as one larger sentence may reveal a deeper unified reading of the Grand Glyph.
+- the hidden **Neuvième Lecture** hypothesis: understanding the eight Seals as one larger sentence may reveal a deeper unified reading of the Grand Glyph;
+- the nine regions as Fracture scars with distinct runic resonances: Continuity (Val d'Azur), Transformation (Terres de Braise), Memory (Bois-Murmure), Depth (Canyon des Scories), Boundary (Vasegrise), Contradiction (Cœur d'Orvalis), Stillness (Pics Gelés), Dissolution (Désolation Cendrée), and Potential (Cime des Tempêtes);
+- each region visually combining pre-Fracture history, its runic scar, and one thousand years of later settlement;
+- the possibility that the nine-region map itself forms a larger inscription connected to the Neuvième Lecture.
 
 Do NOT redesign major quests, dungeons, raids, capitals, zones, landmarks or production art sets independently of this lore. The world, architecture, creatures and assets must become consequences of the canon.
 
@@ -62,22 +66,20 @@ The user explicitly reprioritized Orvalis on 2026-10-09: before mass asset acqui
 - **LORE 2** — peoples, cultures, political identity, architecture and intelligent non-human peoples.
 - **LORE 3** — Pacte d'Azur, Clans de Braise, current politics, Havrebleu and Forge-Cendre.
 - **LORE 4** — the Eight Orders, founders, Seals, class grammars, sanctuaries, doctrines, taboos, schisms, traitors, Heralds and the Neuvième Lecture.
+- **LORE 5** — the nine regions as runic scars of the Fracture, including their terrain, water, vegetation, settlements, scenic identities, dungeon origins and deeper connection to the Grand Glyph.
 
 ### Current next lore block
-Build **LORE 5 — the nine regions in depth as consequences of the Fracture**:
-- what each region was before year 0 AF;
-- exactly what runic law/resonance broke there during the Fracture;
-- why its present terrain, weather, water, vegetation and creatures look the way they do;
-- current settlements, regional cultures and faction presence;
-- local ruins and visible layers of old Orvalis;
-- scenic landmarks and memorable environmental compositions;
-- local myths versus hidden truth;
-- direct hooks for future quests, dungeons, raids and asset requirements.
+Build **LORE 6 — local myths, public beliefs and hidden truths**:
+- what ordinary people believe about each region, founder, faction and major historical event;
+- what scholars and Orders suspect;
+- what actually happened;
+- which truths should be revealed during leveling versus reserved for dungeons, raids and future expansions;
+- which apparent villains are misunderstood and which trusted institutions hide dangerous secrets.
 
 Then derive:
-1. local myths versus hidden truth at quest-detail level;
-2. quest/dungeon/raid rewrites;
-3. world/environment Master Asset List.
+1. quest/dungeon/raid rewrites from the canon;
+2. the production world/environment Master Asset List;
+3. lore-driven scenic/environment briefs for each region and capital.
 
 ## Stable engine state
 - P0–P7 substantially implemented/validated.
@@ -133,7 +135,8 @@ The production world must prioritize:
 - stylized non-PBR material language;
 - strong vertex/baked lighting, fog, foliage, shadows and readable silhouettes;
 - coherent assets rather than raw mixed asset packs;
-- environments whose terrain, architecture, settlements, water, props and scenic compositions visibly follow the world's history and cultures.
+- environments whose terrain, architecture, settlements, water, props and scenic compositions visibly follow the world's history and cultures;
+- each region being identifiable from a UI-free screenshot through its runic scar, terrain, architecture, water, vegetation and scenic composition.
 
 ## Chat continuity
 Read order:
@@ -144,5 +147,6 @@ Read order:
 5. `docs/LORE_02_PEOPLES_CULTURES.md`
 6. `docs/LORE_03_FACTIONS_CAPITALS.md`
 7. `docs/LORE_04_EIGHT_ORDERS.md`
-8. `ROADMAP.md`
-9. only docs/code needed for the exact active block.
+8. `docs/LORE_05_NINE_REGIONS.md`
+9. `ROADMAP.md`
+10. only docs/code needed for the exact active block.
