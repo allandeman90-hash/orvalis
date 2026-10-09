@@ -121,29 +121,95 @@ Règles :
 
 ---
 
-# Résultat du premier audit
+# PASSE SPÉCIALE — PLANCHES / PACKS / COLLECTIONS MESHY
 
-Inspectés/qualifiés : **6** candidats.
+Cette passe confirme que Meshy contient de vraies **planches de dizaines d'assets cohérents**, et qu'elles doivent être recherchées avant de multiplier les modèles isolés.
 
-- **APPROVED FOR GLB QA : 2**
-  - chêne stylisé ;
-  - petite maison bois/pierre.
-- **MAYBE : 3**
-  - lantern post : bon visuel, beaucoup trop lourd ;
-  - handcart : bon visuel, beaucoup trop lourd ;
-  - village stylisé : utile comme référence, trop lourd/monobloc pour runtime.
-- **REJECT : 1**
-  - windmill : extrêmement lourd + direction réaliste + preview non validé.
+Règle supplémentaire :
+> **Pour chaque besoin générique, chercher d'abord un pack/collection CC0 stylisé cohérent. Ensuite seulement compléter avec des assets isolés.**
 
-Conclusion : la bibliothèque gratuite Meshy contient bien des assets directement intéressants, mais le tag `lowpoly` ou une apparence simple ne garantit absolument pas une géométrie légère. **Polycount réel/affiché devient un filtre dur dès la découverte**, avant téléchargement.
+Important : une planche où 50 objets sont visibles séparément dans le preview n'est pas encore techniquement confirmée comme 50 meshes/nodes séparables dans le GLB. Cette propriété doit être vérifiée après téléchargement avant passage au statut `local/normalized`.
+
+## MF-VAL-PACK-001 — Medieval Village Asset Pack
+
+- Rôle Orvalis : source principale potentielle de petits props du Val / Clairbourg / marché / ferme / bord de Havrebleu.
+- Source : https://www.meshy.ai/3d-models/Medieval-Village-Asset-Pack-019e631a-179e-7513-a932-bfda0f8b7a48?page=landing
+- Auteur : `warmsignull`
+- Licence affichée et revérifiée sur la page : **CC0**
+- Génération : Meshy 6
+- Tags : `village`, `medieval`, `asset`, `pack`, `stylized`, `game`, `lowpoly`, `texture`, `props`, `environment`
+- Sous-catégories utiles : Game Props / Medieval & Viking / Houses & Homes / Landscapes & Biomes.
+- Topologie globale affichée : **Triangle**
+- Faces globales affichées : **762,299**
+- Vertices globaux affichés : **455,064**
+- Inspection visuelle de la planche : environ 50+ objets clairement distincts visibles, notamment caisses, tonneaux, lanternes, clôtures, arbres, champignons, fioles, nourriture, arches, escaliers et autres props de village.
+- Style : explicitement `stylized + game + lowpoly`; c'est pour l'instant le meilleur match de pack avec notre direction cartoon MMO.
+- Séparabilité : les objets sont visuellement individualisés dans la planche ; **séparabilité GLB encore à prouver**.
+- Verdict : **APPROVED FOR DOWNLOAD / PACK QA — PRIORITÉ #1**
+- QA obligatoire après téléchargement : lister meshes/nodes/primitives, compter triangles **par objet**, vérifier matériaux/textures partagés, identifier les objets réellement séparables, mesurer le coût si toute la planche est chargée, puis ne retenir que les sous-assets utiles et sous budget.
+
+## MF-VAL-PACK-002 — Rustic Timber & Stone: A Medieval Props Collection
+
+- Rôle Orvalis : réserve secondaire de props ruraux et de construction.
+- Source : https://www.meshy.ai/3d-models/Rustic-Timber-Stone-A-Medieval-Props-Collection-019f599b-4f1e-774f-8a93-6574ff2c5b69?page=landing
+- Auteur : `blnaq9`
+- Licence affichée et revérifiée : **CC0**
+- Génération : Meshy 6
+- Tags : `medieval`, `props`, `collection`, `timber`, `stone`, `rustic`, `texture`, `set`, `photoreal`, `scene`, `decoration`, `setpiece`
+- Topologie globale affichée : **Triangle**
+- Faces globales affichées : **777,210**
+- Vertices globaux affichés : **455,447**
+- Inspection visuelle : ~50 objets distincts visibles, dont clôtures intactes/cassées, caisses, tonneaux, poteries, charrettes, puits, rochers, fagots, végétation, tentes/canopées et panneaux/posts.
+- Point positif : excellente couverture fonctionnelle d'un environnement rural.
+- Point négatif : le tag `photoreal` est contraire à notre cible si les matériaux tirent réellement vers le réalisme.
+- Séparabilité : visuellement modulaire ; **à confirmer dans le GLB**.
+- Verdict : **MAYBE / APPROVED FOR TECHNICAL PACK QA, PAS ENCORE POUR LE STYLE FINAL**
+- Usage prévu : télécharger pour voir si certains sous-assets peuvent être récupérés puis normalisés vers la palette/material cartoon Orvalis. Ne pas adopter le pack entier automatiquement.
+
+## MF-VAL-PACK-003 — Potion Collection in a Chest
+
+- Rôle potentiel : alchimie / inventaire / boutique.
+- Licence vue pendant audit navigateur : **CC0**.
+- Topologie globale affichée : **Quad**.
+- Faces globales affichées : **95,300**.
+- Vertices affichés : **98,566**.
+- Inspection : coffre + plusieurs fioles/potions individualisées visuellement.
+- Verdict : **MAYBE**.
+- Raison : la collection totale touche notre plafond exceptionnel, mais les fioles individuelles pourraient être extrêmement légères si elles sont réellement séparables.
+- Priorité : faible pour le Slice A immédiat ; utile plus tard pour professions/alchimie.
+
+## MF-VAL-PROP-002 — Wooden Stall
+
+- Rôle : étal rural / marché / Clairbourg / bord de Havrebleu.
+- Source : https://www.meshy.ai/3d-models/Wooden-Stall-019b14bc-388e-73ed-9980-ded7ca272c81?page=landing
+- Licence affichée pendant audit : **CC0**.
+- Tags : `furniture`, `wood`, `stall`, `market`, `rustic`, `outdoor`, `display`, `craft`, `traditional`, `props`.
+- Topologie affichée : **Triangle**.
+- Faces affichées : **9,994**.
+- Vertices affichés : **9,801**.
+- Verdict : **APPROVED FOR DOWNLOAD/GLB QA**.
+- Raisons : rôle immédiatement utile, géométrie sous la cible ~15k, style rustique générique facilement normalisable.
+
+---
+
+# Résultat cumulé de l'audit
+
+Candidats individuels qualifiés : **7** (dont Wooden Stall).
+Collections/planches qualifiées : **3**.
+
+Priorité téléchargement/QA actuelle :
+1. **Medieval Village Asset Pack** — pack CC0 stylized/game/lowpoly ;
+2. **chêne stylisé** — asset individuel léger ;
+3. **petite maison bois/pierre** — asset individuel léger ;
+4. **Wooden Stall** — prop individuel léger ;
+5. **Rustic Timber & Stone Collection** — QA technique utile, mais filtre stylistique renforcé à cause de `photoreal`.
+
+Les modèles lourds isolés (lanterne 287k, charrette 168k, moulin 1,6M) deviennent moins intéressants maintenant que des collections gratuites cohérentes existent : on cherchera d'abord si les packs approuvés contiennent déjà une alternative légère avant de retopo quoi que ce soit.
 
 # Prochaine passe
 
-Rechercher spécifiquement des alternatives gratuites Meshy sous budget pour :
-1. lantern post <15–25k ;
-2. handcart/cart <15–25k ;
-3. stylized mill <50k si landmark ;
-4. 2–4 autres chênes/arbres feuillus <15k ;
-5. rochers/mossy rocks <15k ;
-6. buissons/fleurs/herbes ;
-7. clôtures/murs bas sans mention d'IP tierce.
+1. examiner d'autres planches Meshy gratuites via tags `pack`, `collection`, `set`, `props`, `environment`, `modular`, `stylized`, `lowpoly` ;
+2. viser spécifiquement nature/vegetation/rocks/farm et architecture modulaire ;
+3. télécharger seulement les packs/individuels `APPROVED FOR DOWNLOAD/GLB QA` ;
+4. analyser le GLB pour connaître la vraie séparabilité et le triangle count par sous-asset ;
+5. alimenter ensuite le registre final d'assets approuvés et le downloader en lot.
