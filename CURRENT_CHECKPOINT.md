@@ -41,6 +41,7 @@ Read in order when needed:
 9. `docs/CAMPAIGN_02_QUEST_AUDIT.md`
 10. `docs/CAMPAIGN_02B_EXPANDED_CONTENT_1_50.md`
 11. `docs/ACT_I_LAUNCH_SCOPE_1_50.md`
+12. `docs/CAMPAIGN_03_ACT_I_LEVELS_30_50.md`
 
 Central pillar: **unbounded runic ascension**. Runes are fragments of reality's laws; fusion reconstructs increasingly exact versions of those laws; Ascendants can continue accepting runic modification without a known ceiling. Two characters of identical conventional level can therefore become incomparably different in power through runes.
 
@@ -68,7 +69,7 @@ Core canon includes:
 - current nine-region geography potentially being one cell of a larger structure;
 - Catacombes' Roi Oublié as a fractured portion of Morvhal's Empreinte;
 - Trône de Cendre-Noire's Nyxaroth as a true but partial Incarnation;
-- Rune Impossible, fate of the Graveurs and true nature of gods intentionally unresolved.
+- Rune Impossible, fate of the Graveurs, true nature of gods, full Informe and source of the Battement intentionally unresolved.
 
 # ACTE I — LAUNCH GAME — LEVELS 1–50
 
@@ -100,21 +101,31 @@ Level 30 is a major campaign turning point:
 - stinger remains `VOUS APPRENEZ ENCORE À LIRE.`
 - player learns Orvalis is probably only one cell in a larger coherence network.
 
-## Levels 30–50 — consolidated launch world
-`docs/ACT_I_LAUNCH_SCOPE_1_50.md` overrides the previous over-expanded map count.
+## Levels 30–50 — CANON CAMPAIGN BLUEPRINT COMPLETE
+Detailed blueprint: `docs/CAMPAIGN_03_ACT_I_LEVELS_30_50.md`.
 
-Launch target = approximately **13 major persistent regions total**, not ~17.
+Launch target remains approximately **13 major persistent regions total**.
 
 Four additional major regions:
 10. **Archipel de Nacrebrume** — lvl ~30–35; Port-Nacré; maritime culture; Phare des Marées Muettes.
-11. **Marches de Verre** — lvl ~30–40; contains Halte du Dernier Convoi + Route Brisée + **Plateaux de Silex / Haut-Silex as subzone and political hub**, not separate major region; Fort de la Route Brisée.
-12. **Sous-Trame** — lvl ~37–45; persistent monumental Graveur underworld; Relais Sept; Atelier des Formes; confirms larger network without resolving the Graveurs.
-13. **Territoires d'Orée** — lvl ~43–50; final leveling region; Cités d'Orée hub; contains **Lisière Blanche** and **La Confluence** as subzones; **Les Possibles Brisés** become high-level instanced/event content, not a separate persistent region.
+11. **Marches de Verre** — lvl ~30–40; Halte du Dernier Convoi; Route Brisée; Plateaux de Silex / Haut-Silex as subzone and political hub; Fort de la Route Brisée.
+12. **Sous-Trame** — lvl ~37–45; monumental Graveur underworld; Relais Sept; Battement confirmed as network synchronization phenomenon; Atelier des Formes.
+13. **Territoires d'Orée** — lvl ~43–50; Cités d'Orée; Lisière Blanche + Confluence; Possibles Brisés as high-level instanced/event layer rather than a separate persistent region.
 
-Deferred/merged ideas are not deleted. They can become subzones, optional scenarios, Act-I updates, or later Act II/III material if still useful.
+Campaign 30–50 locked progression:
+- lvl 30: post-Cendre-Noire opening to maritime + diverted-convoy tracks;
+- 31–34: Nacrebrume proves Orvalis is not the whole world and ancient relay routes exist outside the Noyau;
+- 35–40: Marches/Silex reveal the diverted relief convoy was redirected toward a network-maintenance installation because runologists believed it could prevent a larger collapse; this does not erase the real abandonment suffered by the east;
+- 41–45: Sous-Trame confirms a far larger coherence network while preserving the Graveur mystery;
+- 45–50: Orée turns Ascendance into a public legal/political problem and proves powerful Ascendants can damage the Trame without Nyxaroth/Voilés;
+- lvl 50 opens the true launch endgame rather than immediately ending the campaign.
+
+Maëlys/Darek continue through Nacrebrume, Silex, Sous-Trame, Confluence and the endgame. They survive Acte I and remain future political/narrative possibilities.
+
+Ligue de Silex is the first major external political power treated as an equal rather than an Azur/Braise extension.
 
 # DUNGEON TARGET — LAUNCH
-Primary target = **10 strong dungeons**, not 11+ as a quota.
+Primary target = **10 strong dungeons**.
 
 Levels 1–30:
 1. Galeries de Mèchenoire
@@ -130,40 +141,41 @@ Levels 30–50:
 9. Prison des Ancrés
 10. Bibliothèque des Noms Absents
 
-`Jardin des Lois` is retained as optional subzone/scenario/possible extra instance only if production scope allows.
+`Jardin des Lois` remains optional subzone/scenario/possible extra instance only if production scope allows.
 
 A selected subset of launch dungeons should have meaningful **level-50 Heroic variants** for endgame, with changed mechanics/modifiers and loot rather than only more HP.
 
 # TRUE ACTE-I ENDGAME — LEVEL 50
-Level 50 is the real launch endgame and the actual conclusion of Acte I.
+Reaching level 50 **opens** the endgame. Completing the endgame story **concludes Acte I**.
 
 Required loops:
 - Heroic dungeons;
-- **Abîme sans fin** as the principal infinite PvE difficulty/runic progression loop;
+- **Abîme sans fin** as principal infinite PvE/runic progression loop;
 - rotating world bosses;
 - optional max-level PvP / Bastion / renown;
 - high-level professions and Ancrage crafting;
 - runic hunting/fusion/socket progression;
+- Possibles Brisés events;
 - raid progression.
 
 ## Endgame Raid I — Le Conclave Brisé
-- level 50, 10 players;
-- political/runic crisis around attempts to control or stabilize Ascendants;
-- antagonists must have legitimate motives, not simply be another evil cult;
-- opens access to the deeper Neuvième Lecture infrastructure.
+- lvl 50, 10 players;
+- international Ascendant-control/stability crisis;
+- shows legitimate and radical positions instead of inventing another purely evil cult;
+- the underlying failure occurs partly because existing models assume Empreintes eventually saturate, while modern Ascendants violate that assumption;
+- reveals that no individual Order grammar explains coexistence of multiple competing runic modifications;
+- opens the path to the deeper Neuvième Lecture infrastructure.
 
 ## Endgame Final Raid — La Chambre de la Neuvième Lecture
-- level 50, 10 players;
+- lvl 50, 10 players;
 - **true conclusion of Acte I**;
-- reveals Neuvième Lecture as a coherence relation between the eight grammars, not a ninth class;
-- prevents forced synchronization of the Ascendant generation;
-- uses a limited reading to stabilize the current crisis;
-- does NOT resolve the Graveurs, gods, full Informe, Rune Impossible origin, or ultimate ceiling of runic power.
+- Neuvième Lecture = coherence relation allowing different runic writings to remain true simultaneously without tearing the Trame;
+- ancient system attempts to solve Ascendant instability through forced synchronization of Empreintes;
+- raid prevents forced synchronization while using a limited Neuvième Lecture to stabilize existing damage;
+- thematic conclusion: **difference does not need to be erased for reality to remain coherent**;
+- does NOT resolve Graveurs, gods, full Informe, Rune Impossible origin, full Nyxaroth, source of Battement or final cause/limit of Ascendance.
 
-End-state of Acte I:
-- Ascendants are permanently part of world politics;
-- neither Azur, Braise nor the Orders own the answer to what Ascendants should become;
-- launch story feels complete while leaving room for future Acte II 50–75.
+Acte-I epilogue leaves the player at launch cap 50 with **unbounded runic progression still open**.
 
 # REALISTIC LAUNCH SCALE TARGET
 Ambitious but consolidated target:
@@ -186,20 +198,21 @@ Production principle:
 Post-launch future content. Preserve room only.
 
 ## ACTE III — levels 75–100
-Post-launch future content. May be the final main act, but this is deliberately undecided.
+Post-launch future content. May be the final main act, but deliberately undecided.
 
 No detailed maps, raids, boss roster, civilizations or expansion campaign should be designed for 51–100 until the launch game is shipped / substantially complete.
 
-# ACTIVE PRIORITY — FINISH ACTE I WORLD/CONTENT SKELETON BEFORE RUNTIME MIGRATION
+# ACTIVE PRIORITY — DERIVE PRODUCTION CONTENT REQUIREMENTS BEFORE RUNTIME MIGRATION
+The Acte-I narrative skeleton 1–50 is now coherent enough to stop adding macro campaign structure.
+
 Do **not** jump to future Acts II/III and do not rewrite runtime quest/progression data yet.
 
 Exact next design block:
-1. design the **30–50 narrative spine of Acte I** across Nacrebrume → Marches de Verre → Sous-Trame → Territoires d'Orée;
-2. define what the player learns at levels ~30, 35, 40, 45 and 50;
-3. define the diverted-convoy truth, Ligue de Silex, Relais Sept, Cités d'Orée and the build-up to Conclave Brisé / Neuvième Lecture;
-4. keep future Act II 50–75 mysteries open;
-5. then derive the production world/environment + creature/character Master Asset List and streaming/map requirements;
-6. only after that migrate runtime in small blocks.
+1. derive the **Master Asset List for the launch world 1–50** from the locked lore/campaign: environment kits, architecture, creatures, NPC cultures, dungeons, raids, props, VFX and UI/world-signage needs;
+2. group/reuse asset families aggressively across compatible regions while preserving each region's visual identity;
+3. derive technical map/streaming boundaries for the 13 major regions, major subzones, interiors, dungeons and raids;
+4. identify what can use licensed/free seed assets versus what must be original/custom for Orvalis identity;
+5. only after the asset/world production skeleton is coherent should runtime quest/NPC/mob/progression migration start in small blocks.
 
 # Stable engine state
 - P0–P7 substantially implemented/validated.
@@ -226,5 +239,5 @@ Read order:
 2. `CURRENT_CHECKPOINT.md`
 3. `docs/RELEASE_SCOPE_AND_LONG_TERM_CAP.md`
 4. `docs/ACT_I_LAUNCH_SCOPE_1_50.md`
-5. `docs/CAMPAIGN_00_SCOPE_LEVEL_50.md`
+5. `docs/CAMPAIGN_03_ACT_I_LEVELS_30_50.md`
 6. only lore/campaign/code needed for the exact active block.
