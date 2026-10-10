@@ -119,11 +119,17 @@ pond.rotation.x=-Math.PI/2;pond.position.set(-22,heightAt(-22,10)+.04,10);scene.
 
 function bytesToAscii(u8){return new TextDecoder().decode(u8);}
 async function loadPackedModels(){
-  if(!('DecompressionStream' in window)) throw new Error('Ce navigateur ne supporte pas DecompressionStream(gzip).');
   const r=await fetch('./assets/val-azur/seed-geometry.ovg.gz',{cache:'no-store'});
   if(!r.ok) throw new Error(`seed geometry HTTP ${r.status}`);
-  const stream=r.body.pipeThrough(new DecompressionStream('gzip'));
-  const raw=new Uint8Array(await new Response(stream).arrayBuffer());
+  const fetched=new Uint8Array(await r.arrayBuffer());
+  let raw=fetched;
+  // GitHub Pages/CDNs may transparently decode .gz responses depending on headers.
+  // Only run DecompressionStream when the bytes still carry the gzip magic.
+  if(fetched[0]===0x1f&&fetched[1]===0x8b){
+    if(!('DecompressionStream' in window)) throw new Error('Ce navigateur ne supporte pas DecompressionStream(gzip).');
+    const stream=new Blob([fetched]).stream().pipeThrough(new DecompressionStream('gzip'));
+    raw=new Uint8Array(await new Response(stream).arrayBuffer());
+  }
   const view=new DataView(raw.buffer,raw.byteOffset,raw.byteLength);let o=0;
   const magic=bytesToAscii(raw.slice(0,4));o=4;if(magic!=='OVG1')throw new Error('seed geometry magic invalide');
   const count=view.getUint32(o,true);o+=4;const out={};
