@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "checkpoint": "A0.4",
+  "slice": "Slice A — Val d'Azur + edge of Havrebleu",
+  "purpose": "GitHub Pages production-art proof. The packed geometry is derived from the normalized A0.3 runtime GLBs and keeps the real seed mesh silhouettes with base-color baked to vertex colors. It is a review transport format, not the canonical production asset format.",
+  "pack": {
+    "path": "assets/val-azur/seed-geometry.ovg.gz",
+    "bytes": 327175,
+    "sha256": "bca534fe78703874ab77ed711d43e61f1470adc77a0ffacd2c5a473aeb4e612b",
+    "format": "OVG1 + gzip",
+    "notes": "Quantized positions (uint16), baked base-color vertex colors (uint8), uint16 triangle indices. Browser reconstructs BufferGeometry and recomputes normals."
+  },
+  "assets": [
+    {
+      "id": "MF-VAL-TREE-001",
+      "runtimeName": "val_azur_oak_tree_01",
+      "role": "environment/tree",
+      "author": "vivra_akathon",
+      "license": "CC0",
+      "source": "https://www.meshy.ai/3d-models/An-oak-tree-stylized-low-poly-asset-v2-01971a1b-6213-7e6d-a635-74f22abb7cd8",
+      "triangles": 17802,
+      "runtimeWebSha256": "49d37964b5cf7ceb487a1143f76ace08866e7a956c825439169bd77566be5107",
+      "state": "runtime-review"
+    },
+    {
+      "id": "MF-VAL-ROCK-001",
+      "runtimeName": "val_azur_rock_01",
+      "role": "environment/rock",
+      "author": "feelzebub",
+      "license": "CC0",
+      "source": "https://www.meshy.ai/3d-models/Low-poly-rock-019b1362-cb67-7b1b-81de-82214c3595b4?page=landing",
+      "triangles": 2152,
+      "runtimeWebSha256": "c422b9a6f22be7c877daaccf289f2517968bcae464427a82a874da54527184b9",
+      "state": "runtime-review"
+    },
+    {
+      "id": "MF-VAL-FENCE-001",
+      "runtimeName": "val_azur_wood_fence_01",
+      "role": "environment/fence",
+      "author": "theanh75",
+      "license": "CC0",
+      "source": "https://www.meshy.ai/3d-models/low-poly-wooden-fence-019fa865-7de9-7a84-b0b4-bda388fa94af?page=landing",
+      "triangles": 10060,
+      "runtimeWebSha256": "08fb059a27b69abab55b339f26236fc4d527013d11d70e60d1f2e548fcb43603",
+      "state": "runtime-review"
+    }
+  ]
+}

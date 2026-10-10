@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orvalis — Slice A · Val d'Azur</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#07100d;color:#eef7f1}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{background:linear-gradient(#8bb8c0 0 42%,#9bb889 42% 100%)}
+#game{display:block;width:100%;height:100%}
+#panel{position:fixed;left:16px;top:16px;width:min(430px,calc(100vw - 32px));padding:14px 15px;border:1px solid #deefd64d;border-radius:14px;background:#08120ed9;backdrop-filter:blur(12px);box-shadow:0 16px 55px #0007}
+#panel h1{font-size:18px;margin:0 0 5px}.kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#a7d0b2;margin-bottom:5px}
+#panel p{margin:0;color:#b7c7bc;font-size:12px;line-height:1.5}
+#stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:11px}
+.stat{padding:8px;border:1px solid #49605288;border-radius:9px;background:#101b16}.stat b{display:block;font-size:14px}.stat span{font-size:10px;color:#8fa397}
+#toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+button,a.btn{appearance:none;border:1px solid #587261;background:#15231b;color:#eef7f1;border-radius:8px;padding:7px 10px;cursor:pointer;font:600 11px/1.2 inherit;text-decoration:none}
+button:hover,a.btn:hover,button.active{background:#385444}
+#status{position:fixed;right:16px;bottom:16px;max-width:min(560px,calc(100vw - 32px));padding:8px 10px;border-radius:9px;background:#08120ee8;border:1px solid #52695a70;color:#b8c8bd;font-size:11px}
+#note{position:fixed;left:16px;bottom:16px;max-width:min(700px,calc(100vw - 32px));padding:7px 9px;border-radius:8px;background:#08120ebf;color:#8fa196;font-size:10px}
+.ok{color:#b9ebc4!important}.err{color:#ffabab!important;border-color:#a64f4f!important}
+@media(max-width:760px){#panel{max-height:56vh;overflow:auto}#note{display:none}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<canvas id="game"></canvas>
+<section id="panel">
+  <div class="kicker">A0.4 · production-art proof</div>
+  <h1>Slice A · Val d'Azur</h1>
+  <p>Première micro-zone organique : chemin sinueux, relief continu, lisière irrégulière et vrais meshes issus du seed kit A0.2/A0.3. Aucun quadrillage 3×3 n'est utilisé pour la géographie visible.</p>
+  <div id="stats">
+    <div class="stat"><b id="tree-count">—</b><span>arbres</span></div>
+    <div class="stat"><b id="rock-count">—</b><span>rochers</span></div>
+    <div class="stat"><b id="fence-count">—</b><span>clôtures</span></div>
+  </div>
+  <div id="toolbar">
+    <button id="orbit" class="active">Rotation lente</button>
+    <button id="overview">Vue d'ensemble</button>
+    <button id="road">Suivre le chemin</button>
+    <a class="btn" href="./art-review.html">Art review</a>
+  </div>
+</section>
+<div id="note">Seed meshes : MF-VAL-TREE-001 · MF-VAL-ROCK-001 · MF-VAL-FENCE-001 · géométrie runtime compactée localement pour ce proof GitHub Pages.</div>
+<div id="status">Chargement de la micro-zone…</div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
+const canvas=document.querySelector('#game');
+const status=document.querySelector('#status');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x91bfc7);
+scene.fog=new THREE.FogExp2(0xa8c7b5,0.018);
+
+const camera=new THREE.PerspectiveCamera(48,1,.05,180);
+camera.position.set(31,23,38);
+const controls=new OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.enablePan=false;controls.minDistance=7;controls.maxDistance=85;
+controls.target.set(2,2,2);
+let userInteracting=false;controls.addEventListener('start',()=>userInteracting=true);controls.addEventListener('end',()=>userInteracting=false);
+
+scene.add(new THREE.HemisphereLight(0xdaf4ff,0x5f4f35,2.1));
+const sun=new THREE.DirectionalLight(0xffe1b6,3.4);
+sun.position.set(-22,34,18);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-45;sun.shadow.camera.right=45;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;
+scene.add(sun);
+
+function heightAt(x,z){
+  const broad=.55*Math.sin(x*.105)*Math.cos(z*.09);
+  const folds=.22*Math.sin((x+z)*.19)+.16*Math.cos((x-z)*.14);
+  const hillA=1.15*Math.exp(-((x+20)**2+(z-9)**2)/210);
+  const hillB=.72*Math.exp(-((x-18)**2+(z+11)**2)/160);
+  return broad+folds+hillA+hillB;
+}
+function makeTerrain(){
+  const g=new THREE.PlaneGeometry(76,58,76,58);g.rotateX(-Math.PI/2);
+  const p=g.attributes.position;
+  for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);p.setY(i,heightAt(x,z));}
+  p.needsUpdate=true;g.computeVertexNormals();
+  const m=new THREE.MeshStandardMaterial({color:0x789b62,roughness:1,metalness:0});
+  const mesh=new THREE.Mesh(g,m);mesh.receiveShadow=true;return mesh;
+}
+scene.add(makeTerrain());
+
+function pathCurve(){
+  const pts=[[-34,-20],[-25,-14],[-18,-8],[-10,-4],[-3,1],[7,3],[14,9],[22,15],[31,20]]
+    .map(([x,z])=>new THREE.Vector3(x,heightAt(x,z)+.08,z));
+  return new THREE.CatmullRomCurve3(pts,false,'catmullrom',.35);
+}
+const roadCurve=pathCurve();
+function makeRoad(){
+  const steps=110,width=2.55,verts=[],idx=[];
+  const samples=[];
+  for(let i=0;i<=steps;i++) samples.push(roadCurve.getPoint(i/steps));
+  for(let i=0;i<=steps;i++){
+    const prev=samples[Math.max(0,i-1)],next=samples[Math.min(steps,i+1)];
+    const tx=next.x-prev.x,tz=next.z-prev.z,len=Math.hypot(tx,tz)||1;
+    const nx=-tz/len,nz=tx/len,w=width*(.9+.1*Math.sin(i*.47));
+    const c=samples[i];verts.push(c.x+nx*w,c.y+.035,c.z+nz*w,c.x-nx*w,c.y+.035,c.z-nz*w);
+    if(i<steps){const a=i*2;idx.push(a,a+2,a+1,a+1,a+2,a+3);}
+  }
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));g.setIndex(idx);g.computeVertexNormals();
+  const m=new THREE.MeshStandardMaterial({color:0xb79a67,roughness:1,metalness:0});
+  const road=new THREE.Mesh(g,m);road.receiveShadow=true;return road;
+}
+scene.add(makeRoad());
+
+const pond=new THREE.Mesh(new THREE.CircleGeometry(5.3,48),new THREE.MeshPhysicalMaterial({color:0x4f8995,roughness:.22,metalness:0,transparent:true,opacity:.78}));
+pond.rotation.x=-Math.PI/2;pond.position.set(-22,heightAt(-22,10)+.04,10);scene.add(pond);
+
+function bytesToAscii(u8){return new TextDecoder().decode(u8);}
+async function loadPackedModels(){
+  if(!('DecompressionStream' in window)) throw new Error('Ce navigateur ne supporte pas DecompressionStream(gzip).');
+  const r=await fetch('./assets/val-azur/seed-geometry.ovg.gz',{cache:'no-store'});
+  if(!r.ok) throw new Error(`seed geometry HTTP ${r.status}`);
+  const stream=r.body.pipeThrough(new DecompressionStream('gzip'));
+  const raw=new Uint8Array(await new Response(stream).arrayBuffer());
+  const view=new DataView(raw.buffer,raw.byteOffset,raw.byteLength);let o=0;
+  const magic=bytesToAscii(raw.slice(0,4));o=4;if(magic!=='OVG1')throw new Error('seed geometry magic invalide');
+  const count=view.getUint32(o,true);o+=4;const out={};
+  for(let m=0;m<count;m++){
+    const nameLen=view.getUint16(o,true);o+=2;const name=bytesToAscii(raw.slice(o,o+nameLen));o+=nameLen;
+    const min=[view.getFloat32(o,true),view.getFloat32(o+4,true),view.getFloat32(o+8,true)];o+=12;
+    const max=[view.getFloat32(o,true),view.getFloat32(o+4,true),view.getFloat32(o+8,true)];o+=12;
+    const vcount=view.getUint32(o,true);o+=4;const icount=view.getUint32(o,true);o+=4;
+    const q=new Uint16Array(raw.slice(o,o+vcount*6).buffer);o+=vcount*6;
+    const colors=raw.slice(o,o+vcount*3);o+=vcount*3;
+    const indices=new Uint16Array(raw.slice(o,o+icount*2).buffer);o+=icount*2;
+    const positions=new Float32Array(vcount*3);
+    for(let i=0;i<vcount;i++)for(let k=0;k<3;k++)positions[i*3+k]=min[k]+(q[i*3+k]/65535)*(max[k]-min[k]);
+    const g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.BufferAttribute(positions,3));
+    g.setAttribute('color',new THREE.BufferAttribute(colors,3,true));
+    g.setIndex(new THREE.BufferAttribute(indices,1));
+    g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();
+    const mat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.84,metalness:0,side:THREE.DoubleSide});
+    const mesh=new THREE.Mesh(g,mat);mesh.castShadow=true;mesh.receiveShadow=true;mesh.name=name;out[name]=mesh;
+  }
+  return out;
+}
+function cloneAt(proto,x,z,scale=1,rot=0){
+  const m=proto.clone();m.position.set(x,heightAt(x,z),z);m.rotation.y=rot;m.scale.setScalar(scale);scene.add(m);return m;
+}
+function nearRoad(x,z,limit=5){
+  let d=999;for(let i=0;i<=35;i++){const p=roadCurve.getPoint(i/35);d=Math.min(d,Math.hypot(x-p.x,z-p.z));}return d<limit;
+}
+function rng(seed){let s=seed>>>0;return()=>((s=(s*1664525+1013904223)>>>0)/4294967296);}
+
+function populate(models){
+  const rnd=rng(0x0a0415);
+  const trees=[],rocks=[],fences=[];
+  for(let i=0;i<23;i++){
+    let x,z,tries=0;do{x=-34+rnd()*68;z=-24+rnd()*48;tries++;}while((nearRoad(x,z,5.3)||Math.hypot(x+22,z-10)<7)&&tries<50);
+    trees.push(cloneAt(models.val_azur_oak_tree_01,x,z,.76+rnd()*.42,rnd()*Math.PI*2));
+  }
+  for(let i=0;i<18;i++){
+    let x=-31+rnd()*62,z=-22+rnd()*44;if(i<8){const p=roadCurve.getPoint(.1+i*.095);x=p.x+(rnd()>.5?1:-1)*(3.6+rnd()*2.3);z=p.z+(rnd()-.5)*4;}
+    rocks.push(cloneAt(models.val_azur_rock_01,x,z,.55+rnd()*.75,rnd()*Math.PI*2));
+  }
+  const fenceLines=[
+    {a:[-12,8],b:[4,13],n:8},
+    {a:[7,-8],b:[20,-4],n:7}
+  ];
+  for(const line of fenceLines){
+    const dx=line.b[0]-line.a[0],dz=line.b[1]-line.a[1],ang=Math.atan2(dx,dz),len=Math.hypot(dx,dz),step=len/line.n;
+    for(let i=0;i<line.n;i++){const t=(i+.5)/line.n,x=line.a[0]+dx*t,z=line.a[1]+dz*t;fences.push(cloneAt(models.val_azur_wood_fence_01,x,z,.92,ang));}
+  }
+  document.querySelector('#tree-count').textContent=trees.length;
+  document.querySelector('#rock-count').textContent=rocks.length;
+  document.querySelector('#fence-count').textContent=fences.length;
+  return {trees,rocks,fences};
+}
+
+let autoOrbit=true,elapsed=0;
+function overview(){controls.target.set(1,1.8,1);camera.position.set(31,23,38);controls.update();}
+function roadView(){const p=roadCurve.getPoint(.46),q=roadCurve.getPoint(.58);controls.target.copy(q);camera.position.set(p.x+4,p.y+5.2,p.z+7);controls.update();}
+document.querySelector('#orbit').onclick=()=>{autoOrbit=!autoOrbit;document.querySelector('#orbit').classList.toggle('active',autoOrbit);};
+document.querySelector('#overview').onclick=overview;
+document.querySelector('#road').onclick=roadView;
+
+function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+
+try{
+  const models=await loadPackedModels();
+  const placed=populate(models);
+  status.className='ok';status.textContent=`READY · ${placed.trees.length+placed.rocks.length+placed.fences.length} instances · 3 seed meshes locaux`;
+  document.body.dataset.state='ready';
+  window.__orvalisValAzur={ready:true,instances:placed.trees.length+placed.rocks.length+placed.fences.length,seedMeshes:Object.keys(models)};
+}catch(error){
+  console.error(error);status.className='err';status.textContent=`ERREUR VAL D'AZUR · ${error.message}`;document.body.dataset.state='error';
+}
+let last=performance.now();
+renderer.setAnimationLoop(now=>{
+  const dt=Math.min(.05,(now-last)/1000);last=now;elapsed+=dt;
+  if(autoOrbit&&!userInteracting){const r=46,a=elapsed*.035;camera.position.x=Math.cos(a)*r;camera.position.z=Math.sin(a)*r;camera.position.y=22+Math.sin(a*.7)*2.5;}
+  controls.update();renderer.render(scene,camera);
+});
+</script>
+</body>
+</html>
